@@ -41,12 +41,14 @@ class DatasetListResponse(DatasetStateResponse):
 class DeckCompareRequest(BaseModel):
     archetype: str = Field(..., description="Archetype name or id")
     deck: dict[str, list[dict[str, Any]]] = Field(..., description="Normalized deck payload")
+    dataset_id: str | None = None
 
 
 class ExplainRequest(BaseModel):
     question: str
     archetype: str | None = None
     deck: dict[str, list[dict[str, Any]]] | None = None
+    dataset_id: str | None = None
 
 
 class ExplainResponse(BaseModel):

@@ -67,3 +67,30 @@ def test_summary_uses_current_dataset_from_state(tmp_path):
 
     assert response.status_code == 200
     assert response.json()["tournament"]["name"] == "Prague Special Event"
+
+
+def test_summary_accepts_explicit_dataset_id(tmp_path):
+    write_analysis(tmp_path, event="Prague")
+    la_dir = write_analysis(tmp_path, event="Los_Angeles")
+    (la_dir / "analysis.json").write_text(json.dumps({
+        "source": {"tournament_id": "0063", "division": "MA"},
+        "tournament": {"name": "Los Angeles Regional"},
+        "field": {},
+        "archetypes": []
+    }), encoding="utf-8")
+    state_path = tmp_path / "data" / "config" / "dataset_state.json"
+
+    client = TestClient(create_app(data_root=tmp_path / "data", dataset_state_path=state_path))
+
+    response = client.get("/api/v1/analysis/summary", params={"dataset_id": "2026-los-angeles-ma"})
+
+    assert response.status_code == 200
+    assert response.json()["tournament"]["name"] == "Los Angeles Regional"
+
+
+def test_summary_without_current_or_dataset_id_returns_400(tmp_path):
+    client = TestClient(create_app(data_root=tmp_path / "data", dataset_state_path=tmp_path / "data/config/dataset_state.json"))
+
+    response = client.get("/api/v1/analysis/summary")
+
+    assert response.status_code == 400

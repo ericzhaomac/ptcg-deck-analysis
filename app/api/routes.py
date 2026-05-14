@@ -64,14 +64,17 @@ def build_router(
         dataset_state_store.save(reconciled)
         return reconciled
 
-    def current_analysis_path() -> str:
+    def resolve_analysis_path(dataset_id: str | None = None) -> str:
         available = available_records()
-        state = reconciled_state(available)
-        if not state.current_dataset_id:
-            raise HTTPException(status_code=404, detail="No current dataset is mounted")
-        record = next((record for record in available if record.dataset_id == state.current_dataset_id), None)
+        selected_dataset_id = dataset_id
+        if selected_dataset_id is None:
+            state = reconciled_state(available)
+            selected_dataset_id = state.current_dataset_id
+            if selected_dataset_id is None:
+                raise HTTPException(status_code=400, detail="No current dataset is mounted and no dataset_id was provided")
+        record = next((record for record in available if record.dataset_id == selected_dataset_id), None)
         if record is None:
-            raise HTTPException(status_code=404, detail="Current dataset not found")
+            raise HTTPException(status_code=404, detail="Dataset not found")
         return record.analysis_path
 
     def get_active_provider_config() -> ProviderConfig | None:
@@ -127,12 +130,12 @@ def build_router(
         return dataset_state_response(saved)
 
     @analysis_router.get("/summary")
-    def get_summary() -> dict:
-        return service.get_summary(current_analysis_path())
+    def get_summary(dataset_id: str | None = None) -> dict:
+        return service.get_summary(resolve_analysis_path(dataset_id))
 
     @analysis_router.post("/compare")
     def compare_deck(request: DeckCompareRequest) -> dict:
-        return service.compare_deck(analysis_path=current_analysis_path(), archetype=request.archetype, deck_payload=request.deck)
+        return service.compare_deck(analysis_path=resolve_analysis_path(request.dataset_id), archetype=request.archetype, deck_payload=request.deck)
 
     @analysis_router.post("/explain", response_model=ExplainResponse)
     def explain(request: ExplainRequest) -> ExplainResponse:
@@ -140,7 +143,7 @@ def build_router(
         provider = build_provider(provider_config)
         if provider is None:
             raise HTTPException(status_code=501, detail="LLM provider is not configured")
-        context = service.build_explain_context(analysis_path=current_analysis_path(), archetype=request.archetype, deck_payload=request.deck)
+        context = service.build_explain_context(analysis_path=resolve_analysis_path(request.dataset_id), archetype=request.archetype, deck_payload=request.deck)
         system_prompt = "You are a PTCG deck analysis assistant focused on mounted tournament meta interpretation."
         user_prompt = json.dumps({"question": request.question, "context": context}, ensure_ascii=False)
         result = provider.generate(system_prompt=system_prompt, user_prompt=user_prompt)
