@@ -385,6 +385,9 @@ Energy: 7
         checkbox.type = 'checkbox';
         checkbox.value = dataset.dataset_id;
         checkbox.checked = state.mountedDatasetIds.includes(dataset.dataset_id);
+        checkbox.addEventListener('change', (e) => {
+          toggleDatasetMount(dataset.dataset_id, e.target.checked);
+        });
 
         const label = document.createElement('label');
         label.appendChild(datasetName(dataset));
@@ -414,6 +417,11 @@ Energy: 7
         radio.name = 'current-dataset';
         radio.value = dataset.dataset_id;
         radio.checked = dataset.dataset_id === state.currentDatasetId;
+        radio.addEventListener('change', (e) => {
+          if (e.target.checked) {
+            changeCurrentDataset(dataset.dataset_id);
+          }
+        });
 
         const label = document.createElement('label');
         label.appendChild(datasetName(dataset));
@@ -444,6 +452,104 @@ Energy: 7
       const el = document.getElementById('selector-status');
       el.textContent = message;
       el.className = isError ? 'selector-status error' : 'selector-status';
+    }
+
+    async function toggleDatasetMount(datasetId, shouldMount) {
+      setSelectorStatus(shouldMount ? 'Mounting dataset...' : 'Unmounting dataset...');
+      try {
+        const res = await fetch('/api/v1/datasets/mount', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ dataset_id: datasetId, mount: shouldMount })
+        });
+        if (!res.ok) {
+          const err = await res.json().catch(() => ({}));
+          throw new Error(err.detail || `HTTP ${res.status}`);
+        }
+        const data = await res.json();
+        state.mountedDatasetIds = data.mounted_dataset_ids || [];
+        renderDatasetSelector();
+        setSelectorStatus(shouldMount ? 'Dataset mounted.' : 'Dataset unmounted.');
+      } catch (e) {
+        setSelectorStatus(`Failed to ${shouldMount ? 'mount' : 'unmount'}: ${e.message}`, true);
+        // Revert checkbox state on failure
+        renderDatasetSelector();
+      }
+    }
+
+    async function changeCurrentDataset(datasetId) {
+      setSelectorStatus('Switching current dataset...');
+      try {
+        const res = await fetch('/api/v1/datasets/current', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ dataset_id: datasetId })
+        });
+        if (!res.ok) {
+          const err = await res.json().catch(() => ({}));
+          throw new Error(err.detail || `HTTP ${res.status}`);
+        }
+        const data = await res.json();
+        state.currentDatasetId = data.current_dataset_id || datasetId;
+        const current = state.datasets.find(d => d.dataset_id === state.currentDatasetId);
+        state.currentDatasetDisplayName = current ? current.display_name : null;
+        renderDatasetSelector();
+        await loadSummary(state.currentDatasetId);
+        setSelectorStatus('Current dataset switched.');
+      } catch (e) {
+        setSelectorStatus(`Failed to switch dataset: ${e.message}`, true);
+        renderDatasetSelector();
+      }
+    }
+
+    function refreshCurrentDatasetUi() {
+      renderDatasetSelector();
+      if (state.currentDatasetId) {
+        loadSummary(state.currentDatasetId);
+      } else {
+        renderNoCurrentDataset();
+      }
+    }
+
+    async function loadSummary(datasetId) {
+      document.getElementById('meta-loading').style.display = 'block';
+      document.getElementById('meta-loading').textContent = 'Loading dataset summary...';
+      document.getElementById('meta-loading').className = 'loading';
+      document.getElementById('meta-content').style.display = 'none';
+      try {
+        const res = await fetch(`/api/v1/analysis/summary?dataset_id=${encodeURIComponent(datasetId)}`);
+        if (!res.ok) throw new Error(`HTTP ${res.status}`);
+        const data = await res.json();
+        state.currentSummary = data;
+        state.archetypes = data.archetypes || [];
+        renderMeta(data);
+        populateArchetypeSelect(state.archetypes);
+      } catch (e) {
+        document.getElementById('meta-loading').textContent = '加载失败: ' + e.message;
+        document.getElementById('meta-loading').className = 'error';
+      }
+    }
+
+    function renderNoCurrentDataset() {
+      document.getElementById('meta-loading').style.display = 'none';
+      const container = document.getElementById('meta-content');
+      container.style.display = 'block';
+      container.innerHTML = '<div class="selector-empty">No current dataset selected. Mount a dataset and select it as current to view meta summary.</div>';
+      state.archetypes = [];
+      populateArchetypeSelect([]);
+    }
+
+    function resetDatasetDependentUi() {
+      document.getElementById('meta-loading').style.display = 'block';
+      document.getElementById('meta-loading').textContent = 'Loading current dataset summary...';
+      document.getElementById('meta-loading').className = 'loading';
+      document.getElementById('meta-content').style.display = 'none';
+      document.getElementById('compare-result').innerHTML = '';
+      state.currentSummary = null;
+      state.archetypes = [];
+      state.parsedDeck = null;
+      populateArchetypeSelect([]);
+      document.getElementById('deck-preview').innerHTML = '';
     }
 
     // Load meta summary on startup
@@ -565,10 +671,14 @@ Energy: 7
       document.getElementById('compare-result').innerHTML = '<div class="loading">分析中...</div>';
 
       try {
+        const payload = { archetype, deck: state.parsedDeck };
+        if (state.currentDatasetId) {
+          payload.dataset_id = state.currentDatasetId;
+        }
         const res = await fetch('/api/v1/analysis/compare', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ archetype, deck: state.parsedDeck })
+          body: JSON.stringify(payload)
         });
         const data = await res.json();
         renderCompareResult(data);
@@ -626,14 +736,18 @@ Energy: 7
 
       try {
         const archetype = document.getElementById('archetype-select').value || 'dragapult-ex';
+        const payload = {
+          archetype,
+          deck: state.parsedDeck,
+          question: message
+        };
+        if (state.currentDatasetId) {
+          payload.dataset_id = state.currentDatasetId;
+        }
         const res = await fetch('/api/v1/analysis/explain', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({
-            archetype,
-            deck: state.parsedDeck,
-            question: message
-          })
+          body: JSON.stringify(payload)
         });
 
         if (res.status === 501) {
