@@ -8,20 +8,37 @@ from fastapi.responses import HTMLResponse, RedirectResponse
 from ..models import DeckCompareRequest, ExplainRequest, ExplainResponse
 from ..provider_config import ProviderConfig, ProviderConfigStore
 from ..providers.openai_compatible import OpenAICompatibleProvider
-from ..services.prague_analysis_service import PragueAnalysisService
+from ..services.dataset_analysis_service import DatasetAnalysisService
+from ..services.dataset_registry_service import DatasetRegistryService
+from ..services.dataset_state_store import DatasetStateStore
 
 
-API_PREFIX = "/api/v1/analysis/prague"
+API_PREFIX = "/api/v1/analysis"
 CONFIG_PAGE_PATH = "/provider/config"
 CONFIG_PAGE_URL = f"{API_PREFIX}{CONFIG_PAGE_PATH}"
 
 
 def build_router(
-    service: PragueAnalysisService,
+    service: DatasetAnalysisService,
     provider_config_store: ProviderConfigStore,
     env_provider_config: ProviderConfig | None,
+    dataset_registry: DatasetRegistryService,
+    dataset_state_store: DatasetStateStore,
 ) -> APIRouter:
-    router = APIRouter(prefix=API_PREFIX, tags=["prague-analysis"])
+    router = APIRouter(prefix=API_PREFIX, tags=["dataset-analysis"])
+
+    def current_analysis_path() -> str:
+        available = dataset_registry.list_datasets()
+        state = dataset_state_store.reconcile(
+            dataset_state_store.load(),
+            available_dataset_ids=[record.dataset_id for record in available],
+        )
+        if not state.current_dataset_id:
+            raise HTTPException(status_code=404, detail="No current dataset is mounted")
+        record = next((record for record in available if record.dataset_id == state.current_dataset_id), None)
+        if record is None:
+            raise HTTPException(status_code=404, detail="Current dataset not found")
+        return record.analysis_path
 
     def get_active_provider_config() -> ProviderConfig | None:
         file_config = provider_config_store.load()
@@ -38,11 +55,11 @@ def build_router(
 
     @router.get("/summary")
     def get_summary() -> dict:
-        return service.get_summary()
+        return service.get_summary(current_analysis_path())
 
     @router.post("/compare")
     def compare_deck(request: DeckCompareRequest) -> dict:
-        return service.compare_deck(archetype=request.archetype, deck_payload=request.deck)
+        return service.compare_deck(analysis_path=current_analysis_path(), archetype=request.archetype, deck_payload=request.deck)
 
     @router.post("/explain", response_model=ExplainResponse)
     def explain(request: ExplainRequest) -> ExplainResponse:
@@ -50,8 +67,8 @@ def build_router(
         provider = build_provider(provider_config)
         if provider is None:
             raise HTTPException(status_code=501, detail="LLM provider is not configured")
-        context = service.build_explain_context(archetype=request.archetype, deck_payload=request.deck)
-        system_prompt = "You are a PTCG deck analysis assistant focused on Prague 0062 meta interpretation."
+        context = service.build_explain_context(analysis_path=current_analysis_path(), archetype=request.archetype, deck_payload=request.deck)
+        system_prompt = "You are a PTCG deck analysis assistant focused on mounted tournament meta interpretation."
         user_prompt = json.dumps({"question": request.question, "context": context}, ensure_ascii=False)
         result = provider.generate(system_prompt=system_prompt, user_prompt=user_prompt)
         return ExplainResponse(provider=result["provider"], model=result["model"], answer=result["answer"], context=context)
@@ -94,7 +111,7 @@ def build_router(
   <h1>AI Provider 配置</h1>
   <div class="card">
     <p>配置文件路径：<code>{provider_config_store.config_path}</code></p>
-    <p>页面保存后，<code>POST /api/v1/analysis/prague/explain</code> 会优先使用这里的配置；没有文件配置时才 fallback 到 env。</p>
+    <p>页面保存后，<code>POST /api/v1/analysis/explain</code> 会优先使用这里的配置；没有文件配置时才 fallback 到 env。</p>
     {status_message}
     <form method="post" action="{CONFIG_PAGE_URL}">
       <label for="base_url">Custom base URL</label>
