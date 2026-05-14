@@ -53,6 +53,51 @@
     .error { color: #f85149; }
 
     /* Left: Meta Summary */
+    .selector-panel {
+      background: #161b22;
+      border: 1px solid #30363d;
+      border-radius: 6px;
+      padding: 12px;
+      margin-bottom: 12px;
+    }
+    .selector-panel h3 {
+      font-size: 13px;
+      color: #8b949e;
+      margin-bottom: 10px;
+    }
+    .selector-list {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+    .selector-item {
+      display: flex;
+      align-items: flex-start;
+      gap: 8px;
+      padding: 6px 0;
+    }
+    .selector-item label {
+      display: flex;
+      flex-direction: column;
+      gap: 2px;
+      cursor: pointer;
+      font-size: 12px;
+    }
+    .selector-item .dataset-name {
+      color: #c9d1d9;
+    }
+    .selector-item .dataset-meta {
+      color: #8b949e;
+      font-size: 11px;
+    }
+    .selector-empty,
+    .selector-status {
+      font-size: 12px;
+      color: #8b949e;
+    }
+    .selector-status.error {
+      color: #f85149;
+    }
     .archetype-card {
       background: #161b22;
       border: 1px solid #30363d;
@@ -223,10 +268,26 @@
   </header>
 
   <div class="container">
-    <!-- Left: Meta Summary -->
+    <!-- Dataset selector target:
+    1. Available datasets block with checkboxes
+    2. Mounted datasets block with radios
+    3. Selector status/error area
+    4. Current dataset meta summary below selector
+    -->
     <div class="column" id="meta-column">
-      <h2>📊 环境解读</h2>
-      <div id="meta-loading" class="loading">加载当前 dataset metagame 数据中...</div>
+      <h2>🗂️ Dataset Selector</h2>
+      <div class="selector-panel">
+        <h3>Available datasets</h3>
+        <div id="available-datasets" class="selector-list"></div>
+      </div>
+      <div class="selector-panel">
+        <h3>Mounted datasets</h3>
+        <div id="mounted-datasets" class="selector-list"></div>
+      </div>
+      <div id="selector-status" class="selector-status"></div>
+
+      <h2 style="margin-top:20px;">📊 Current Dataset Meta</h2>
+      <div id="meta-loading" class="loading">Loading current dataset summary...</div>
       <div id="meta-content" style="display:none;"></div>
     </div>
 
