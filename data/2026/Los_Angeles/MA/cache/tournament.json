@@ -1,0 +1,19 @@
+{
+  "ok": true,
+  "message": {
+    "rk9_id": "LS01wQe8A4VHbkNmRSRG",
+    "playlatam_id": null,
+    "type": "regional",
+    "city": "Los Angeles",
+    "name": null,
+    "date": "May 8–10, 2026",
+    "country": "US",
+    "updated_at": "2026-05-11 01:42:30",
+    "decklists": 1,
+    "round": 17,
+    "players": 1849,
+    "players_r1": 1835,
+    "started": 1,
+    "completed": 1
+  }
+}

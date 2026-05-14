@@ -1,0 +1,221 @@
+{
+  "ok": true,
+  "message": {
+    "pokemon": [
+      {
+        "count": 3,
+        "name": "N's Zorua",
+        "set": "ASC",
+        "number": "136"
+      },
+      {
+        "count": 3,
+        "name": "N's Zoroark ex",
+        "set": "ASC",
+        "number": "137"
+      },
+      {
+        "count": 2,
+        "name": "N's Darumaka",
+        "set": "ASC",
+        "number": "32"
+      },
+      {
+        "count": 2,
+        "name": "N's Darmanitan",
+        "set": "ASC",
+        "number": "33"
+      },
+      {
+        "count": 2,
+        "name": "N's Reshiram",
+        "set": "ASC",
+        "number": "154"
+      },
+      {
+        "count": 2,
+        "name": "N's Zekrom",
+        "set": "ASC",
+        "number": "155"
+      },
+      {
+        "count": 1,
+        "name": "N's Vanillite",
+        "set": "ASC",
+        "number": "49"
+      },
+      {
+        "count": 1,
+        "name": "N's Vanillish",
+        "set": "ASC",
+        "number": "50"
+      },
+      {
+        "count": 1,
+        "name": "N's Vanilluxe",
+        "set": "ASC",
+        "number": "51"
+      },
+      {
+        "count": 1,
+        "name": "N's Klink",
+        "set": "JTG",
+        "number": "103"
+      },
+      {
+        "count": 1,
+        "name": "N's Klang",
+        "set": "JTG",
+        "number": "104"
+      },
+      {
+        "count": 1,
+        "name": "N's Klinklang",
+        "set": "JTG",
+        "number": "105"
+      },
+      {
+        "count": 1,
+        "name": "Wellspring Mask Ogerpon ex",
+        "set": "TWM",
+        "number": "64"
+      },
+      {
+        "count": 1,
+        "name": "Fezandipiti ex",
+        "set": "ASC",
+        "number": "142"
+      }
+    ],
+    "trainer": [
+      {
+        "count": 2,
+        "name": "Boss's Orders",
+        "set": "MEG",
+        "number": "114"
+      },
+      {
+        "count": 2,
+        "name": "Ciphermaniac's Codebreaking",
+        "set": "TEF",
+        "number": "145"
+      },
+      {
+        "count": 2,
+        "name": "Dawn",
+        "set": "PFL",
+        "number": "87"
+      },
+      {
+        "count": 2,
+        "name": "Drayton",
+        "set": "SSP",
+        "number": "174"
+      },
+      {
+        "count": 2,
+        "name": "Hilda",
+        "set": "WHT",
+        "number": "84"
+      },
+      {
+        "count": 2,
+        "name": "Lillie's Determination",
+        "set": "MEG",
+        "number": "119"
+      },
+      {
+        "count": 1,
+        "name": "Anthea & Concordia",
+        "set": "ASC",
+        "number": "182"
+      },
+      {
+        "count": 1,
+        "name": "Cyrano",
+        "set": "SSP",
+        "number": "170"
+      },
+      {
+        "count": 1,
+        "name": "Judge",
+        "set": "POR",
+        "number": "76"
+      },
+      {
+        "count": 1,
+        "name": "N's Plan",
+        "set": "BLK",
+        "number": "83"
+      },
+      {
+        "count": 2,
+        "name": "Night Stretcher",
+        "set": "ASC",
+        "number": "196"
+      },
+      {
+        "count": 2,
+        "name": "N's PP Up",
+        "set": "ASC",
+        "number": "195"
+      },
+      {
+        "count": 2,
+        "name": "Poké Pad",
+        "set": "POR",
+        "number": "81"
+      },
+      {
+        "count": 1,
+        "name": "Buddy-Buddy Poffin",
+        "set": "ASC",
+        "number": "184"
+      },
+      {
+        "count": 1,
+        "name": "Energy Search",
+        "set": "POR",
+        "number": "72"
+      },
+      {
+        "count": 1,
+        "name": "Rare Candy",
+        "set": "MEG",
+        "number": "125"
+      },
+      {
+        "count": 1,
+        "name": "Secret Box",
+        "set": "TWM",
+        "number": "163"
+      },
+      {
+        "count": 1,
+        "name": "Ultra Ball",
+        "set": "MEG",
+        "number": "131"
+      },
+      {
+        "count": 2,
+        "name": "N's Castle",
+        "set": "JTG",
+        "number": "152"
+      },
+      {
+        "count": 1,
+        "name": "Area Zero Underdepths",
+        "set": "SCR",
+        "number": "131"
+      }
+    ],
+    "energy": [
+      {
+        "count": 8,
+        "name": "Darkness Energy",
+        "set": "MEE",
+        "number": "7"
+      }
+    ]
+  }
+}

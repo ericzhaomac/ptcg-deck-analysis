@@ -1,0 +1,173 @@
+{
+  "ok": true,
+  "message": {
+    "pokemon": [
+      {
+        "count": 4,
+        "name": "N's Zorua",
+        "set": "ASC",
+        "number": "136"
+      },
+      {
+        "count": 4,
+        "name": "N's Zoroark ex",
+        "set": "ASC",
+        "number": "137"
+      },
+      {
+        "count": 2,
+        "name": "Munkidori",
+        "set": "ASC",
+        "number": "99"
+      },
+      {
+        "count": 1,
+        "name": "Bouffalant",
+        "set": "SCR",
+        "number": "119"
+      },
+      {
+        "count": 1,
+        "name": "Bouffalant",
+        "set": "SSP",
+        "number": "151"
+      },
+      {
+        "count": 1,
+        "name": "Buneary",
+        "set": "PFL",
+        "number": "83"
+      },
+      {
+        "count": 1,
+        "name": "Mega Lopunny ex",
+        "set": "PFL",
+        "number": "84"
+      },
+      {
+        "count": 1,
+        "name": "N's Reshiram",
+        "set": "ASC",
+        "number": "154"
+      },
+      {
+        "count": 1,
+        "name": "Dedenne",
+        "set": "SSP",
+        "number": "87"
+      },
+      {
+        "count": 1,
+        "name": "N's Zekrom",
+        "set": "ASC",
+        "number": "155"
+      },
+      {
+        "count": 1,
+        "name": "Tatsugiri",
+        "set": "TWM",
+        "number": "131"
+      },
+      {
+        "count": 1,
+        "name": "Fezandipiti ex",
+        "set": "ASC",
+        "number": "142"
+      }
+    ],
+    "trainer": [
+      {
+        "count": 4,
+        "name": "Lillie's Determination",
+        "set": "MEG",
+        "number": "119"
+      },
+      {
+        "count": 4,
+        "name": "Boss's Orders",
+        "set": "MEG",
+        "number": "114"
+      },
+      {
+        "count": 2,
+        "name": "Xerosic's Machinations",
+        "set": "SFA",
+        "number": "64"
+      },
+      {
+        "count": 2,
+        "name": "Cyrano",
+        "set": "SSP",
+        "number": "170"
+      },
+      {
+        "count": 4,
+        "name": "Buddy-Buddy Poffin",
+        "set": "ASC",
+        "number": "184"
+      },
+      {
+        "count": 3,
+        "name": "Crushing Hammer",
+        "set": "POR",
+        "number": "71"
+      },
+      {
+        "count": 3,
+        "name": "Poké Pad",
+        "set": "POR",
+        "number": "81"
+      },
+      {
+        "count": 3,
+        "name": "Night Stretcher",
+        "set": "ASC",
+        "number": "196"
+      },
+      {
+        "count": 2,
+        "name": "N's PP Up",
+        "set": "ASC",
+        "number": "195"
+      },
+      {
+        "count": 1,
+        "name": "Scoop Up Cyclone",
+        "set": "TWM",
+        "number": "162"
+      },
+      {
+        "count": 1,
+        "name": "Ultra Ball",
+        "set": "MEG",
+        "number": "131"
+      },
+      {
+        "count": 1,
+        "name": "Enhanced Hammer",
+        "set": "TWM",
+        "number": "148"
+      },
+      {
+        "count": 2,
+        "name": "Air Balloon",
+        "set": "ASC",
+        "number": "181"
+      },
+      {
+        "count": 2,
+        "name": "Lumiose City",
+        "set": "POR",
+        "number": "77"
+      }
+    ],
+    "energy": [
+      {
+        "count": 7,
+        "name": "Darkness Energy",
+        "set": "MEE",
+        "number": "7"
+      }
+    ]
+  }
+}

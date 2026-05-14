@@ -1,0 +1,155 @@
+{
+  "ok": true,
+  "message": {
+    "pokemon": [
+      {
+        "count": 4,
+        "name": "Duraludon",
+        "set": "SCR",
+        "number": "106"
+      },
+      {
+        "count": 3,
+        "name": "Archaludon ex",
+        "set": "SSP",
+        "number": "130"
+      },
+      {
+        "count": 2,
+        "name": "Munkidori",
+        "set": "ASC",
+        "number": "99"
+      },
+      {
+        "count": 1,
+        "name": "Fezandipiti ex",
+        "set": "ASC",
+        "number": "142"
+      },
+      {
+        "count": 1,
+        "name": "Meowth ex",
+        "set": "POR",
+        "number": "62"
+      },
+      {
+        "count": 1,
+        "name": "Mega Mawile ex",
+        "set": "MEG",
+        "number": "94"
+      },
+      {
+        "count": 1,
+        "name": "Genesect",
+        "set": "SFA",
+        "number": "40"
+      },
+      {
+        "count": 1,
+        "name": "Relicanth",
+        "set": "TEF",
+        "number": "84"
+      }
+    ],
+    "trainer": [
+      {
+        "count": 4,
+        "name": "Boss's Orders",
+        "set": "MEG",
+        "number": "114"
+      },
+      {
+        "count": 4,
+        "name": "Lillie's Determination",
+        "set": "MEG",
+        "number": "119"
+      },
+      {
+        "count": 3,
+        "name": "Carmine",
+        "set": "TWM",
+        "number": "145"
+      },
+      {
+        "count": 1,
+        "name": "Black Belt's Training",
+        "set": "JTG",
+        "number": "143"
+      },
+      {
+        "count": 1,
+        "name": "Xerosic's Machinations",
+        "set": "SFA",
+        "number": "64"
+      },
+      {
+        "count": 1,
+        "name": "Team Rocket's Petrel",
+        "set": "ASC",
+        "number": "207"
+      },
+      {
+        "count": 4,
+        "name": "Night Stretcher",
+        "set": "ASC",
+        "number": "196"
+      },
+      {
+        "count": 4,
+        "name": "Ultra Ball",
+        "set": "MEG",
+        "number": "131"
+      },
+      {
+        "count": 4,
+        "name": "Poké Pad",
+        "set": "POR",
+        "number": "81"
+      },
+      {
+        "count": 3,
+        "name": "Energy Search",
+        "set": "POR",
+        "number": "72"
+      },
+      {
+        "count": 2,
+        "name": "Pokégear 3.0",
+        "set": "SVI",
+        "number": "186"
+      },
+      {
+        "count": 2,
+        "name": "Air Balloon",
+        "set": "ASC",
+        "number": "181"
+      },
+      {
+        "count": 1,
+        "name": "Hero's Cape",
+        "set": "TEF",
+        "number": "152"
+      },
+      {
+        "count": 1,
+        "name": "Team Rocket's Watchtower",
+        "set": "ASC",
+        "number": "210"
+      }
+    ],
+    "energy": [
+      {
+        "count": 9,
+        "name": "Metal Energy",
+        "set": "MEE",
+        "number": "8"
+      },
+      {
+        "count": 2,
+        "name": "Darkness Energy",
+        "set": "MEE",
+        "number": "7"
+      }
+    ]
+  }
+}

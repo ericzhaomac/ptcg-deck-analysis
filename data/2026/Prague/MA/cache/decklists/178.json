@@ -1,0 +1,161 @@
+{
+  "ok": true,
+  "message": {
+    "pokemon": [
+      {
+        "count": 4,
+        "name": "Dunsparce",
+        "set": "JTG",
+        "number": "120"
+      },
+      {
+        "count": 3,
+        "name": "Dudunsparce",
+        "set": "TEF",
+        "number": "129"
+      },
+      {
+        "count": 1,
+        "name": "Dudunsparce ex",
+        "set": "JTG",
+        "number": "121"
+      },
+      {
+        "count": 3,
+        "name": "Rowlet",
+        "set": "POR",
+        "number": "10"
+      },
+      {
+        "count": 3,
+        "name": "Dartrix",
+        "set": "POR",
+        "number": "11"
+      },
+      {
+        "count": 2,
+        "name": "Decidueye ex",
+        "set": "POR",
+        "number": "12"
+      },
+      {
+        "count": 2,
+        "name": "Scatterbug",
+        "set": "SSP",
+        "number": "5"
+      },
+      {
+        "count": 1,
+        "name": "Spewpa",
+        "set": "SSP",
+        "number": "6"
+      },
+      {
+        "count": 1,
+        "name": "Spewpa",
+        "set": "POR",
+        "number": "8"
+      },
+      {
+        "count": 2,
+        "name": "Vivillon",
+        "set": "POR",
+        "number": "9"
+      },
+      {
+        "count": 2,
+        "name": "Fan Rotom",
+        "set": "ASC",
+        "number": "171"
+      },
+      {
+        "count": 1,
+        "name": "Fezandipiti ex",
+        "set": "ASC",
+        "number": "142"
+      },
+      {
+        "count": 1,
+        "name": "Budew",
+        "set": "ASC",
+        "number": "16"
+      },
+      {
+        "count": 1,
+        "name": "Relicanth",
+        "set": "TEF",
+        "number": "84"
+      }
+    ],
+    "trainer": [
+      {
+        "count": 4,
+        "name": "Judge",
+        "set": "POR",
+        "number": "76"
+      },
+      {
+        "count": 2,
+        "name": "Boss's Orders",
+        "set": "MEG",
+        "number": "114"
+      },
+      {
+        "count": 2,
+        "name": "Dawn",
+        "set": "PFL",
+        "number": "87"
+      },
+      {
+        "count": 4,
+        "name": "Bug Catching Set",
+        "set": "TWM",
+        "number": "143"
+      },
+      {
+        "count": 4,
+        "name": "Poké Pad",
+        "set": "POR",
+        "number": "81"
+      },
+      {
+        "count": 3,
+        "name": "Ultra Ball",
+        "set": "MEG",
+        "number": "131"
+      },
+      {
+        "count": 3,
+        "name": "Buddy-Buddy Poffin",
+        "set": "ASC",
+        "number": "184"
+      },
+      {
+        "count": 2,
+        "name": "Night Stretcher",
+        "set": "ASC",
+        "number": "196"
+      },
+      {
+        "count": 1,
+        "name": "Prime Catcher",
+        "set": "TEF",
+        "number": "157"
+      },
+      {
+        "count": 3,
+        "name": "Forest of Vitality",
+        "set": "MEG",
+        "number": "117"
+      }
+    ],
+    "energy": [
+      {
+        "count": 5,
+        "name": "Grass Energy",
+        "set": "MEE",
+        "number": "1"
+      }
+    ]
+  }
+}

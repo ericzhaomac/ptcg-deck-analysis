@@ -1,0 +1,19 @@
+{
+  "ok": true,
+  "message": {
+    "rk9_id": "PR01w1kJAMjLB09Ftxyj",
+    "playlatam_id": null,
+    "type": "regional",
+    "city": "Prague",
+    "name": null,
+    "date": "April 25–26, 2026",
+    "country": "CZ",
+    "updated_at": "2026-04-26 17:53:25",
+    "decklists": 1,
+    "round": 17,
+    "players": 1370,
+    "players_r1": 1362,
+    "started": 1,
+    "completed": 1
+  }
+}

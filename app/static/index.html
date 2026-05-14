@@ -1,0 +1,508 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>PTCG Deck Analysis - Prague 0062</title>
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Arial, sans-serif;
+      background: #0d1117;
+      color: #c9d1d9;
+      height: 100vh;
+      display: flex;
+      flex-direction: column;
+    }
+    header {
+      background: #161b22;
+      border-bottom: 1px solid #30363d;
+      padding: 12px 20px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    header h1 { font-size: 18px; color: #58a6ff; }
+    header nav a {
+      color: #8b949e;
+      text-decoration: none;
+      margin-left: 20px;
+      font-size: 14px;
+    }
+    header nav a:hover { color: #58a6ff; }
+    .container {
+      display: flex;
+      flex: 1;
+      overflow: hidden;
+    }
+    .column {
+      flex: 1;
+      padding: 16px;
+      overflow-y: auto;
+      border-right: 1px solid #30363d;
+    }
+    .column:last-child { border-right: none; }
+    .column h2 {
+      font-size: 16px;
+      color: #58a6ff;
+      margin-bottom: 12px;
+      padding-bottom: 8px;
+      border-bottom: 1px solid #30363d;
+    }
+    .loading { color: #8b949e; font-style: italic; }
+    .error { color: #f85149; }
+
+    /* Left: Meta Summary */
+    .archetype-card {
+      background: #161b22;
+      border: 1px solid #30363d;
+      border-radius: 6px;
+      padding: 12px;
+      margin-bottom: 10px;
+    }
+    .archetype-card h3 {
+      font-size: 14px;
+      color: #c9d1d9;
+      margin-bottom: 6px;
+    }
+    .archetype-card .stats {
+      font-size: 12px;
+      color: #8b949e;
+      line-height: 1.6;
+    }
+    .archetype-card .core-cards {
+      font-size: 11px;
+      color: #7ee787;
+      margin-top: 6px;
+    }
+
+    /* Center: Deck Import */
+    .deck-input {
+      width: 100%;
+      height: 300px;
+      background: #161b22;
+      border: 1px solid #30363d;
+      border-radius: 6px;
+      padding: 12px;
+      color: #c9d1d9;
+      font-family: "SF Mono", Monaco, monospace;
+      font-size: 12px;
+      resize: vertical;
+      margin-bottom: 10px;
+    }
+    .btn {
+      background: #238636;
+      color: #fff;
+      border: none;
+      padding: 8px 16px;
+      border-radius: 6px;
+      cursor: pointer;
+      font-size: 13px;
+      margin-right: 8px;
+    }
+    .btn:hover { background: #2ea043; }
+    .btn-secondary {
+      background: #1f6feb;
+    }
+    .btn-secondary:hover { background: #388bfd; }
+    .deck-preview {
+      background: #161b22;
+      border: 1px solid #30363d;
+      border-radius: 6px;
+      padding: 12px;
+      margin-top: 12px;
+      font-size: 12px;
+    }
+    .deck-preview h4 {
+      color: #58a6ff;
+      margin-bottom: 8px;
+    }
+    .deck-section {
+      margin-bottom: 8px;
+    }
+    .deck-section-title {
+      color: #8b949e;
+      font-weight: 600;
+      margin-bottom: 4px;
+    }
+    .deck-card {
+      display: inline-block;
+      background: #21262d;
+      padding: 2px 8px;
+      border-radius: 3px;
+      margin: 2px;
+      font-size: 11px;
+    }
+    .deck-card .count { color: #7ee787; font-weight: 600; }
+
+    /* Right: AI Chat */
+    .chat-container {
+      display: flex;
+      flex-direction: column;
+      height: calc(100% - 40px);
+    }
+    .chat-messages {
+      flex: 1;
+      overflow-y: auto;
+      background: #161b22;
+      border: 1px solid #30363d;
+      border-radius: 6px;
+      padding: 12px;
+      margin-bottom: 10px;
+    }
+    .chat-message {
+      margin-bottom: 12px;
+      padding: 8px 12px;
+      border-radius: 6px;
+      max-width: 90%;
+    }
+    .chat-message.user {
+      background: #1f6feb;
+      margin-left: auto;
+      color: #fff;
+    }
+    .chat-message.ai {
+      background: #21262d;
+      border: 1px solid #30363d;
+    }
+    .chat-message.ai .content {
+      white-space: pre-wrap;
+      line-height: 1.5;
+      font-size: 13px;
+    }
+    .chat-input-area {
+      display: flex;
+      gap: 8px;
+    }
+    .chat-input {
+      flex: 1;
+      background: #161b22;
+      border: 1px solid #30363d;
+      border-radius: 6px;
+      padding: 8px 12px;
+      color: #c9d1d9;
+      font-size: 13px;
+    }
+    .chat-status {
+      font-size: 12px;
+      color: #8b949e;
+      margin-top: 6px;
+      min-height: 18px;
+    }
+
+    /* Comparison result */
+    .compare-result {
+      background: #161b22;
+      border: 1px solid #30363d;
+      border-radius: 6px;
+      padding: 12px;
+      margin-top: 12px;
+      font-size: 12px;
+    }
+    .compare-result h4 {
+      color: #f0883e;
+      margin-bottom: 8px;
+    }
+    .missing-core { color: #f85149; }
+    .missing-common { color: #f0883e; }
+    .tech-deviation { color: #d2a8ff; }
+
+    @media (max-width: 900px) {
+      .container { flex-direction: column; }
+      .column { border-right: none; border-bottom: 1px solid #30363d; }
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>🎴 PTCG Deck Analysis - Prague 0062</h1>
+    <nav>
+      <a href="/api/v1/analysis/prague/provider/config">⚙️ AI Provider 配置</a>
+      <a href="/api/v1/analysis/prague/provider">🔍 当前配置</a>
+    </nav>
+  </header>
+
+  <div class="container">
+    <!-- Left: Meta Summary -->
+    <div class="column" id="meta-column">
+      <h2>📊 环境解读</h2>
+      <div id="meta-loading" class="loading">加载 Prague metagame 数据中...</div>
+      <div id="meta-content" style="display:none;"></div>
+    </div>
+
+    <!-- Center: Deck Import -->
+    <div class="column" id="deck-column">
+      <h2>📝 卡组导入</h2>
+      <textarea id="deck-input" class="deck-input" placeholder="在此粘贴卡组列表...
+
+格式示例：
+Pokémon: 22
+4 Dreepy TWM 128
+4 Drakloak TWM 129
+3 Dragapult ex TWM 130
+
+Trainer: 31
+4 Buddy-Buddy Poffin TEF 144
+4 Poké Pad POR 81
+
+Energy: 7
+3 Psychic Energy MEE 5
+3 Fire Energy MEE 2
+1 Darkness Energy MEE 7"></textarea>
+      <div>
+        <button class="btn" onclick="parseDeck()">📋 解析卡组</button>
+        <button class="btn btn-secondary" onclick="compareWithMeta()">🔍 对比环境</button>
+        <select id="archetype-select" style="background:#161b22;border:1px solid #30363d;color:#c9d1d9;padding:6px;border-radius:4px;margin-left:8px;">
+          <option value="">选择 archetype</option>
+        </select>
+      </div>
+      <div id="deck-preview"></div>
+      <div id="compare-result"></div>
+    </div>
+
+    <!-- Right: AI Chat -->
+    <div class="column" id="chat-column">
+      <h2>💬 AI 构筑讨论</h2>
+      <div class="chat-container">
+        <div class="chat-messages" id="chat-messages">
+          <div class="chat-message ai">
+            <div class="content">你好！我可以帮你分析 Prague 0062 环境下的卡组构筑。请先导入你的卡组，然后向我提问。</div>
+          </div>
+        </div>
+        <div class="chat-input-area">
+          <input type="text" id="chat-input" class="chat-input" placeholder="问 AI 关于构筑的问题..." onkeypress="if(event.key==='Enter') sendMessage()">
+          <button class="btn" onclick="sendMessage()">发送</button>
+        </div>
+        <div class="chat-status" id="chat-status"></div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    let parsedDeck = null;
+    let archetypes = [];
+
+    // Load meta summary on startup
+    async function loadMeta() {
+      try {
+        const res = await fetch('/api/v1/analysis/prague/summary');
+        const data = await res.json();
+        archetypes = data.archetypes || [];
+        renderMeta(data);
+        populateArchetypeSelect(archetypes);
+      } catch (e) {
+        document.getElementById('meta-loading').textContent = '加载失败: ' + e.message;
+        document.getElementById('meta-loading').className = 'error';
+      }
+    }
+
+    function renderMeta(data) {
+      document.getElementById('meta-loading').style.display = 'none';
+      const container = document.getElementById('meta-content');
+      container.style.display = 'block';
+
+      const field = data.field || {};
+      let html = `<div style="font-size:12px;color:#8b949e;margin-bottom:12px;">
+        比赛: Prague 0062 | 总人数: ${field.total_players || '-'} | 主流 archetype: ${field.qualified_archetype_count || '-'} 个
+      </div>`;
+
+      (data.archetypes || []).slice(0, 8).forEach((a, i) => {
+        const meta = a.meta || {};
+        const perf = a.performance || {};
+        const core = (a.card_summary || {});
+        const coreCards = [];
+        ['pokemon', 'trainer', 'energy'].forEach(sec => {
+          (core[sec] || []).filter(c => c.bucket === 'core').slice(0, 3).forEach(c => {
+            coreCards.push(`${c.name}×${c.avg_when_present.toFixed(1)}`);
+          });
+        });
+
+        html += `<div class="archetype-card">
+          <h3>${i + 1}. ${a.archetype_name}</h3>
+          <div class="stats">
+            人数: ${meta.players || 0} | 占比: ${(meta.share * 100).toFixed(1)}% | Day2 转化: ${(meta.day2_conversion * 100).toFixed(1)}%<br>
+            胜率: ${(perf.win_rate * 100).toFixed(1)}% | Top8/Top16: ${perf.top8_count || 0}/${perf.top16_count || 0}
+          </div>
+          <div class="core-cards">核心: ${coreCards.join('、')}</div>
+        </div>`;
+      });
+
+      container.innerHTML = html;
+    }
+
+    function populateArchetypeSelect(archetypes) {
+      const select = document.getElementById('archetype-select');
+      select.innerHTML = '<option value="">选择 archetype</option>';
+      archetypes.forEach(a => {
+        const option = document.createElement('option');
+        option.value = a.archetype_id;
+        option.textContent = a.archetype_name;
+        select.appendChild(option);
+      });
+    }
+
+    function parseDeck() {
+      const text = document.getElementById('deck-input').value.trim();
+      if (!text) return;
+
+      parsedDeck = { pokemon: [], trainer: [], energy: [] };
+      let currentSection = null;
+
+      text.split('\n').forEach(line => {
+        line = line.trim();
+        if (!line) return;
+
+        if (line.toLowerCase().startsWith('pokemon:') || line.toLowerCase().startsWith('pokémon:')) { currentSection = 'pokemon'; return; }
+        if (line.toLowerCase().startsWith('trainer:')) { currentSection = 'trainer'; return; }
+        if (line.toLowerCase().startsWith('energy:')) { currentSection = 'energy'; return; }
+
+        const match = line.match(/^(\d+)\s+(.+)$/);
+        if (match && currentSection) {
+          parsedDeck[currentSection].push({
+            name: match[2].trim(),
+            count: parseInt(match[1])
+          });
+        }
+      });
+
+      renderDeckPreview();
+      addChatMessage('ai', '卡组已导入！你可以问我关于这套牌的问题，或者点击"对比环境"查看与 Prague 主流构筑的差异。');
+    }
+
+    function renderDeckPreview() {
+      if (!parsedDeck) return;
+      let html = '<div class="deck-preview"><h4>📋 已解析卡组</h4>';
+      ['pokemon', 'trainer', 'energy'].forEach(sec => {
+        const items = parsedDeck[sec];
+        if (!items.length) return;
+        html += `<div class="deck-section">
+          <div class="deck-section-title">${sec === 'pokemon' ? '宝可梦' : sec === 'trainer' ? '训练家' : '能量'}</div>`;
+        items.forEach(item => {
+          html += `<span class="deck-card"><span class="count">${item.count}</span> ${item.name}</span>`;
+        });
+        html += '</div>';
+      });
+      html += '</div>';
+      document.getElementById('deck-preview').innerHTML = html;
+    }
+
+    async function compareWithMeta() {
+      if (!parsedDeck) {
+        alert('请先导入卡组');
+        return;
+      }
+      const archetype = document.getElementById('archetype-select').value;
+      if (!archetype) {
+        alert('请选择一个 archetype');
+        return;
+      }
+
+      document.getElementById('compare-result').innerHTML = '<div class="loading">分析中...</div>';
+
+      try {
+        const res = await fetch('/api/v1/analysis/prague/compare', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ archetype, deck: parsedDeck })
+        });
+        const data = await res.json();
+        renderCompareResult(data);
+      } catch (e) {
+        document.getElementById('compare-result').innerHTML = `<div class="error">对比失败: ${e.message}</div>`;
+      }
+    }
+
+    function renderCompareResult(data) {
+      const summary = data.summary || {};
+      let html = `<div class="compare-result">
+        <h4>🔍 与 ${data.archetype?.name || '环境'} 对比</h4>
+        <div style="margin-bottom:8px;font-size:12px;color:#8b949e;">
+          缺失核心: ${summary.missing_core_count || 0} | 常见偏差: ${summary.missing_common_count || 0} | Tech 偏离: ${summary.tech_deviation_count || 0}
+        </div>`;
+
+      if (data.missing_core?.length) {
+        html += '<div style="margin-top:8px;"><strong style="color:#f85149;">缺失核心:</strong></div>';
+        data.missing_core.forEach(c => {
+          html += `<div class="missing-core">• ${c.name} (${c.section_label}) - ${c.note}</div>`;
+        });
+      }
+
+      if (data.missing_common?.length) {
+        html += '<div style="margin-top:8px;"><strong style="color:#f0883e;">缺失常见卡:</strong></div>';
+        data.missing_common.forEach(c => {
+          html += `<div class="missing-common">• ${c.name} (${c.section_label}) - ${c.note}</div>`;
+        });
+      }
+
+      if (data.tech_deviations?.length) {
+        html += '<div style="margin-top:8px;"><strong style="color:#d2a8ff;">Tech 偏离:</strong></div>';
+        data.tech_deviations.forEach(c => {
+          html += `<div class="tech-deviation">• ${c.name} (${c.section_label}) - ${c.note}</div>`;
+        });
+      }
+
+      html += '</div>';
+      document.getElementById('compare-result').innerHTML = html;
+    }
+
+    async function sendMessage() {
+      const input = document.getElementById('chat-input');
+      const message = input.value.trim();
+      if (!message) return;
+
+      if (!parsedDeck) {
+        addChatMessage('ai', '请先导入你的卡组，我才能针对构筑进行讨论。');
+        return;
+      }
+
+      addChatMessage('user', message);
+      input.value = '';
+      document.getElementById('chat-status').textContent = 'AI 思考中...';
+
+      try {
+        const archetype = document.getElementById('archetype-select').value || 'dragapult-ex';
+        const res = await fetch('/api/v1/analysis/prague/explain', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            archetype,
+            deck: parsedDeck,
+            question: message
+          })
+        });
+
+        if (res.status === 501) {
+          addChatMessage('ai', '⚠️ AI Provider 未配置。请先前往 [AI Provider 配置页](/api/v1/analysis/prague/provider/config) 设置你的 API Key。');
+          document.getElementById('chat-status').textContent = '';
+          return;
+        }
+
+        const data = await res.json();
+        addChatMessage('ai', data.answer || 'AI 没有返回有效回答');
+        document.getElementById('chat-status').textContent = `模型: ${data.model || 'unknown'}`;
+      } catch (e) {
+        addChatMessage('ai', '请求出错: ' + e.message);
+        document.getElementById('chat-status').textContent = '';
+      }
+    }
+
+    function addChatMessage(role, content) {
+      const container = document.getElementById('chat-messages');
+      const div = document.createElement('div');
+      div.className = `chat-message ${role}`;
+      div.innerHTML = `<div class="content">${escapeHtml(content)}</div>`;
+      container.appendChild(div);
+      container.scrollTop = container.scrollHeight;
+    }
+
+    function escapeHtml(text) {
+      const div = document.createElement('div');
+      div.textContent = text;
+      return div.innerHTML;
+    }
+
+    // Init
+    loadMeta();
+  </script>
+</body>
+</html>

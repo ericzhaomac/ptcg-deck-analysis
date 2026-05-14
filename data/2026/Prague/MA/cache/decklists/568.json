@@ -1,0 +1,149 @@
+{
+  "ok": true,
+  "message": {
+    "pokemon": [
+      {
+        "count": 4,
+        "name": "Teal Mask Ogerpon ex",
+        "set": "TWM",
+        "number": "25"
+      },
+      {
+        "count": 2,
+        "name": "Smoliv",
+        "set": "DRI",
+        "number": "21"
+      },
+      {
+        "count": 2,
+        "name": "Dolliv",
+        "set": "DRI",
+        "number": "22"
+      },
+      {
+        "count": 1,
+        "name": "Arboliva ex",
+        "set": "DRI",
+        "number": "23"
+      },
+      {
+        "count": 2,
+        "name": "Chikorita",
+        "set": "MEG",
+        "number": "8"
+      },
+      {
+        "count": 2,
+        "name": "Bayleef",
+        "set": "MEG",
+        "number": "9"
+      },
+      {
+        "count": 2,
+        "name": "Meganium",
+        "set": "MEG",
+        "number": "10"
+      },
+      {
+        "count": 2,
+        "name": "Hoothoot",
+        "set": "SCR",
+        "number": "114"
+      },
+      {
+        "count": 2,
+        "name": "Noctowl",
+        "set": "SCR",
+        "number": "115"
+      },
+      {
+        "count": 1,
+        "name": "Meowth ex",
+        "set": "POR",
+        "number": "62"
+      },
+      {
+        "count": 1,
+        "name": "Fezandipiti ex",
+        "set": "ASC",
+        "number": "142"
+      }
+    ],
+    "trainer": [
+      {
+        "count": 4,
+        "name": "Lillie's Determination",
+        "set": "MEG",
+        "number": "119"
+      },
+      {
+        "count": 2,
+        "name": "Boss's Orders",
+        "set": "MEG",
+        "number": "114"
+      },
+      {
+        "count": 2,
+        "name": "Judge",
+        "set": "POR",
+        "number": "76"
+      },
+      {
+        "count": 2,
+        "name": "Dawn",
+        "set": "PFL",
+        "number": "87"
+      },
+      {
+        "count": 4,
+        "name": "Ultra Ball",
+        "set": "MEG",
+        "number": "131"
+      },
+      {
+        "count": 3,
+        "name": "Bug Catching Set",
+        "set": "TWM",
+        "number": "143"
+      },
+      {
+        "count": 2,
+        "name": "Energy Switch",
+        "set": "MEG",
+        "number": "115"
+      },
+      {
+        "count": 2,
+        "name": "Night Stretcher",
+        "set": "ASC",
+        "number": "196"
+      },
+      {
+        "count": 2,
+        "name": "Poké Pad",
+        "set": "POR",
+        "number": "81"
+      },
+      {
+        "count": 1,
+        "name": "Scoop Up Cyclone",
+        "set": "TWM",
+        "number": "162"
+      },
+      {
+        "count": 3,
+        "name": "Forest of Vitality",
+        "set": "MEG",
+        "number": "117"
+      }
+    ],
+    "energy": [
+      {
+        "count": 12,
+        "name": "Grass Energy",
+        "set": "MEE",
+        "number": "1"
+      }
+    ]
+  }
+}

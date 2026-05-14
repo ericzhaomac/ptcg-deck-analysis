@@ -1,0 +1,15 @@
+services:
+  deck-analysis-service:
+    build:
+      context: ../../
+      dockerfile: services/deck_analysis_service/Dockerfile
+    ports:
+      - "8010:8010"
+    environment:
+      PRAGUE_ANALYSIS_REPORT_PATH: tmp/limitless_reports/limitless_0062_MA_analysis.json
+      PROVIDER_CONFIG_PATH: /data/config/provider.json
+      OPENAI_COMPATIBLE_BASE_URL: https://api.kimi.com/coding/
+      OPENAI_COMPATIBLE_API_KEY: ${OPENAI_COMPATIBLE_API_KEY:-}
+      OPENAI_COMPATIBLE_MODEL: kimi-code
+    volumes:
+      - ./data:/data

@@ -1,0 +1,149 @@
+{
+  "ok": true,
+  "message": {
+    "pokemon": [
+      {
+        "count": 3,
+        "name": "Carvanha",
+        "set": "PFL",
+        "number": "60"
+      },
+      {
+        "count": 3,
+        "name": "Mega Sharpedo ex",
+        "set": "PFL",
+        "number": "61"
+      },
+      {
+        "count": 2,
+        "name": "Toxel",
+        "set": "PFL",
+        "number": "67"
+      },
+      {
+        "count": 2,
+        "name": "Toxtricity",
+        "set": "PFL",
+        "number": "68"
+      },
+      {
+        "count": 2,
+        "name": "Munkidori",
+        "set": "ASC",
+        "number": "99"
+      },
+      {
+        "count": 2,
+        "name": "Tatsugiri",
+        "set": "TWM",
+        "number": "131"
+      },
+      {
+        "count": 2,
+        "name": "Pecharunt ex",
+        "set": "SFA",
+        "number": "39"
+      },
+      {
+        "count": 1,
+        "name": "Buneary",
+        "set": "PFL",
+        "number": "83"
+      },
+      {
+        "count": 1,
+        "name": "Mega Lopunny ex",
+        "set": "PFL",
+        "number": "84"
+      },
+      {
+        "count": 1,
+        "name": "Fezandipiti ex",
+        "set": "ASC",
+        "number": "142"
+      },
+      {
+        "count": 1,
+        "name": "Yveltal",
+        "set": "MEG",
+        "number": "88"
+      },
+      {
+        "count": 1,
+        "name": "Psyduck",
+        "set": "ASC",
+        "number": "39"
+      }
+    ],
+    "trainer": [
+      {
+        "count": 4,
+        "name": "Boss's Orders",
+        "set": "MEG",
+        "number": "114"
+      },
+      {
+        "count": 4,
+        "name": "Lillie's Determination",
+        "set": "MEG",
+        "number": "119"
+      },
+      {
+        "count": 4,
+        "name": "Judge",
+        "set": "POR",
+        "number": "76"
+      },
+      {
+        "count": 4,
+        "name": "Buddy-Buddy Poffin",
+        "set": "ASC",
+        "number": "184"
+      },
+      {
+        "count": 4,
+        "name": "Ultra Ball",
+        "set": "MEG",
+        "number": "131"
+      },
+      {
+        "count": 4,
+        "name": "Poké Pad",
+        "set": "POR",
+        "number": "81"
+      },
+      {
+        "count": 2,
+        "name": "Night Stretcher",
+        "set": "ASC",
+        "number": "196"
+      },
+      {
+        "count": 2,
+        "name": "Binding Mochi",
+        "set": "PRE",
+        "number": "95"
+      },
+      {
+        "count": 1,
+        "name": "Hero's Cape",
+        "set": "TEF",
+        "number": "152"
+      },
+      {
+        "count": 2,
+        "name": "Gravity Mountain",
+        "set": "SSP",
+        "number": "177"
+      }
+    ],
+    "energy": [
+      {
+        "count": 8,
+        "name": "Darkness Energy",
+        "set": "MEE",
+        "number": "7"
+      }
+    ]
+  }
+}

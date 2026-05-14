@@ -1,0 +1,6 @@
+{
+  "base_url": "https://api.minimaxi.com/v1/chat/completions",
+  "api_key": "sk-cp-1TvtPlYnjNotCAscO2wD5g37ll2z28tYDtf1jzHVYgui8Y89PcPZJ5uLdCL60uwPaSdOd5gcKFzN7DrpgnzvfjuyAMQkGBGVQLWvVbhCKTHZtf6eIV4smkY",
+  "model": "MiniMax-M2.7-highspeed",
+  "source": "file"
+}

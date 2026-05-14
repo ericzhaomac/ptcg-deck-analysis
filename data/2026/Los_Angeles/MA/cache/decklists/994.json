@@ -1,0 +1,149 @@
+{
+  "ok": true,
+  "message": {
+    "pokemon": [
+      {
+        "count": 4,
+        "name": "Team Rocket's Tarountula",
+        "set": "ASC",
+        "number": "18"
+      },
+      {
+        "count": 4,
+        "name": "Team Rocket's Spidops",
+        "set": "ASC",
+        "number": "19"
+      },
+      {
+        "count": 2,
+        "name": "Team Rocket's Mewtwo ex",
+        "set": "ASC",
+        "number": "79"
+      },
+      {
+        "count": 2,
+        "name": "Team Rocket's Articuno",
+        "set": "DRI",
+        "number": "51"
+      },
+      {
+        "count": 2,
+        "name": "Team Rocket's Mimikyu",
+        "set": "ASC",
+        "number": "97"
+      },
+      {
+        "count": 1,
+        "name": "Lillie's Clefairy ex",
+        "set": "ASC",
+        "number": "76"
+      }
+    ],
+    "trainer": [
+      {
+        "count": 3,
+        "name": "Team Rocket's Ariana",
+        "set": "ASC",
+        "number": "202"
+      },
+      {
+        "count": 3,
+        "name": "Lillie's Determination",
+        "set": "MEG",
+        "number": "119"
+      },
+      {
+        "count": 2,
+        "name": "Team Rocket's Archer",
+        "set": "ASC",
+        "number": "201"
+      },
+      {
+        "count": 2,
+        "name": "Team Rocket's Giovanni",
+        "set": "ASC",
+        "number": "204"
+      },
+      {
+        "count": 1,
+        "name": "Team Rocket's Proton",
+        "set": "ASC",
+        "number": "208"
+      },
+      {
+        "count": 4,
+        "name": "Team Rocket's Transceiver",
+        "set": "ASC",
+        "number": "209"
+      },
+      {
+        "count": 4,
+        "name": "Buddy-Buddy Poffin",
+        "set": "ASC",
+        "number": "184"
+      },
+      {
+        "count": 4,
+        "name": "Ultra Ball",
+        "set": "MEG",
+        "number": "131"
+      },
+      {
+        "count": 2,
+        "name": "Night Stretcher",
+        "set": "ASC",
+        "number": "196"
+      },
+      {
+        "count": 2,
+        "name": "Pokégear 3.0",
+        "set": "SVI",
+        "number": "186"
+      },
+      {
+        "count": 2,
+        "name": "Energy Search",
+        "set": "POR",
+        "number": "72"
+      },
+      {
+        "count": 1,
+        "name": "Tool Scrapper",
+        "set": "ASC",
+        "number": "212"
+      },
+      {
+        "count": 1,
+        "name": "Energy Switch",
+        "set": "MEG",
+        "number": "115"
+      },
+      {
+        "count": 1,
+        "name": "Maximum Belt",
+        "set": "TEF",
+        "number": "154"
+      },
+      {
+        "count": 3,
+        "name": "Team Rocket's Watchtower",
+        "set": "ASC",
+        "number": "210"
+      }
+    ],
+    "energy": [
+      {
+        "count": 6,
+        "name": "Grass Energy",
+        "set": "MEE",
+        "number": "1"
+      },
+      {
+        "count": 4,
+        "name": "Team Rocket's Energy",
+        "set": "ASC",
+        "number": "217"
+      }
+    ]
+  }
+}

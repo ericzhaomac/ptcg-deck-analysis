@@ -1,0 +1,143 @@
+{
+  "ok": true,
+  "message": {
+    "pokemon": [
+      {
+        "count": 3,
+        "name": "Dunsparce",
+        "set": "JTG",
+        "number": "120"
+      },
+      {
+        "count": 2,
+        "name": "Dudunsparce",
+        "set": "TEF",
+        "number": "129"
+      },
+      {
+        "count": 1,
+        "name": "Dudunsparce ex",
+        "set": "JTG",
+        "number": "121"
+      },
+      {
+        "count": 3,
+        "name": "Duskull",
+        "set": "PRE",
+        "number": "35"
+      },
+      {
+        "count": 2,
+        "name": "Dusclops",
+        "set": "PRE",
+        "number": "36"
+      },
+      {
+        "count": 2,
+        "name": "Dusknoir",
+        "set": "PRE",
+        "number": "37"
+      },
+      {
+        "count": 3,
+        "name": "Staryu",
+        "set": "POR",
+        "number": "20"
+      },
+      {
+        "count": 3,
+        "name": "Mega Starmie ex",
+        "set": "POR",
+        "number": "21"
+      }
+    ],
+    "trainer": [
+      {
+        "count": 4,
+        "name": "Carmine",
+        "set": "TWM",
+        "number": "145"
+      },
+      {
+        "count": 3,
+        "name": "Boss's Orders",
+        "set": "MEG",
+        "number": "114"
+      },
+      {
+        "count": 3,
+        "name": "Hilda",
+        "set": "WHT",
+        "number": "84"
+      },
+      {
+        "count": 2,
+        "name": "Dawn",
+        "set": "PFL",
+        "number": "87"
+      },
+      {
+        "count": 4,
+        "name": "Buddy-Buddy Poffin",
+        "set": "ASC",
+        "number": "184"
+      },
+      {
+        "count": 4,
+        "name": "Poké Pad",
+        "set": "POR",
+        "number": "81"
+      },
+      {
+        "count": 4,
+        "name": "Pokégear 3.0",
+        "set": "SVI",
+        "number": "186"
+      },
+      {
+        "count": 3,
+        "name": "Night Stretcher",
+        "set": "ASC",
+        "number": "196"
+      },
+      {
+        "count": 3,
+        "name": "Ultra Ball",
+        "set": "MEG",
+        "number": "131"
+      },
+      {
+        "count": 3,
+        "name": "Rare Candy",
+        "set": "MEG",
+        "number": "125"
+      },
+      {
+        "count": 1,
+        "name": "Jamming Tower",
+        "set": "TWM",
+        "number": "153"
+      }
+    ],
+    "energy": [
+      {
+        "count": 3,
+        "name": "Ignition Energy",
+        "set": "WHT",
+        "number": "86"
+      },
+      {
+        "count": 3,
+        "name": "Water Energy",
+        "set": "MEE",
+        "number": "3"
+      },
+      {
+        "count": 1,
+        "name": "Legacy Energy",
+        "set": "TWM",
+        "number": "167"
+      }
+    ]
+  }
+}

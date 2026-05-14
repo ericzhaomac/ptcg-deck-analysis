@@ -1,0 +1,155 @@
+{
+  "ok": true,
+  "message": {
+    "pokemon": [
+      {
+        "count": 2,
+        "name": "Hoothoot",
+        "set": "PRE",
+        "number": "77"
+      },
+      {
+        "count": 2,
+        "name": "Noctowl",
+        "set": "SCR",
+        "number": "115"
+      },
+      {
+        "count": 2,
+        "name": "Seel",
+        "set": "POR",
+        "number": "18"
+      },
+      {
+        "count": 2,
+        "name": "Dewgong",
+        "set": "POR",
+        "number": "19"
+      },
+      {
+        "count": 2,
+        "name": "Latias ex",
+        "set": "SSP",
+        "number": "76"
+      },
+      {
+        "count": 2,
+        "name": "Regice ex",
+        "set": "ASC",
+        "number": "48"
+      },
+      {
+        "count": 2,
+        "name": "Wellspring Mask Ogerpon ex",
+        "set": "TWM",
+        "number": "64"
+      },
+      {
+        "count": 2,
+        "name": "Mega Kangaskhan ex",
+        "set": "MEG",
+        "number": "104"
+      },
+      {
+        "count": 1,
+        "name": "Meowth ex",
+        "set": "POR",
+        "number": "62"
+      },
+      {
+        "count": 1,
+        "name": "Bloodmoon Ursaluna ex",
+        "set": "TWM",
+        "number": "141"
+      },
+      {
+        "count": 1,
+        "name": "Fezandipiti ex",
+        "set": "ASC",
+        "number": "142"
+      },
+      {
+        "count": 1,
+        "name": "Terapagos ex",
+        "set": "ASC",
+        "number": "179"
+      }
+    ],
+    "trainer": [
+      {
+        "count": 4,
+        "name": "Lillie's Determination",
+        "set": "MEG",
+        "number": "119"
+      },
+      {
+        "count": 3,
+        "name": "Boss's Orders",
+        "set": "MEG",
+        "number": "114"
+      },
+      {
+        "count": 2,
+        "name": "Morty's Conviction",
+        "set": "TEF",
+        "number": "155"
+      },
+      {
+        "count": 1,
+        "name": "Cyrano",
+        "set": "SSP",
+        "number": "170"
+      },
+      {
+        "count": 4,
+        "name": "Glass Trumpet",
+        "set": "ASC",
+        "number": "189"
+      },
+      {
+        "count": 4,
+        "name": "Ultra Ball",
+        "set": "MEG",
+        "number": "131"
+      },
+      {
+        "count": 4,
+        "name": "Poké Pad",
+        "set": "POR",
+        "number": "81"
+      },
+      {
+        "count": 2,
+        "name": "Night Stretcher",
+        "set": "ASC",
+        "number": "196"
+      },
+      {
+        "count": 1,
+        "name": "Brilliant Blender",
+        "set": "SSP",
+        "number": "164"
+      },
+      {
+        "count": 2,
+        "name": "Powerglass",
+        "set": "SFA",
+        "number": "63"
+      },
+      {
+        "count": 3,
+        "name": "Area Zero Underdepths",
+        "set": "SCR",
+        "number": "131"
+      }
+    ],
+    "energy": [
+      {
+        "count": 10,
+        "name": "Water Energy",
+        "set": "MEE",
+        "number": "3"
+      }
+    ]
+  }
+}
