@@ -340,17 +340,121 @@ Energy: 7
   </div>
 
   <script>
-    let parsedDeck = null;
-    let archetypes = [];
+    const state = {
+      datasets: [],
+      mountedDatasetIds: [],
+      currentDatasetId: null,
+      currentDatasetDisplayName: null,
+      currentSummary: null,
+      archetypes: [],
+      parsedDeck: null,
+    };
+
+    async function loadDatasets() {
+      const res = await fetch('/api/v1/datasets');
+      if (!res.ok) {
+        throw new Error(`Failed to load datasets: ${res.status}`);
+      }
+      const data = await res.json();
+      state.datasets = data.datasets || [];
+      state.mountedDatasetIds = data.mounted_dataset_ids || [];
+      state.currentDatasetId = data.current_dataset_id || null;
+      const current = state.datasets.find(d => d.dataset_id === state.currentDatasetId);
+      state.currentDatasetDisplayName = current ? current.display_name : null;
+      renderDatasetSelector();
+    }
+
+    function renderDatasetSelector() {
+      renderAvailableDatasets();
+      renderMountedDatasets();
+    }
+
+    function renderAvailableDatasets() {
+      const container = document.getElementById('available-datasets');
+      if (!state.datasets.length) {
+        container.innerHTML = '<div class="selector-empty">No available datasets found.</div>';
+        return;
+      }
+
+      container.innerHTML = '';
+      state.datasets.forEach(dataset => {
+        const item = document.createElement('div');
+        item.className = 'selector-item';
+
+        const checkbox = document.createElement('input');
+        checkbox.type = 'checkbox';
+        checkbox.value = dataset.dataset_id;
+        checkbox.checked = state.mountedDatasetIds.includes(dataset.dataset_id);
+
+        const label = document.createElement('label');
+        label.appendChild(datasetName(dataset));
+        label.appendChild(datasetMeta(dataset));
+
+        item.appendChild(checkbox);
+        item.appendChild(label);
+        container.appendChild(item);
+      });
+    }
+
+    function renderMountedDatasets() {
+      const container = document.getElementById('mounted-datasets');
+      const mounted = state.datasets.filter(dataset => state.mountedDatasetIds.includes(dataset.dataset_id));
+      if (!mounted.length) {
+        container.innerHTML = '<div class="selector-empty">No mounted datasets. Select available datasets to mount them.</div>';
+        return;
+      }
+
+      container.innerHTML = '';
+      mounted.forEach(dataset => {
+        const item = document.createElement('div');
+        item.className = 'selector-item';
+
+        const radio = document.createElement('input');
+        radio.type = 'radio';
+        radio.name = 'current-dataset';
+        radio.value = dataset.dataset_id;
+        radio.checked = dataset.dataset_id === state.currentDatasetId;
+
+        const label = document.createElement('label');
+        label.appendChild(datasetName(dataset));
+        label.appendChild(datasetMeta(dataset));
+
+        item.appendChild(radio);
+        item.appendChild(label);
+        container.appendChild(item);
+      });
+    }
+
+    function datasetName(dataset) {
+      const el = document.createElement('span');
+      el.className = 'dataset-name';
+      el.textContent = dataset.display_name || dataset.dataset_id;
+      return el;
+    }
+
+    function datasetMeta(dataset) {
+      const el = document.createElement('span');
+      el.className = 'dataset-meta';
+      const parts = [dataset.year, dataset.event_name, dataset.division, dataset.city, dataset.source_provider].filter(Boolean);
+      el.textContent = parts.join(' · ') || dataset.dataset_id;
+      return el;
+    }
+
+    function setSelectorStatus(message = '', isError = false) {
+      const el = document.getElementById('selector-status');
+      el.textContent = message;
+      el.className = isError ? 'selector-status error' : 'selector-status';
+    }
 
     // Load meta summary on startup
     async function loadMeta() {
       try {
         const res = await fetch('/api/v1/analysis/summary');
         const data = await res.json();
-        archetypes = data.archetypes || [];
+        state.currentSummary = data;
+        state.archetypes = data.archetypes || [];
         renderMeta(data);
-        populateArchetypeSelect(archetypes);
+        populateArchetypeSelect(state.archetypes);
       } catch (e) {
         document.getElementById('meta-loading').textContent = '加载失败: ' + e.message;
         document.getElementById('meta-loading').className = 'error';
@@ -406,7 +510,7 @@ Energy: 7
       const text = document.getElementById('deck-input').value.trim();
       if (!text) return;
 
-      parsedDeck = { pokemon: [], trainer: [], energy: [] };
+      state.parsedDeck = { pokemon: [], trainer: [], energy: [] };
       let currentSection = null;
 
       text.split('\n').forEach(line => {
@@ -419,7 +523,7 @@ Energy: 7
 
         const match = line.match(/^(\d+)\s+(.+)$/);
         if (match && currentSection) {
-          parsedDeck[currentSection].push({
+          state.parsedDeck[currentSection].push({
             name: match[2].trim(),
             count: parseInt(match[1])
           });
@@ -431,10 +535,10 @@ Energy: 7
     }
 
     function renderDeckPreview() {
-      if (!parsedDeck) return;
+      if (!state.parsedDeck) return;
       let html = '<div class="deck-preview"><h4>📋 已解析卡组</h4>';
       ['pokemon', 'trainer', 'energy'].forEach(sec => {
-        const items = parsedDeck[sec];
+        const items = state.parsedDeck[sec];
         if (!items.length) return;
         html += `<div class="deck-section">
           <div class="deck-section-title">${sec === 'pokemon' ? '宝可梦' : sec === 'trainer' ? '训练家' : '能量'}</div>`;
@@ -448,7 +552,7 @@ Energy: 7
     }
 
     async function compareWithMeta() {
-      if (!parsedDeck) {
+      if (!state.parsedDeck) {
         alert('请先导入卡组');
         return;
       }
@@ -464,7 +568,7 @@ Energy: 7
         const res = await fetch('/api/v1/analysis/compare', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ archetype, deck: parsedDeck })
+          body: JSON.stringify({ archetype, deck: state.parsedDeck })
         });
         const data = await res.json();
         renderCompareResult(data);
@@ -511,7 +615,7 @@ Energy: 7
       const message = input.value.trim();
       if (!message) return;
 
-      if (!parsedDeck) {
+      if (!state.parsedDeck) {
         addChatMessage('ai', '请先导入你的卡组，我才能针对构筑进行讨论。');
         return;
       }
@@ -527,7 +631,7 @@ Energy: 7
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({
             archetype,
-            deck: parsedDeck,
+            deck: state.parsedDeck,
             question: message
           })
         });
@@ -562,8 +666,16 @@ Energy: 7
       return div.innerHTML;
     }
 
+    async function initializePage() {
+      try {
+        await loadDatasets();
+      } catch (e) {
+        setSelectorStatus(e.message, true);
+      }
+    }
+
     // Init
-    loadMeta();
+    initializePage();
   </script>
 </body>
 </html>
