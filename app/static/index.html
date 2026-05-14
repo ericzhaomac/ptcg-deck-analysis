@@ -327,7 +327,7 @@ Energy: 7
       <div class="chat-container">
         <div class="chat-messages" id="chat-messages">
           <div class="chat-message ai">
-            <div class="content">你好！我可以帮你分析 当前 dataset 环境下的卡组构筑。请先导入你的卡组，然后向我提问。</div>
+            <div class="content">你好！我可以帮你分析 current dataset 环境下的卡组构筑。请先导入你的卡组，然后向我提问。</div>
           </div>
         </div>
         <div class="chat-input-area">
@@ -574,7 +574,7 @@ Energy: 7
 
       const field = data.field || {};
       let html = `<div style="font-size:12px;color:#8b949e;margin-bottom:12px;">
-        比赛: 当前 dataset | 总人数: ${field.total_players || '-'} | 主流 archetype: ${field.qualified_archetype_count || '-'} 个
+        Current dataset: ${escapeHtml(state.currentDatasetDisplayName || 'Unknown')} | 总人数: ${field.total_players || '-'} | 主流 archetype: ${field.qualified_archetype_count || '-'} 个
       </div>`;
 
       (data.archetypes || []).slice(0, 8).forEach((a, i) => {
@@ -637,7 +637,7 @@ Energy: 7
       });
 
       renderDeckPreview();
-      addChatMessage('ai', '卡组已导入！你可以问我关于这套牌的问题，或者点击"对比环境"查看与 当前 dataset 主流构筑的差异。');
+      addChatMessage('ai', '卡组已导入！你可以问我关于这套牌的问题，或者点击"对比环境"查看与 current dataset 主流构筑的差异。');
     }
 
     function renderDeckPreview() {
@@ -783,6 +783,7 @@ Energy: 7
     async function initializePage() {
       try {
         await loadDatasets();
+        refreshCurrentDatasetUi();
       } catch (e) {
         setSelectorStatus(e.message, true);
       }
