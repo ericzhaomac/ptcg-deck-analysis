@@ -23,8 +23,9 @@ from ..services.dataset_state_store import DatasetStateStore
 
 
 API_PREFIX = "/api/v1/analysis"
-CONFIG_PAGE_PATH = "/provider/config"
-CONFIG_PAGE_URL = f"{API_PREFIX}{CONFIG_PAGE_PATH}"
+PROVIDER_PREFIX = "/api/v1/provider"
+CONFIG_PAGE_PATH = "/config"
+CONFIG_PAGE_URL = f"{PROVIDER_PREFIX}{CONFIG_PAGE_PATH}"
 
 
 def build_router(
@@ -37,6 +38,7 @@ def build_router(
     router = APIRouter()
     analysis_router = APIRouter(prefix=API_PREFIX, tags=["dataset-analysis"])
     datasets_router = APIRouter(prefix="/api/v1/datasets", tags=["datasets"])
+    provider_router = APIRouter(prefix=PROVIDER_PREFIX, tags=["provider-config"])
 
     def available_records() -> list[DatasetRecord]:
         return dataset_registry.list_datasets()
@@ -149,7 +151,7 @@ def build_router(
         result = provider.generate(system_prompt=system_prompt, user_prompt=user_prompt)
         return ExplainResponse(provider=result["provider"], model=result["model"], answer=result["answer"], context=context)
 
-    @analysis_router.get("/provider", tags=["provider-config"])
+    @provider_router.get("")
     def get_provider_config() -> dict[str, object]:
         active_config = get_active_provider_config()
         file_config = provider_config_store.load()
@@ -159,7 +161,7 @@ def build_router(
             "env": env_provider_config.masked() if env_provider_config else None,
         }
 
-    @analysis_router.get(CONFIG_PAGE_PATH, include_in_schema=False, response_class=HTMLResponse, tags=["provider-config"])
+    @provider_router.get(CONFIG_PAGE_PATH, include_in_schema=False, response_class=HTMLResponse)
     def provider_page(saved: int = 0) -> str:
         file_config = provider_config_store.load()
         active_config = get_active_provider_config()
@@ -205,13 +207,13 @@ def build_router(
   <div class="card">
     <h2>当前生效配置</h2>
     {active_summary}
-    <p>JSON 查看接口：<code>/api/v1/analysis/prague/provider</code></p>
+    <p>JSON 查看接口：<code>/api/v1/provider</code></p>
   </div>
 </body>
 </html>
 """
 
-    @analysis_router.post(CONFIG_PAGE_PATH, include_in_schema=False, tags=["provider-config"])
+    @provider_router.post(CONFIG_PAGE_PATH, include_in_schema=False)
     def save_provider_config(
         base_url: str = Form(...),
         model: str = Form(...),
@@ -226,6 +228,7 @@ def build_router(
 
     router.include_router(analysis_router)
     router.include_router(datasets_router)
+    router.include_router(provider_router)
     return router
 
 

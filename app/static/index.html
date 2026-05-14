@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>PTCG Deck Analysis - Prague 0062</title>
+  <title>PTCG Deck Analysis</title>
   <style>
     * { box-sizing: border-box; margin: 0; padding: 0; }
     body {
@@ -215,10 +215,10 @@
 </head>
 <body>
   <header>
-    <h1>🎴 PTCG Deck Analysis - Prague 0062</h1>
+    <h1>🎴 PTCG Deck Analysis</h1>
     <nav>
-      <a href="/api/v1/analysis/prague/provider/config">⚙️ AI Provider 配置</a>
-      <a href="/api/v1/analysis/prague/provider">🔍 当前配置</a>
+      <a href="/api/v1/provider/config">⚙️ AI Provider 配置</a>
+      <a href="/api/v1/provider">🔍 当前配置</a>
     </nav>
   </header>
 
@@ -226,7 +226,7 @@
     <!-- Left: Meta Summary -->
     <div class="column" id="meta-column">
       <h2>📊 环境解读</h2>
-      <div id="meta-loading" class="loading">加载 Prague metagame 数据中...</div>
+      <div id="meta-loading" class="loading">加载当前 dataset metagame 数据中...</div>
       <div id="meta-content" style="display:none;"></div>
     </div>
 
@@ -266,7 +266,7 @@ Energy: 7
       <div class="chat-container">
         <div class="chat-messages" id="chat-messages">
           <div class="chat-message ai">
-            <div class="content">你好！我可以帮你分析 Prague 0062 环境下的卡组构筑。请先导入你的卡组，然后向我提问。</div>
+            <div class="content">你好！我可以帮你分析 当前 dataset 环境下的卡组构筑。请先导入你的卡组，然后向我提问。</div>
           </div>
         </div>
         <div class="chat-input-area">
@@ -285,7 +285,7 @@ Energy: 7
     // Load meta summary on startup
     async function loadMeta() {
       try {
-        const res = await fetch('/api/v1/analysis/prague/summary');
+        const res = await fetch('/api/v1/analysis/summary');
         const data = await res.json();
         archetypes = data.archetypes || [];
         renderMeta(data);
@@ -303,7 +303,7 @@ Energy: 7
 
       const field = data.field || {};
       let html = `<div style="font-size:12px;color:#8b949e;margin-bottom:12px;">
-        比赛: Prague 0062 | 总人数: ${field.total_players || '-'} | 主流 archetype: ${field.qualified_archetype_count || '-'} 个
+        比赛: 当前 dataset | 总人数: ${field.total_players || '-'} | 主流 archetype: ${field.qualified_archetype_count || '-'} 个
       </div>`;
 
       (data.archetypes || []).slice(0, 8).forEach((a, i) => {
@@ -366,7 +366,7 @@ Energy: 7
       });
 
       renderDeckPreview();
-      addChatMessage('ai', '卡组已导入！你可以问我关于这套牌的问题，或者点击"对比环境"查看与 Prague 主流构筑的差异。');
+      addChatMessage('ai', '卡组已导入！你可以问我关于这套牌的问题，或者点击"对比环境"查看与 当前 dataset 主流构筑的差异。');
     }
 
     function renderDeckPreview() {
@@ -400,7 +400,7 @@ Energy: 7
       document.getElementById('compare-result').innerHTML = '<div class="loading">分析中...</div>';
 
       try {
-        const res = await fetch('/api/v1/analysis/prague/compare', {
+        const res = await fetch('/api/v1/analysis/compare', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({ archetype, deck: parsedDeck })
@@ -461,7 +461,7 @@ Energy: 7
 
       try {
         const archetype = document.getElementById('archetype-select').value || 'dragapult-ex';
-        const res = await fetch('/api/v1/analysis/prague/explain', {
+        const res = await fetch('/api/v1/analysis/explain', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({
@@ -472,7 +472,7 @@ Energy: 7
         });
 
         if (res.status === 501) {
-          addChatMessage('ai', '⚠️ AI Provider 未配置。请先前往 [AI Provider 配置页](/api/v1/analysis/prague/provider/config) 设置你的 API Key。');
+          addChatMessage('ai', '⚠️ AI Provider 未配置。请先前往 [AI Provider 配置页](/api/v1/provider/config) 设置你的 API Key。');
           document.getElementById('chat-status').textContent = '';
           return;
         }

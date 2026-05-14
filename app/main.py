@@ -51,7 +51,7 @@ def create_app(
         if index_path.exists():
             from fastapi.responses import FileResponse
             return FileResponse(str(index_path))
-        return RedirectResponse(url="/api/v1/analysis/provider/config")
+        return RedirectResponse(url="/api/v1/provider/config")
 
     app.include_router(
         build_router(

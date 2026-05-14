@@ -94,3 +94,15 @@ def test_summary_without_current_or_dataset_id_returns_400(tmp_path):
     response = client.get("/api/v1/analysis/summary")
 
     assert response.status_code == 400
+
+
+def test_provider_page_redirect_still_works(tmp_path):
+    client = TestClient(create_app(data_root=tmp_path / "data", dataset_state_path=tmp_path / "data/config/dataset_state.json"))
+    response = client.get("/", follow_redirects=False)
+    assert response.status_code in {200, 307}
+
+
+def test_provider_config_endpoint_exists(tmp_path):
+    client = TestClient(create_app(data_root=tmp_path / "data", dataset_state_path=tmp_path / "data/config/dataset_state.json"))
+    response = client.get("/api/v1/provider/config")
+    assert response.status_code == 200
