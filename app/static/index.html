@@ -279,9 +279,13 @@
       <div class="selector-panel">
         <h3>Available datasets</h3>
         <div id="available-datasets" class="selector-list"></div>
+        <div style="margin-top:10px;">
+          <button class="btn" id="apply-mounts-btn" onclick="applyMounts()">Apply Mounts</button>
+          <span style="font-size:11px;color:#8b949e;margin-left:8px;">Check datasets to mount, then click Apply</span>
+        </div>
       </div>
-      <div class="selector-panel">
-        <h3>Mounted datasets</h3>
+      <div class="selector-panel" id="mounted-panel" style="display:none;">
+        <h3>Mounted datasets — select current</h3>
         <div id="mounted-datasets" class="selector-list"></div>
       </div>
       <div id="selector-status" class="selector-status"></div>
@@ -385,9 +389,8 @@ Energy: 7
         checkbox.type = 'checkbox';
         checkbox.value = dataset.dataset_id;
         checkbox.checked = state.mountedDatasetIds.includes(dataset.dataset_id);
-        checkbox.addEventListener('change', (e) => {
-          toggleDatasetMount(dataset.dataset_id, e.target.checked);
-        });
+        checkbox.dataset.datasetId = dataset.dataset_id;
+        checkbox.className = 'dataset-checkbox';
 
         const label = document.createElement('label');
         label.appendChild(datasetName(dataset));
@@ -401,12 +404,15 @@ Energy: 7
 
     function renderMountedDatasets() {
       const container = document.getElementById('mounted-datasets');
+      const panel = document.getElementById('mounted-panel');
       const mounted = state.datasets.filter(dataset => state.mountedDatasetIds.includes(dataset.dataset_id));
       if (!mounted.length) {
-        container.innerHTML = '<div class="selector-empty">No mounted datasets. Select available datasets to mount them.</div>';
+        panel.style.display = 'none';
+        container.innerHTML = '';
         return;
       }
 
+      panel.style.display = 'block';
       container.innerHTML = '';
       mounted.forEach(dataset => {
         const item = document.createElement('div');
@@ -454,6 +460,65 @@ Energy: 7
       el.className = isError ? 'selector-status error' : 'selector-status';
     }
 
+    async function applyMounts() {
+      const checkboxes = document.querySelectorAll('#available-datasets .dataset-checkbox');
+      const desired = Array.from(checkboxes).filter(cb => cb.checked).map(cb => cb.value);
+      const currentlyMounted = new Set(state.mountedDatasetIds);
+      const desiredSet = new Set(desired);
+
+      const toMount = desired.filter(id => !currentlyMounted.has(id));
+      const toUnmount = state.mountedDatasetIds.filter(id => !desiredSet.has(id));
+
+      if (!toMount.length && !toUnmount.length) {
+        setSelectorStatus('No changes to apply.');
+        return;
+      }
+
+      setSelectorStatus('Applying mounts...');
+      document.getElementById('apply-mounts-btn').disabled = true;
+
+      try {
+        for (const datasetId of toMount) {
+          const res = await fetch('/api/v1/datasets/mount', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ dataset_id: datasetId, mount: true })
+          });
+          if (!res.ok) {
+            const err = await res.json().catch(() => ({}));
+            throw new Error(`Mount ${datasetId} failed: ${err.detail || res.status}`);
+          }
+        }
+
+        for (const datasetId of toUnmount) {
+          const res = await fetch('/api/v1/datasets/mount', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ dataset_id: datasetId, mount: false })
+          });
+          if (!res.ok) {
+            const err = await res.json().catch(() => ({}));
+            throw new Error(`Unmount ${datasetId} failed: ${err.detail || res.status}`);
+          }
+        }
+
+        await loadDatasets();
+
+        if (desired.length === 1 && !state.currentDatasetId) {
+          await changeCurrentDataset(desired[0]);
+        } else if (desired.length > 0 && !state.currentDatasetId) {
+          setSelectorStatus('Datasets mounted. Select a current dataset below.');
+        } else {
+          setSelectorStatus('Mounts applied.');
+        }
+      } catch (e) {
+        setSelectorStatus(`Apply failed: ${e.message}`, true);
+        await loadDatasets();
+      } finally {
+        document.getElementById('apply-mounts-btn').disabled = false;
+      }
+    }
+
     async function toggleDatasetMount(datasetId, shouldMount) {
       setSelectorStatus(shouldMount ? 'Mounting dataset...' : 'Unmounting dataset...');
       try {
@@ -472,7 +537,6 @@ Energy: 7
         setSelectorStatus(shouldMount ? 'Dataset mounted.' : 'Dataset unmounted.');
       } catch (e) {
         setSelectorStatus(`Failed to ${shouldMount ? 'mount' : 'unmount'}: ${e.message}`, true);
-        // Revert checkbox state on failure
         renderDatasetSelector();
       }
     }

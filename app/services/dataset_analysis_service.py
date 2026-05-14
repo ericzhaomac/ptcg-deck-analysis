@@ -4,6 +4,8 @@ import json
 from pathlib import Path
 from typing import Any
 
+from .prague_phase15_tools import compare_user_deck
+
 
 class DatasetAnalysisService:
     def load_analysis(self, analysis_path: str | Path) -> dict[str, Any]:
@@ -23,12 +25,7 @@ class DatasetAnalysisService:
 
     def compare_deck(self, analysis_path: str | Path, archetype: str, deck_payload: dict[str, Any]) -> dict[str, Any]:
         analysis = self.load_analysis(analysis_path)
-        match = self._find_archetype(analysis, archetype)
-        return {
-            "archetype": match,
-            "deck": deck_payload,
-            "summary": {},
-        }
+        return compare_user_deck(analysis, archetype, deck_payload)
 
     def build_explain_context(
         self,
