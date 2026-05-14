@@ -29,6 +29,15 @@ class DatasetIdRequest(BaseModel):
     dataset_id: str
 
 
+class DatasetStateResponse(BaseModel):
+    mounted_dataset_ids: list[str]
+    current_dataset_id: str | None = None
+
+
+class DatasetListResponse(DatasetStateResponse):
+    datasets: list[DatasetRecord]
+
+
 class DeckCompareRequest(BaseModel):
     archetype: str = Field(..., description="Archetype name or id")
     deck: dict[str, list[dict[str, Any]]] = Field(..., description="Normalized deck payload")

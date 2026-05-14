@@ -7,6 +7,45 @@ from fastapi.testclient import TestClient
 from app.main import create_app
 
 
+def write_analysis(tmp_path, year="2026", event="Prague", division="MA"):
+    dataset_dir = tmp_path / "data" / year / event / division
+    dataset_dir.mkdir(parents=True)
+    (dataset_dir / "analysis.json").write_text(json.dumps({
+        "source": {"tournament_id": "0062", "division": division},
+        "tournament": {"name": f"{event} Special Event"},
+        "field": {},
+        "archetypes": []
+    }), encoding="utf-8")
+    return dataset_dir
+
+
+def test_datasets_endpoint_lists_available_and_state(tmp_path):
+    write_analysis(tmp_path)
+    state_path = tmp_path / "data" / "config" / "dataset_state.json"
+
+    client = TestClient(create_app(data_root=tmp_path / "data", dataset_state_path=state_path))
+
+    response = client.get("/api/v1/datasets")
+
+    assert response.status_code == 200
+    assert response.json()["datasets"][0]["dataset_id"] == "2026-prague-ma"
+    assert response.json()["mounted_dataset_ids"] == []
+    assert response.json()["current_dataset_id"] is None
+
+
+def test_mount_then_set_current(tmp_path):
+    write_analysis(tmp_path)
+    state_path = tmp_path / "data" / "config" / "dataset_state.json"
+    client = TestClient(create_app(data_root=tmp_path / "data", dataset_state_path=state_path))
+
+    mount_response = client.post("/api/v1/datasets/mount", json={"dataset_id": "2026-prague-ma"})
+    current_response = client.post("/api/v1/datasets/current", json={"dataset_id": "2026-prague-ma"})
+
+    assert mount_response.status_code == 200
+    assert current_response.status_code == 200
+    assert current_response.json()["current_dataset_id"] == "2026-prague-ma"
+
+
 def test_summary_uses_current_dataset_from_state(tmp_path):
     prague_dir = tmp_path / "data" / "2026" / "Prague" / "MA"
     prague_dir.mkdir(parents=True)

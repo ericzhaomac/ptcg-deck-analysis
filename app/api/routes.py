@@ -5,7 +5,16 @@ import json
 from fastapi import APIRouter, Form, HTTPException
 from fastapi.responses import HTMLResponse, RedirectResponse
 
-from ..models import DeckCompareRequest, ExplainRequest, ExplainResponse
+from ..models import (
+    DatasetIdRequest,
+    DatasetListResponse,
+    DatasetRecord,
+    DatasetState,
+    DatasetStateResponse,
+    DeckCompareRequest,
+    ExplainRequest,
+    ExplainResponse,
+)
 from ..provider_config import ProviderConfig, ProviderConfigStore
 from ..providers.openai_compatible import OpenAICompatibleProvider
 from ..services.dataset_analysis_service import DatasetAnalysisService
@@ -25,14 +34,39 @@ def build_router(
     dataset_registry: DatasetRegistryService,
     dataset_state_store: DatasetStateStore,
 ) -> APIRouter:
-    router = APIRouter(prefix=API_PREFIX, tags=["dataset-analysis"])
+    router = APIRouter()
+    analysis_router = APIRouter(prefix=API_PREFIX, tags=["dataset-analysis"])
+    datasets_router = APIRouter(prefix="/api/v1/datasets", tags=["datasets"])
+
+    def available_records() -> list[DatasetRecord]:
+        return dataset_registry.list_datasets()
+
+    def available_ids(records: list[DatasetRecord] | None = None) -> list[str]:
+        return [record.dataset_id for record in (records if records is not None else available_records())]
+
+    def reconciled_state(records: list[DatasetRecord] | None = None) -> DatasetState:
+        return dataset_state_store.reconcile(dataset_state_store.load(), available_dataset_ids=available_ids(records))
+
+    def dataset_list_response(records: list[DatasetRecord] | None = None, state: DatasetState | None = None) -> DatasetListResponse:
+        records = records if records is not None else available_records()
+        state = state if state is not None else reconciled_state(records)
+        return DatasetListResponse(
+            datasets=records,
+            mounted_dataset_ids=state.mounted_dataset_ids,
+            current_dataset_id=state.current_dataset_id,
+        )
+
+    def dataset_state_response(state: DatasetState) -> DatasetStateResponse:
+        return DatasetStateResponse(mounted_dataset_ids=state.mounted_dataset_ids, current_dataset_id=state.current_dataset_id)
+
+    def save_reconciled_state(state: DatasetState) -> DatasetState:
+        reconciled = dataset_state_store.reconcile(state, available_dataset_ids=available_ids())
+        dataset_state_store.save(reconciled)
+        return reconciled
 
     def current_analysis_path() -> str:
-        available = dataset_registry.list_datasets()
-        state = dataset_state_store.reconcile(
-            dataset_state_store.load(),
-            available_dataset_ids=[record.dataset_id for record in available],
-        )
+        available = available_records()
+        state = reconciled_state(available)
         if not state.current_dataset_id:
             raise HTTPException(status_code=404, detail="No current dataset is mounted")
         record = next((record for record in available if record.dataset_id == state.current_dataset_id), None)
@@ -53,15 +87,54 @@ def build_router(
             return None
         return OpenAICompatibleProvider(base_url=config.base_url, api_key=config.api_key, model=config.model)
 
-    @router.get("/summary")
+    @datasets_router.get("", response_model=DatasetListResponse)
+    def list_datasets() -> DatasetListResponse:
+        records = available_records()
+        state = reconciled_state(records)
+        return dataset_list_response(records, state)
+
+    @datasets_router.get("/mounted", response_model=DatasetStateResponse)
+    def list_mounted_datasets() -> DatasetStateResponse:
+        state = reconciled_state()
+        return dataset_state_response(state)
+
+    @datasets_router.post("/mount", response_model=DatasetStateResponse)
+    def mount_dataset(request: DatasetIdRequest) -> DatasetStateResponse:
+        if request.dataset_id not in available_ids():
+            raise HTTPException(status_code=404, detail="Dataset not found")
+        state = reconciled_state()
+        mounted = list(state.mounted_dataset_ids)
+        if request.dataset_id not in mounted:
+            mounted.append(request.dataset_id)
+        current = state.current_dataset_id or request.dataset_id
+        saved = save_reconciled_state(DatasetState(mounted_dataset_ids=mounted, current_dataset_id=current))
+        return dataset_state_response(saved)
+
+    @datasets_router.post("/unmount", response_model=DatasetStateResponse)
+    def unmount_dataset(request: DatasetIdRequest) -> DatasetStateResponse:
+        state = reconciled_state()
+        mounted = [dataset_id for dataset_id in state.mounted_dataset_ids if dataset_id != request.dataset_id]
+        current = state.current_dataset_id if state.current_dataset_id in mounted else (mounted[0] if mounted else None)
+        saved = save_reconciled_state(DatasetState(mounted_dataset_ids=mounted, current_dataset_id=current))
+        return dataset_state_response(saved)
+
+    @datasets_router.post("/current", response_model=DatasetStateResponse)
+    def set_current_dataset(request: DatasetIdRequest) -> DatasetStateResponse:
+        state = reconciled_state()
+        if request.dataset_id not in state.mounted_dataset_ids:
+            raise HTTPException(status_code=400, detail="Dataset must be mounted before it can be current")
+        saved = save_reconciled_state(DatasetState(mounted_dataset_ids=state.mounted_dataset_ids, current_dataset_id=request.dataset_id))
+        return dataset_state_response(saved)
+
+    @analysis_router.get("/summary")
     def get_summary() -> dict:
         return service.get_summary(current_analysis_path())
 
-    @router.post("/compare")
+    @analysis_router.post("/compare")
     def compare_deck(request: DeckCompareRequest) -> dict:
         return service.compare_deck(analysis_path=current_analysis_path(), archetype=request.archetype, deck_payload=request.deck)
 
-    @router.post("/explain", response_model=ExplainResponse)
+    @analysis_router.post("/explain", response_model=ExplainResponse)
     def explain(request: ExplainRequest) -> ExplainResponse:
         provider_config = get_active_provider_config()
         provider = build_provider(provider_config)
@@ -73,7 +146,7 @@ def build_router(
         result = provider.generate(system_prompt=system_prompt, user_prompt=user_prompt)
         return ExplainResponse(provider=result["provider"], model=result["model"], answer=result["answer"], context=context)
 
-    @router.get("/provider", tags=["provider-config"])
+    @analysis_router.get("/provider", tags=["provider-config"])
     def get_provider_config() -> dict[str, object]:
         active_config = get_active_provider_config()
         file_config = provider_config_store.load()
@@ -83,7 +156,7 @@ def build_router(
             "env": env_provider_config.masked() if env_provider_config else None,
         }
 
-    @router.get(CONFIG_PAGE_PATH, include_in_schema=False, response_class=HTMLResponse, tags=["provider-config"])
+    @analysis_router.get(CONFIG_PAGE_PATH, include_in_schema=False, response_class=HTMLResponse, tags=["provider-config"])
     def provider_page(saved: int = 0) -> str:
         file_config = provider_config_store.load()
         active_config = get_active_provider_config()
@@ -135,7 +208,7 @@ def build_router(
 </html>
 """
 
-    @router.post(CONFIG_PAGE_PATH, include_in_schema=False, tags=["provider-config"])
+    @analysis_router.post(CONFIG_PAGE_PATH, include_in_schema=False, tags=["provider-config"])
     def save_provider_config(
         base_url: str = Form(...),
         model: str = Form(...),
@@ -148,6 +221,8 @@ def build_router(
         provider_config_store.save(base_url=base_url, api_key=final_api_key, model=model)
         return RedirectResponse(url=f"{CONFIG_PAGE_URL}?saved=1", status_code=303)
 
+    router.include_router(analysis_router)
+    router.include_router(datasets_router)
     return router
 
 
