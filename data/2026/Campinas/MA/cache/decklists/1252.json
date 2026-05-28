@@ -1,0 +1,149 @@
+{
+  "ok": true,
+  "message": {
+    "pokemon": [
+      {
+        "count": 4,
+        "name": "Honedge",
+        "set": "POR",
+        "number": "56"
+      },
+      {
+        "count": 4,
+        "name": "Doublade",
+        "set": "POR",
+        "number": "57"
+      },
+      {
+        "count": 4,
+        "name": "Aegislash",
+        "set": "POR",
+        "number": "58"
+      },
+      {
+        "count": 3,
+        "name": "Dunsparce",
+        "set": "TEF",
+        "number": "128"
+      },
+      {
+        "count": 3,
+        "name": "Dudunsparce",
+        "set": "TEF",
+        "number": "129"
+      },
+      {
+        "count": 2,
+        "name": "Genesect ex",
+        "set": "BLK",
+        "number": "67"
+      },
+      {
+        "count": 2,
+        "name": "Shaymin",
+        "set": "DRI",
+        "number": "10"
+      },
+      {
+        "count": 1,
+        "name": "Genesect",
+        "set": "SFA",
+        "number": "40"
+      },
+      {
+        "count": 1,
+        "name": "Fezandipiti ex",
+        "set": "ASC",
+        "number": "142"
+      }
+    ],
+    "trainer": [
+      {
+        "count": 3,
+        "name": "Boss's Orders",
+        "set": "MEG",
+        "number": "114"
+      },
+      {
+        "count": 3,
+        "name": "Hilda",
+        "set": "WHT",
+        "number": "84"
+      },
+      {
+        "count": 2,
+        "name": "Brock's Scouting",
+        "set": "JTG",
+        "number": "146"
+      },
+      {
+        "count": 2,
+        "name": "Dawn",
+        "set": "PFL",
+        "number": "87"
+      },
+      {
+        "count": 1,
+        "name": "Lana's Aid",
+        "set": "TWM",
+        "number": "155"
+      },
+      {
+        "count": 4,
+        "name": "Buddy-Buddy Poffin",
+        "set": "ASC",
+        "number": "184"
+      },
+      {
+        "count": 3,
+        "name": "Poké Pad",
+        "set": "POR",
+        "number": "81"
+      },
+      {
+        "count": 2,
+        "name": "Night Stretcher",
+        "set": "ASC",
+        "number": "196"
+      },
+      {
+        "count": 1,
+        "name": "Sacred Ash",
+        "set": "DRI",
+        "number": "168"
+      },
+      {
+        "count": 2,
+        "name": "Air Balloon",
+        "set": "ASC",
+        "number": "181"
+      },
+      {
+        "count": 4,
+        "name": "Battle Cage",
+        "set": "PFL",
+        "number": "85"
+      },
+      {
+        "count": 1,
+        "name": "Neutralization Zone",
+        "set": "SFA",
+        "number": "60"
+      }
+    ],
+    "energy": [
+      {
+        "count": 4,
+        "name": "Mist Energy",
+        "set": "TEF",
+        "number": "161"
+      },
+      {
+        "count": 4,
+        "name": "Ignition Energy",
+        "set": "WHT",
+        "number": "86"
+      }
+    ]
+  }
+}

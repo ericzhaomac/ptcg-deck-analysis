@@ -3,7 +3,7 @@
     "provider": "Limitless Labs",
     "tournament_id": "0062",
     "division": "MA",
-    "cache_dir": "/Users/ttest/Documents/github/PtcgDeckAgent/tmp/limitless_cache"
+    "cache_dir": "/Users/ttest/Documents/projects/ptcg-deck-analysis/data/2026/Prague/MA/cache"
   },
   "tournament": {
     "rk9_id": "PR01w1kJAMjLB09Ftxyj",

@@ -1,0 +1,19 @@
+{
+  "ok": true,
+  "message": {
+    "rk9_id": "MB01wmlUs2CVS0PCE3d9",
+    "playlatam_id": null,
+    "type": "regional",
+    "city": "Melbourne",
+    "name": null,
+    "date": "May 23–24, 2026",
+    "country": "AU",
+    "updated_at": "2026-05-24 08:45:17",
+    "decklists": 1,
+    "round": 16,
+    "players": 959,
+    "players_r1": 956,
+    "started": 1,
+    "completed": 1
+  }
+}

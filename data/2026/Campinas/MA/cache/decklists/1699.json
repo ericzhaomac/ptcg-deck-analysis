@@ -1,0 +1,149 @@
+{
+  "ok": true,
+  "message": {
+    "pokemon": [
+      {
+        "count": 3,
+        "name": "Buneary",
+        "set": "PFL",
+        "number": "83"
+      },
+      {
+        "count": 1,
+        "name": "Buneary",
+        "set": "MEG",
+        "number": "107"
+      },
+      {
+        "count": 3,
+        "name": "Mega Lopunny ex",
+        "set": "PFL",
+        "number": "84"
+      },
+      {
+        "count": 3,
+        "name": "Dunsparce",
+        "set": "JTG",
+        "number": "120"
+      },
+      {
+        "count": 1,
+        "name": "Dunsparce",
+        "set": "TEF",
+        "number": "128"
+      },
+      {
+        "count": 3,
+        "name": "Dudunsparce",
+        "set": "TEF",
+        "number": "129"
+      },
+      {
+        "count": 1,
+        "name": "Dudunsparce ex",
+        "set": "JTG",
+        "number": "121"
+      },
+      {
+        "count": 1,
+        "name": "Psyduck",
+        "set": "ASC",
+        "number": "39"
+      },
+      {
+        "count": 1,
+        "name": "Fan Rotom",
+        "set": "ASC",
+        "number": "171"
+      }
+    ],
+    "trainer": [
+      {
+        "count": 4,
+        "name": "Lillie's Determination",
+        "set": "MEG",
+        "number": "119"
+      },
+      {
+        "count": 4,
+        "name": "Wally's Compassion",
+        "set": "MEG",
+        "number": "132"
+      },
+      {
+        "count": 3,
+        "name": "Boss's Orders",
+        "set": "MEG",
+        "number": "114"
+      },
+      {
+        "count": 3,
+        "name": "Hilda",
+        "set": "WHT",
+        "number": "84"
+      },
+      {
+        "count": 1,
+        "name": "Kieran",
+        "set": "TWM",
+        "number": "154"
+      },
+      {
+        "count": 4,
+        "name": "Poké Pad",
+        "set": "POR",
+        "number": "81"
+      },
+      {
+        "count": 4,
+        "name": "Ultra Ball",
+        "set": "MEG",
+        "number": "131"
+      },
+      {
+        "count": 4,
+        "name": "Pokégear 3.0",
+        "set": "SVI",
+        "number": "186"
+      },
+      {
+        "count": 3,
+        "name": "Buddy-Buddy Poffin",
+        "set": "ASC",
+        "number": "184"
+      },
+      {
+        "count": 1,
+        "name": "Air Balloon",
+        "set": "ASC",
+        "number": "181"
+      },
+      {
+        "count": 1,
+        "name": "Hero's Cape",
+        "set": "TEF",
+        "number": "152"
+      },
+      {
+        "count": 3,
+        "name": "Battle Cage",
+        "set": "PFL",
+        "number": "85"
+      }
+    ],
+    "energy": [
+      {
+        "count": 4,
+        "name": "Mist Energy",
+        "set": "TEF",
+        "number": "161"
+      },
+      {
+        "count": 4,
+        "name": "Spiky Energy",
+        "set": "JTG",
+        "number": "159"
+      }
+    ]
+  }
+}

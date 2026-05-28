@@ -1,0 +1,161 @@
+{
+  "ok": true,
+  "message": {
+    "pokemon": [
+      {
+        "count": 4,
+        "name": "Beldum",
+        "set": "TEF",
+        "number": "113"
+      },
+      {
+        "count": 4,
+        "name": "Metang",
+        "set": "TEF",
+        "number": "114"
+      },
+      {
+        "count": 1,
+        "name": "Metagross",
+        "set": "TEF",
+        "number": "115"
+      },
+      {
+        "count": 2,
+        "name": "Genesect ex",
+        "set": "BLK",
+        "number": "67"
+      },
+      {
+        "count": 1,
+        "name": "Psyduck",
+        "set": "ASC",
+        "number": "39"
+      },
+      {
+        "count": 1,
+        "name": "Heatran",
+        "set": "TWM",
+        "number": "123"
+      },
+      {
+        "count": 1,
+        "name": "Mega Skarmory ex",
+        "set": "POR",
+        "number": "55"
+      },
+      {
+        "count": 1,
+        "name": "Regigigas",
+        "set": "PRE",
+        "number": "86"
+      },
+      {
+        "count": 1,
+        "name": "Orthworm ex",
+        "set": "SCR",
+        "number": "110"
+      },
+      {
+        "count": 1,
+        "name": "Dialga",
+        "set": "MEG",
+        "number": "95"
+      },
+      {
+        "count": 1,
+        "name": "Shaymin",
+        "set": "DRI",
+        "number": "10"
+      }
+    ],
+    "trainer": [
+      {
+        "count": 4,
+        "name": "Team Rocket's Petrel",
+        "set": "ASC",
+        "number": "207"
+      },
+      {
+        "count": 3,
+        "name": "Hassel",
+        "set": "TWM",
+        "number": "151"
+      },
+      {
+        "count": 1,
+        "name": "Boss's Orders",
+        "set": "MEG",
+        "number": "114"
+      },
+      {
+        "count": 4,
+        "name": "Team Rocket's Transceiver",
+        "set": "ASC",
+        "number": "209"
+      },
+      {
+        "count": 3,
+        "name": "Poké Pad",
+        "set": "POR",
+        "number": "81"
+      },
+      {
+        "count": 3,
+        "name": "Energy Recycler",
+        "set": "DRI",
+        "number": "164"
+      },
+      {
+        "count": 2,
+        "name": "Night Stretcher",
+        "set": "ASC",
+        "number": "196"
+      },
+      {
+        "count": 1,
+        "name": "Buddy-Buddy Poffin",
+        "set": "ASC",
+        "number": "184"
+      },
+      {
+        "count": 1,
+        "name": "Switch",
+        "set": "MEG",
+        "number": "130"
+      },
+      {
+        "count": 1,
+        "name": "Ultra Ball",
+        "set": "MEG",
+        "number": "131"
+      },
+      {
+        "count": 1,
+        "name": "Precious Trolley",
+        "set": "SSP",
+        "number": "185"
+      },
+      {
+        "count": 1,
+        "name": "Jamming Tower",
+        "set": "TWM",
+        "number": "153"
+      },
+      {
+        "count": 1,
+        "name": "Battle Cage",
+        "set": "PFL",
+        "number": "85"
+      }
+    ],
+    "energy": [
+      {
+        "count": 16,
+        "name": "Metal Energy",
+        "set": "MEE",
+        "number": "8"
+      }
+    ]
+  }
+}

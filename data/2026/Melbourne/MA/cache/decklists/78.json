@@ -1,0 +1,185 @@
+{
+  "ok": true,
+  "message": {
+    "pokemon": [
+      {
+        "count": 4,
+        "name": "Slowpoke",
+        "set": "SCR",
+        "number": "57"
+      },
+      {
+        "count": 3,
+        "name": "Slowking",
+        "set": "SCR",
+        "number": "58"
+      },
+      {
+        "count": 2,
+        "name": "Latias ex",
+        "set": "SSP",
+        "number": "76"
+      },
+      {
+        "count": 2,
+        "name": "Mega Kangaskhan ex",
+        "set": "MEG",
+        "number": "104"
+      },
+      {
+        "count": 2,
+        "name": "Kyurem",
+        "set": "SFA",
+        "number": "47"
+      },
+      {
+        "count": 1,
+        "name": "Yungoos",
+        "set": "MEG",
+        "number": "109"
+      },
+      {
+        "count": 1,
+        "name": "Gumshoos",
+        "set": "MEG",
+        "number": "110"
+      },
+      {
+        "count": 1,
+        "name": "Lillie's Clefairy ex",
+        "set": "ASC",
+        "number": "76"
+      },
+      {
+        "count": 1,
+        "name": "Shaymin",
+        "set": "DRI",
+        "number": "10"
+      },
+      {
+        "count": 1,
+        "name": "Annihilape",
+        "set": "SSP",
+        "number": "100"
+      },
+      {
+        "count": 1,
+        "name": "Conkeldurr",
+        "set": "TWM",
+        "number": "105"
+      },
+      {
+        "count": 1,
+        "name": "Haxorus",
+        "set": "BLK",
+        "number": "70"
+      }
+    ],
+    "trainer": [
+      {
+        "count": 3,
+        "name": "Hilda",
+        "set": "WHT",
+        "number": "84"
+      },
+      {
+        "count": 2,
+        "name": "Ciphermaniac's Codebreaking",
+        "set": "TEF",
+        "number": "145"
+      },
+      {
+        "count": 2,
+        "name": "Lillie's Determination",
+        "set": "MEG",
+        "number": "119"
+      },
+      {
+        "count": 2,
+        "name": "Boss's Orders",
+        "set": "MEG",
+        "number": "114"
+      },
+      {
+        "count": 1,
+        "name": "Colress's Tenacity",
+        "set": "SFA",
+        "number": "57"
+      },
+      {
+        "count": 1,
+        "name": "Judge",
+        "set": "POR",
+        "number": "76"
+      },
+      {
+        "count": 3,
+        "name": "Wondrous Patch",
+        "set": "PFL",
+        "number": "94"
+      },
+      {
+        "count": 3,
+        "name": "Poké Pad",
+        "set": "POR",
+        "number": "81"
+      },
+      {
+        "count": 3,
+        "name": "Ultra Ball",
+        "set": "MEG",
+        "number": "131"
+      },
+      {
+        "count": 2,
+        "name": "Switch",
+        "set": "MEG",
+        "number": "130"
+      },
+      {
+        "count": 2,
+        "name": "Night Stretcher",
+        "set": "ASC",
+        "number": "196"
+      },
+      {
+        "count": 1,
+        "name": "Prime Catcher",
+        "set": "TEF",
+        "number": "157"
+      },
+      {
+        "count": 1,
+        "name": "Enhanced Hammer",
+        "set": "TWM",
+        "number": "148"
+      },
+      {
+        "count": 1,
+        "name": "Pokégear 3.0",
+        "set": "SVI",
+        "number": "186"
+      },
+      {
+        "count": 4,
+        "name": "Academy at Night",
+        "set": "SFA",
+        "number": "54"
+      }
+    ],
+    "energy": [
+      {
+        "count": 5,
+        "name": "Psychic Energy",
+        "set": "MEE",
+        "number": "5"
+      },
+      {
+        "count": 4,
+        "name": "Telepathic Psychic Energy",
+        "set": "POR",
+        "number": "88"
+      }
+    ]
+  }
+}

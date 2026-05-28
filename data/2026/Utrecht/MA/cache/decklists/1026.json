@@ -1,0 +1,167 @@
+{
+  "ok": true,
+  "message": {
+    "pokemon": [
+      {
+        "count": 4,
+        "name": "Teal Mask Ogerpon ex",
+        "set": "TWM",
+        "number": "25"
+      },
+      {
+        "count": 2,
+        "name": "Chikorita",
+        "set": "MEG",
+        "number": "8"
+      },
+      {
+        "count": 2,
+        "name": "Bayleef",
+        "set": "MEG",
+        "number": "9"
+      },
+      {
+        "count": 2,
+        "name": "Meganium",
+        "set": "MEG",
+        "number": "10"
+      },
+      {
+        "count": 2,
+        "name": "Smoliv",
+        "set": "DRI",
+        "number": "21"
+      },
+      {
+        "count": 2,
+        "name": "Dolliv",
+        "set": "DRI",
+        "number": "22"
+      },
+      {
+        "count": 2,
+        "name": "Arboliva ex",
+        "set": "DRI",
+        "number": "23"
+      },
+      {
+        "count": 2,
+        "name": "Hoothoot",
+        "set": "SCR",
+        "number": "114"
+      },
+      {
+        "count": 2,
+        "name": "Noctowl",
+        "set": "SCR",
+        "number": "115"
+      },
+      {
+        "count": 1,
+        "name": "Bulbasaur",
+        "set": "MEG",
+        "number": "1"
+      },
+      {
+        "count": 1,
+        "name": "Ivysaur",
+        "set": "MEG",
+        "number": "2"
+      },
+      {
+        "count": 1,
+        "name": "Mega Venusaur ex",
+        "set": "MEG",
+        "number": "3"
+      },
+      {
+        "count": 1,
+        "name": "Buneary",
+        "set": "PFL",
+        "number": "83"
+      },
+      {
+        "count": 1,
+        "name": "Mega Lopunny ex",
+        "set": "PFL",
+        "number": "84"
+      },
+      {
+        "count": 1,
+        "name": "Budew",
+        "set": "ASC",
+        "number": "16"
+      }
+    ],
+    "trainer": [
+      {
+        "count": 3,
+        "name": "Dawn",
+        "set": "PFL",
+        "number": "87"
+      },
+      {
+        "count": 3,
+        "name": "Lillie's Determination",
+        "set": "MEG",
+        "number": "119"
+      },
+      {
+        "count": 2,
+        "name": "Boss's Orders",
+        "set": "MEG",
+        "number": "114"
+      },
+      {
+        "count": 1,
+        "name": "Judge",
+        "set": "POR",
+        "number": "76"
+      },
+      {
+        "count": 4,
+        "name": "Bug Catching Set",
+        "set": "TWM",
+        "number": "143"
+      },
+      {
+        "count": 4,
+        "name": "Poké Pad",
+        "set": "POR",
+        "number": "81"
+      },
+      {
+        "count": 1,
+        "name": "Max Rod",
+        "set": "PRE",
+        "number": "116"
+      },
+      {
+        "count": 1,
+        "name": "Night Stretcher",
+        "set": "ASC",
+        "number": "196"
+      },
+      {
+        "count": 1,
+        "name": "Ultra Ball",
+        "set": "MEG",
+        "number": "131"
+      },
+      {
+        "count": 4,
+        "name": "Forest of Vitality",
+        "set": "MEG",
+        "number": "117"
+      }
+    ],
+    "energy": [
+      {
+        "count": 10,
+        "name": "Grass Energy",
+        "set": "MEE",
+        "number": "1"
+      }
+    ]
+  }
+}

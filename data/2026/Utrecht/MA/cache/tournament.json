@@ -1,0 +1,19 @@
+{
+  "ok": true,
+  "message": {
+    "rk9_id": "UT01wfduzfUrh9rXVkAx",
+    "playlatam_id": null,
+    "type": "regional",
+    "city": "Utrecht",
+    "name": null,
+    "date": "May 16–17, 2026",
+    "country": "NL",
+    "updated_at": "2026-05-17 18:26:34",
+    "decklists": 1,
+    "round": 18,
+    "players": 2150,
+    "players_r1": 2136,
+    "started": 1,
+    "completed": 1
+  }
+}

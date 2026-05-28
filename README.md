@@ -9,6 +9,12 @@ Standalone FastAPI service for PTCG tournament deck-analysis datasets.
 - Generic metagame summary, deck compare, and explain APIs
 - OpenAI-compatible provider abstraction（当前默认指向 Kimi Code）
 - Neutral HTTP provider 配置页（保存 custom base URL / model / API key）
+- Curated 2026 Limitless Labs MA datasets:
+  - Prague (`2026-prague-ma`, tournament `0062`)
+  - Los Angeles (`2026-los-angeles-ma`, tournament `0063`)
+  - Utrecht (`2026-utrecht-ma`, tournament `0064`)
+  - Campinas (`2026-campinas-ma`, tournament `0065`)
+  - Melbourne (`2026-melbourne-ma`, tournament `0066`)
 
 ## 目录
 
@@ -18,6 +24,9 @@ Standalone FastAPI service for PTCG tournament deck-analysis datasets.
 - `app/services/dataset_analysis_service.py` dataset 报告读取与分析逻辑
 - `app/providers/openai_compatible.py` 自定义 OpenAI-compatible endpoint 抽象
 - `app/api/routes.py` API routes + 配置页
+- `scripts/tools/limitless_tournament_analysis.py` Limitless Labs tournament report generator
+- `scripts/tools/prague_phase15_tools.py` Prague summary/deck comparison CLI helper
+- `scripts/tools/test_*.py` migrated tool tests
 
 ## Dataset directory convention
 
@@ -33,6 +42,16 @@ DATA_ROOT/
 
 示例：`data/2026/Prague/MA/analysis.json` 会被识别为 dataset id `2026-prague-ma`。
 
+当前仓库内置 datasets：
+
+```text
+data/2026/Prague/MA/analysis.json
+data/2026/Los_Angeles/MA/analysis.json
+data/2026/Utrecht/MA/analysis.json
+data/2026/Campinas/MA/analysis.json
+data/2026/Melbourne/MA/analysis.json
+```
+
 ## 本地运行
 
 ```bash
@@ -40,6 +59,12 @@ python3 -m venv .venv
 source .venv/bin/activate
 pip install -r requirements.txt
 uvicorn app.main:app --reload --port 8010
+```
+
+### Tests
+
+```bash
+PYTHONPATH=. pytest
 ```
 
 可选环境变量：

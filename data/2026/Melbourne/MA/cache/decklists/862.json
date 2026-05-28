@@ -1,0 +1,155 @@
+{
+  "ok": true,
+  "message": {
+    "pokemon": [
+      {
+        "count": 3,
+        "name": "Teal Mask Ogerpon ex",
+        "set": "TWM",
+        "number": "25"
+      },
+      {
+        "count": 2,
+        "name": "Applin",
+        "set": "SCR",
+        "number": "12"
+      },
+      {
+        "count": 2,
+        "name": "Dipplin",
+        "set": "SCR",
+        "number": "13"
+      },
+      {
+        "count": 2,
+        "name": "Hydrapple ex",
+        "set": "SCR",
+        "number": "14"
+      },
+      {
+        "count": 2,
+        "name": "Chikorita",
+        "set": "ASC",
+        "number": "8"
+      },
+      {
+        "count": 2,
+        "name": "Bayleef",
+        "set": "ASC",
+        "number": "9"
+      },
+      {
+        "count": 2,
+        "name": "Meganium",
+        "set": "MEG",
+        "number": "10"
+      },
+      {
+        "count": 2,
+        "name": "Budew",
+        "set": "ASC",
+        "number": "16"
+      },
+      {
+        "count": 1,
+        "name": "Fezandipiti ex",
+        "set": "ASC",
+        "number": "142"
+      }
+    ],
+    "trainer": [
+      {
+        "count": 4,
+        "name": "Lillie's Determination",
+        "set": "MEG",
+        "number": "119"
+      },
+      {
+        "count": 3,
+        "name": "Boss's Orders",
+        "set": "MEG",
+        "number": "114"
+      },
+      {
+        "count": 2,
+        "name": "Dawn",
+        "set": "PFL",
+        "number": "87"
+      },
+      {
+        "count": 2,
+        "name": "Team Rocket's Petrel",
+        "set": "ASC",
+        "number": "207"
+      },
+      {
+        "count": 1,
+        "name": "Colress's Tenacity",
+        "set": "SFA",
+        "number": "57"
+      },
+      {
+        "count": 1,
+        "name": "Judge",
+        "set": "POR",
+        "number": "76"
+      },
+      {
+        "count": 4,
+        "name": "Bug Catching Set",
+        "set": "TWM",
+        "number": "143"
+      },
+      {
+        "count": 2,
+        "name": "Buddy-Buddy Poffin",
+        "set": "ASC",
+        "number": "184"
+      },
+      {
+        "count": 2,
+        "name": "Night Stretcher",
+        "set": "ASC",
+        "number": "196"
+      },
+      {
+        "count": 2,
+        "name": "Poké Pad",
+        "set": "POR",
+        "number": "81"
+      },
+      {
+        "count": 2,
+        "name": "Ultra Ball",
+        "set": "MEG",
+        "number": "131"
+      },
+      {
+        "count": 1,
+        "name": "Max Rod",
+        "set": "PRE",
+        "number": "116"
+      },
+      {
+        "count": 1,
+        "name": "Rare Candy",
+        "set": "MEG",
+        "number": "125"
+      },
+      {
+        "count": 3,
+        "name": "Forest of Vitality",
+        "set": "MEG",
+        "number": "117"
+      }
+    ],
+    "energy": [
+      {
+        "count": 12,
+        "name": "Grass Energy",
+        "set": "MEE",
+        "number": "1"
+      }
+    ]
+  }
+}

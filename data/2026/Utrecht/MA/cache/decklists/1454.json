@@ -1,0 +1,161 @@
+{
+  "ok": true,
+  "message": {
+    "pokemon": [
+      {
+        "count": 4,
+        "name": "Dreepy",
+        "set": "ASC",
+        "number": "158"
+      },
+      {
+        "count": 4,
+        "name": "Drakloak",
+        "set": "ASC",
+        "number": "159"
+      },
+      {
+        "count": 2,
+        "name": "Dragapult ex",
+        "set": "ASC",
+        "number": "160"
+      },
+      {
+        "count": 2,
+        "name": "Torchic",
+        "set": "DRI",
+        "number": "40"
+      },
+      {
+        "count": 1,
+        "name": "Combusken",
+        "set": "DRI",
+        "number": "41"
+      },
+      {
+        "count": 2,
+        "name": "Blaziken ex",
+        "set": "JTG",
+        "number": "24"
+      },
+      {
+        "count": 2,
+        "name": "Meowth ex",
+        "set": "POR",
+        "number": "62"
+      },
+      {
+        "count": 2,
+        "name": "Munkidori",
+        "set": "ASC",
+        "number": "99"
+      },
+      {
+        "count": 1,
+        "name": "Lillie's Clefairy ex",
+        "set": "ASC",
+        "number": "76"
+      },
+      {
+        "count": 1,
+        "name": "Fezandipiti ex",
+        "set": "ASC",
+        "number": "142"
+      },
+      {
+        "count": 1,
+        "name": "Budew",
+        "set": "ASC",
+        "number": "16"
+      }
+    ],
+    "trainer": [
+      {
+        "count": 4,
+        "name": "Lillie's Determination",
+        "set": "MEG",
+        "number": "119"
+      },
+      {
+        "count": 3,
+        "name": "Boss's Orders",
+        "set": "MEG",
+        "number": "114"
+      },
+      {
+        "count": 2,
+        "name": "Crispin",
+        "set": "SCR",
+        "number": "133"
+      },
+      {
+        "count": 2,
+        "name": "Dawn",
+        "set": "PFL",
+        "number": "87"
+      },
+      {
+        "count": 4,
+        "name": "Buddy-Buddy Poffin",
+        "set": "ASC",
+        "number": "184"
+      },
+      {
+        "count": 4,
+        "name": "Ultra Ball",
+        "set": "MEG",
+        "number": "131"
+      },
+      {
+        "count": 4,
+        "name": "Poké Pad",
+        "set": "POR",
+        "number": "81"
+      },
+      {
+        "count": 3,
+        "name": "Rare Candy",
+        "set": "MEG",
+        "number": "125"
+      },
+      {
+        "count": 2,
+        "name": "Night Stretcher",
+        "set": "ASC",
+        "number": "196"
+      },
+      {
+        "count": 1,
+        "name": "Unfair Stamp",
+        "set": "TWM",
+        "number": "165"
+      },
+      {
+        "count": 2,
+        "name": "Risky Ruins",
+        "set": "MEG",
+        "number": "127"
+      }
+    ],
+    "energy": [
+      {
+        "count": 3,
+        "name": "Fire Energy",
+        "set": "MEE",
+        "number": "2"
+      },
+      {
+        "count": 2,
+        "name": "Psychic Energy",
+        "set": "MEE",
+        "number": "5"
+      },
+      {
+        "count": 2,
+        "name": "Darkness Energy",
+        "set": "MEE",
+        "number": "7"
+      }
+    ]
+  }
+}

@@ -1,0 +1,191 @@
+{
+  "ok": true,
+  "message": {
+    "pokemon": [
+      {
+        "count": 3,
+        "name": "Steven's Beldum",
+        "set": "DRI",
+        "number": "143"
+      },
+      {
+        "count": 2,
+        "name": "Steven's Metang",
+        "set": "DRI",
+        "number": "144"
+      },
+      {
+        "count": 3,
+        "name": "Steven's Metagross ex",
+        "set": "DRI",
+        "number": "145"
+      },
+      {
+        "count": 2,
+        "name": "Piplup",
+        "set": "PFL",
+        "number": "27"
+      },
+      {
+        "count": 1,
+        "name": "Empoleon ex",
+        "set": "PFL",
+        "number": "70"
+      },
+      {
+        "count": 2,
+        "name": "Genesect ex",
+        "set": "BLK",
+        "number": "67"
+      },
+      {
+        "count": 1,
+        "name": "Frillish",
+        "set": "WHT",
+        "number": "44"
+      },
+      {
+        "count": 1,
+        "name": "Jellicent ex",
+        "set": "WHT",
+        "number": "45"
+      },
+      {
+        "count": 1,
+        "name": "Latias ex",
+        "set": "SSP",
+        "number": "76"
+      },
+      {
+        "count": 1,
+        "name": "Team Rocket's Mimikyu",
+        "set": "ASC",
+        "number": "97"
+      },
+      {
+        "count": 1,
+        "name": "Mega Skarmory ex",
+        "set": "POR",
+        "number": "55"
+      },
+      {
+        "count": 1,
+        "name": "Budew",
+        "set": "ASC",
+        "number": "16"
+      },
+      {
+        "count": 1,
+        "name": "Meowth ex",
+        "set": "POR",
+        "number": "62"
+      },
+      {
+        "count": 1,
+        "name": "Mega Mawile ex",
+        "set": "MEG",
+        "number": "94"
+      },
+      {
+        "count": 1,
+        "name": "Dialga",
+        "set": "MEG",
+        "number": "95"
+      },
+      {
+        "count": 1,
+        "name": "Lillie's Clefairy ex",
+        "set": "ASC",
+        "number": "76"
+      }
+    ],
+    "trainer": [
+      {
+        "count": 4,
+        "name": "Team Rocket's Petrel",
+        "set": "ASC",
+        "number": "207"
+      },
+      {
+        "count": 3,
+        "name": "Lillie's Determination",
+        "set": "MEG",
+        "number": "119"
+      },
+      {
+        "count": 2,
+        "name": "Boss's Orders",
+        "set": "MEG",
+        "number": "114"
+      },
+      {
+        "count": 1,
+        "name": "Judge",
+        "set": "POR",
+        "number": "76"
+      },
+      {
+        "count": 4,
+        "name": "Team Rocket's Transceiver",
+        "set": "ASC",
+        "number": "209"
+      },
+      {
+        "count": 3,
+        "name": "Rare Candy",
+        "set": "MEG",
+        "number": "125"
+      },
+      {
+        "count": 3,
+        "name": "Ultra Ball",
+        "set": "MEG",
+        "number": "131"
+      },
+      {
+        "count": 2,
+        "name": "Night Stretcher",
+        "set": "ASC",
+        "number": "196"
+      },
+      {
+        "count": 1,
+        "name": "Buddy-Buddy Poffin",
+        "set": "ASC",
+        "number": "184"
+      },
+      {
+        "count": 1,
+        "name": "Precious Trolley",
+        "set": "SSP",
+        "number": "185"
+      },
+      {
+        "count": 1,
+        "name": "Energy Recycler",
+        "set": "DRI",
+        "number": "164"
+      },
+      {
+        "count": 1,
+        "name": "Battle Cage",
+        "set": "PFL",
+        "number": "85"
+      }
+    ],
+    "energy": [
+      {
+        "count": 6,
+        "name": "Metal Energy",
+        "set": "MEE",
+        "number": "8"
+      },
+      {
+        "count": 5,
+        "name": "Psychic Energy",
+        "set": "MEE",
+        "number": "5"
+      }
+    ]
+  }
+}

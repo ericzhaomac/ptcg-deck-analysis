@@ -4,7 +4,7 @@ import os
 from dataclasses import dataclass
 from pathlib import Path
 
-DEFAULT_REPORT_PATH = Path("tmp/limitless_reports/limitless_0062_MA_analysis.json")
+DEFAULT_REPORT_PATH = Path("data/2026/Prague/MA/analysis.json")
 DEFAULT_PROVIDER_CONFIG_PATH = Path("/data/config/provider.json")
 DEFAULT_DATA_ROOT = Path("data")
 DEFAULT_DATASET_STATE_PATH = Path("data/config/dataset_state.json")

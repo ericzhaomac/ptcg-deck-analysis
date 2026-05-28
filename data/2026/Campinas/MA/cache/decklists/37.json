@@ -1,0 +1,215 @@
+{
+  "ok": true,
+  "message": {
+    "pokemon": [
+      {
+        "count": 4,
+        "name": "Hoothoot",
+        "set": "SCR",
+        "number": "114"
+      },
+      {
+        "count": 4,
+        "name": "Noctowl",
+        "set": "SCR",
+        "number": "115"
+      },
+      {
+        "count": 2,
+        "name": "Dratini",
+        "set": "ASC",
+        "number": "150"
+      },
+      {
+        "count": 2,
+        "name": "Dragonair",
+        "set": "ASC",
+        "number": "151"
+      },
+      {
+        "count": 1,
+        "name": "Mega Dragonite ex",
+        "set": "ASC",
+        "number": "152"
+      },
+      {
+        "count": 2,
+        "name": "Fan Rotom",
+        "set": "ASC",
+        "number": "171"
+      },
+      {
+        "count": 2,
+        "name": "Eevee ex",
+        "set": "PRE",
+        "number": "75"
+      },
+      {
+        "count": 1,
+        "name": "Eevee",
+        "set": "SSP",
+        "number": "143"
+      },
+      {
+        "count": 2,
+        "name": "Flareon ex",
+        "set": "PRE",
+        "number": "14"
+      },
+      {
+        "count": 1,
+        "name": "Leafeon ex",
+        "set": "PRE",
+        "number": "6"
+      },
+      {
+        "count": 1,
+        "name": "Sylveon ex",
+        "set": "SSP",
+        "number": "86"
+      },
+      {
+        "count": 1,
+        "name": "Fezandipiti ex",
+        "set": "ASC",
+        "number": "142"
+      },
+      {
+        "count": 1,
+        "name": "Lillie's Clefairy ex",
+        "set": "ASC",
+        "number": "76"
+      }
+    ],
+    "trainer": [
+      {
+        "count": 3,
+        "name": "Boss's Orders",
+        "set": "MEG",
+        "number": "114"
+      },
+      {
+        "count": 3,
+        "name": "Crispin",
+        "set": "SCR",
+        "number": "133"
+      },
+      {
+        "count": 1,
+        "name": "Briar",
+        "set": "SCR",
+        "number": "132"
+      },
+      {
+        "count": 1,
+        "name": "Black Belt's Training",
+        "set": "JTG",
+        "number": "143"
+      },
+      {
+        "count": 1,
+        "name": "Cyrano",
+        "set": "SSP",
+        "number": "170"
+      },
+      {
+        "count": 1,
+        "name": "Dawn",
+        "set": "PFL",
+        "number": "87"
+      },
+      {
+        "count": 4,
+        "name": "Poké Pad",
+        "set": "POR",
+        "number": "81"
+      },
+      {
+        "count": 2,
+        "name": "Tera Orb",
+        "set": "SSP",
+        "number": "189"
+      },
+      {
+        "count": 2,
+        "name": "Buddy-Buddy Poffin",
+        "set": "ASC",
+        "number": "184"
+      },
+      {
+        "count": 1,
+        "name": "Rare Candy",
+        "set": "MEG",
+        "number": "125"
+      },
+      {
+        "count": 1,
+        "name": "Energy Recycler",
+        "set": "DRI",
+        "number": "164"
+      },
+      {
+        "count": 1,
+        "name": "Night Stretcher",
+        "set": "ASC",
+        "number": "196"
+      },
+      {
+        "count": 1,
+        "name": "Ultra Ball",
+        "set": "MEG",
+        "number": "131"
+      },
+      {
+        "count": 1,
+        "name": "Air Balloon",
+        "set": "ASC",
+        "number": "181"
+      },
+      {
+        "count": 1,
+        "name": "Sparkling Crystal",
+        "set": "SCR",
+        "number": "142"
+      },
+      {
+        "count": 2,
+        "name": "Area Zero Underdepths",
+        "set": "SCR",
+        "number": "131"
+      }
+    ],
+    "energy": [
+      {
+        "count": 3,
+        "name": "Lightning Energy",
+        "set": "MEE",
+        "number": "4"
+      },
+      {
+        "count": 2,
+        "name": "Water Energy",
+        "set": "MEE",
+        "number": "3"
+      },
+      {
+        "count": 2,
+        "name": "Fire Energy",
+        "set": "MEE",
+        "number": "2"
+      },
+      {
+        "count": 2,
+        "name": "Psychic Energy",
+        "set": "MEE",
+        "number": "5"
+      },
+      {
+        "count": 1,
+        "name": "Grass Energy",
+        "set": "MEE",
+        "number": "1"
+      }
+    ]
+  }
+}

@@ -1,0 +1,179 @@
+{
+  "ok": true,
+  "message": {
+    "pokemon": [
+      {
+        "count": 3,
+        "name": "Duskull",
+        "set": "PRE",
+        "number": "35"
+      },
+      {
+        "count": 3,
+        "name": "Dusclops",
+        "set": "PRE",
+        "number": "36"
+      },
+      {
+        "count": 2,
+        "name": "Dusknoir",
+        "set": "PRE",
+        "number": "37"
+      },
+      {
+        "count": 2,
+        "name": "Staryu",
+        "set": "POR",
+        "number": "20"
+      },
+      {
+        "count": 2,
+        "name": "Mega Starmie ex",
+        "set": "POR",
+        "number": "21"
+      },
+      {
+        "count": 2,
+        "name": "Froakie",
+        "set": "TWM",
+        "number": "56"
+      },
+      {
+        "count": 2,
+        "name": "Frogadier",
+        "set": "TWM",
+        "number": "57"
+      },
+      {
+        "count": 2,
+        "name": "Greninja ex",
+        "set": "TWM",
+        "number": "106"
+      },
+      {
+        "count": 2,
+        "name": "Meowth ex",
+        "set": "POR",
+        "number": "62"
+      },
+      {
+        "count": 1,
+        "name": "Bloodmoon Ursaluna ex",
+        "set": "TWM",
+        "number": "141"
+      },
+      {
+        "count": 1,
+        "name": "Fezandipiti ex",
+        "set": "ASC",
+        "number": "142"
+      },
+      {
+        "count": 1,
+        "name": "Latias ex",
+        "set": "SSP",
+        "number": "76"
+      },
+      {
+        "count": 1,
+        "name": "Budew",
+        "set": "ASC",
+        "number": "16"
+      }
+    ],
+    "trainer": [
+      {
+        "count": 4,
+        "name": "Lillie's Determination",
+        "set": "MEG",
+        "number": "119"
+      },
+      {
+        "count": 3,
+        "name": "Hilda",
+        "set": "WHT",
+        "number": "84"
+      },
+      {
+        "count": 2,
+        "name": "Boss's Orders",
+        "set": "MEG",
+        "number": "114"
+      },
+      {
+        "count": 1,
+        "name": "Brock's Scouting",
+        "set": "JTG",
+        "number": "146"
+      },
+      {
+        "count": 1,
+        "name": "Wally's Compassion",
+        "set": "MEG",
+        "number": "132"
+      },
+      {
+        "count": 1,
+        "name": "Colress's Tenacity",
+        "set": "SFA",
+        "number": "57"
+      },
+      {
+        "count": 1,
+        "name": "Dawn",
+        "set": "PFL",
+        "number": "87"
+      },
+      {
+        "count": 4,
+        "name": "Buddy-Buddy Poffin",
+        "set": "ASC",
+        "number": "184"
+      },
+      {
+        "count": 4,
+        "name": "Ultra Ball",
+        "set": "MEG",
+        "number": "131"
+      },
+      {
+        "count": 4,
+        "name": "Poké Pad",
+        "set": "POR",
+        "number": "81"
+      },
+      {
+        "count": 2,
+        "name": "Night Stretcher",
+        "set": "ASC",
+        "number": "196"
+      },
+      {
+        "count": 1,
+        "name": "Grand Tree",
+        "set": "SCR",
+        "number": "136"
+      },
+      {
+        "count": 1,
+        "name": "Jamming Tower",
+        "set": "TWM",
+        "number": "153"
+      }
+    ],
+    "energy": [
+      {
+        "count": 5,
+        "name": "Water Energy",
+        "set": "MEE",
+        "number": "3"
+      },
+      {
+        "count": 2,
+        "name": "Ignition Energy",
+        "set": "WHT",
+        "number": "86"
+      }
+    ]
+  }
+}

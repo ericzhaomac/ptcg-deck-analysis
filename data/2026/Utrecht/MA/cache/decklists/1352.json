@@ -1,0 +1,173 @@
+{
+  "ok": true,
+  "message": {
+    "pokemon": [
+      {
+        "count": 3,
+        "name": "Marnie's Impidimp",
+        "set": "DRI",
+        "number": "134"
+      },
+      {
+        "count": 1,
+        "name": "Marnie's Morgrem",
+        "set": "DRI",
+        "number": "135"
+      },
+      {
+        "count": 2,
+        "name": "Marnie's Grimmsnarl ex",
+        "set": "DRI",
+        "number": "136"
+      },
+      {
+        "count": 3,
+        "name": "Snorunt",
+        "set": "ASC",
+        "number": "46"
+      },
+      {
+        "count": 3,
+        "name": "Froslass",
+        "set": "TWM",
+        "number": "53"
+      },
+      {
+        "count": 2,
+        "name": "Mega Froslass ex",
+        "set": "ASC",
+        "number": "47"
+      },
+      {
+        "count": 3,
+        "name": "Munkidori",
+        "set": "ASC",
+        "number": "99"
+      },
+      {
+        "count": 1,
+        "name": "Yveltal",
+        "set": "MEG",
+        "number": "88"
+      },
+      {
+        "count": 1,
+        "name": "Fezandipiti ex",
+        "set": "ASC",
+        "number": "142"
+      },
+      {
+        "count": 1,
+        "name": "Budew",
+        "set": "ASC",
+        "number": "16"
+      },
+      {
+        "count": 1,
+        "name": "Meowth ex",
+        "set": "POR",
+        "number": "62"
+      }
+    ],
+    "trainer": [
+      {
+        "count": 4,
+        "name": "Lillie's Determination",
+        "set": "MEG",
+        "number": "119"
+      },
+      {
+        "count": 2,
+        "name": "Team Rocket's Petrel",
+        "set": "ASC",
+        "number": "207"
+      },
+      {
+        "count": 2,
+        "name": "Boss's Orders",
+        "set": "MEG",
+        "number": "114"
+      },
+      {
+        "count": 1,
+        "name": "Hilda",
+        "set": "WHT",
+        "number": "84"
+      },
+      {
+        "count": 1,
+        "name": "Larry's Skill",
+        "set": "PRE",
+        "number": "115"
+      },
+      {
+        "count": 1,
+        "name": "Harlequin",
+        "set": "WHT",
+        "number": "83"
+      },
+      {
+        "count": 4,
+        "name": "Ultra Ball",
+        "set": "MEG",
+        "number": "131"
+      },
+      {
+        "count": 3,
+        "name": "Night Stretcher",
+        "set": "ASC",
+        "number": "196"
+      },
+      {
+        "count": 3,
+        "name": "Buddy-Buddy Poffin",
+        "set": "ASC",
+        "number": "184"
+      },
+      {
+        "count": 2,
+        "name": "Poké Pad",
+        "set": "POR",
+        "number": "81"
+      },
+      {
+        "count": 2,
+        "name": "Rare Candy",
+        "set": "MEG",
+        "number": "125"
+      },
+      {
+        "count": 1,
+        "name": "Energy Switch",
+        "set": "MEG",
+        "number": "115"
+      },
+      {
+        "count": 1,
+        "name": "Hero's Cape",
+        "set": "TEF",
+        "number": "152"
+      },
+      {
+        "count": 3,
+        "name": "Spikemuth Gym",
+        "set": "DRI",
+        "number": "169"
+      }
+    ],
+    "energy": [
+      {
+        "count": 7,
+        "name": "Darkness Energy",
+        "set": "MEE",
+        "number": "7"
+      },
+      {
+        "count": 2,
+        "name": "Water Energy",
+        "set": "MEE",
+        "number": "3"
+      }
+    ]
+  }
+}

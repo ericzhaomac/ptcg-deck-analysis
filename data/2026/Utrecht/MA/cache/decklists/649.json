@@ -1,0 +1,185 @@
+{
+  "ok": true,
+  "message": {
+    "pokemon": [
+      {
+        "count": 4,
+        "name": "Dunsparce",
+        "set": "JTG",
+        "number": "120"
+      },
+      {
+        "count": 4,
+        "name": "Dudunsparce",
+        "set": "TEF",
+        "number": "129"
+      },
+      {
+        "count": 2,
+        "name": "Rellor",
+        "set": "TEF",
+        "number": "23"
+      },
+      {
+        "count": 1,
+        "name": "Rabsca",
+        "set": "TEF",
+        "number": "24"
+      },
+      {
+        "count": 2,
+        "name": "Nymble",
+        "set": "JTG",
+        "number": "19"
+      },
+      {
+        "count": 2,
+        "name": "Lokix",
+        "set": "PFL",
+        "number": "10"
+      },
+      {
+        "count": 2,
+        "name": "Lillie's Cutiefly",
+        "set": "JTG",
+        "number": "66"
+      },
+      {
+        "count": 1,
+        "name": "Eevee",
+        "set": "SSP",
+        "number": "143"
+      },
+      {
+        "count": 1,
+        "name": "Sylveon",
+        "set": "PRE",
+        "number": "40"
+      },
+      {
+        "count": 1,
+        "name": "Bloodmoon Ursaluna ex",
+        "set": "TWM",
+        "number": "141"
+      },
+      {
+        "count": 1,
+        "name": "Psyduck",
+        "set": "ASC",
+        "number": "39"
+      },
+      {
+        "count": 1,
+        "name": "Flutter Mane",
+        "set": "TEF",
+        "number": "78"
+      },
+      {
+        "count": 1,
+        "name": "Fan Rotom",
+        "set": "ASC",
+        "number": "171"
+      },
+      {
+        "count": 1,
+        "name": "Team Rocket's Articuno",
+        "set": "DRI",
+        "number": "51"
+      }
+    ],
+    "trainer": [
+      {
+        "count": 4,
+        "name": "Hilda",
+        "set": "WHT",
+        "number": "84"
+      },
+      {
+        "count": 3,
+        "name": "Boss's Orders",
+        "set": "MEG",
+        "number": "114"
+      },
+      {
+        "count": 2,
+        "name": "Hassel",
+        "set": "TWM",
+        "number": "151"
+      },
+      {
+        "count": 1,
+        "name": "Brock's Scouting",
+        "set": "JTG",
+        "number": "146"
+      },
+      {
+        "count": 4,
+        "name": "Poké Pad",
+        "set": "POR",
+        "number": "81"
+      },
+      {
+        "count": 4,
+        "name": "Buddy-Buddy Poffin",
+        "set": "ASC",
+        "number": "184"
+      },
+      {
+        "count": 2,
+        "name": "Sacred Ash",
+        "set": "DRI",
+        "number": "168"
+      },
+      {
+        "count": 1,
+        "name": "Ultra Ball",
+        "set": "MEG",
+        "number": "131"
+      },
+      {
+        "count": 1,
+        "name": "Night Stretcher",
+        "set": "ASC",
+        "number": "196"
+      },
+      {
+        "count": 3,
+        "name": "Lillie's Pearl",
+        "set": "JTG",
+        "number": "151"
+      },
+      {
+        "count": 2,
+        "name": "Air Balloon",
+        "set": "ASC",
+        "number": "181"
+      },
+      {
+        "count": 1,
+        "name": "Brave Bangle",
+        "set": "WHT",
+        "number": "80"
+      },
+      {
+        "count": 4,
+        "name": "Forest of Vitality",
+        "set": "MEG",
+        "number": "117"
+      }
+    ],
+    "energy": [
+      {
+        "count": 3,
+        "name": "Ignition Energy",
+        "set": "WHT",
+        "number": "86"
+      },
+      {
+        "count": 1,
+        "name": "Enriching Energy",
+        "set": "SSP",
+        "number": "191"
+      }
+    ]
+  }
+}

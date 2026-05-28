@@ -1,0 +1,19 @@
+{
+  "ok": true,
+  "message": {
+    "rk9_id": "CA01wQsCrDh1mbLzRAcv",
+    "playlatam_id": null,
+    "type": "regional",
+    "city": "Campinas",
+    "name": null,
+    "date": "May 16–17, 2026",
+    "country": "BR",
+    "updated_at": "2026-05-17 22:40:30",
+    "decklists": 1,
+    "round": 17,
+    "players": 1725,
+    "players_r1": 1709,
+    "started": 1,
+    "completed": 1
+  }
+}

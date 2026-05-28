@@ -1,0 +1,137 @@
+{
+  "ok": true,
+  "message": {
+    "pokemon": [
+      {
+        "count": 4,
+        "name": "Honedge",
+        "set": "POR",
+        "number": "56"
+      },
+      {
+        "count": 4,
+        "name": "Doublade",
+        "set": "POR",
+        "number": "57"
+      },
+      {
+        "count": 4,
+        "name": "Aegislash",
+        "set": "POR",
+        "number": "58"
+      },
+      {
+        "count": 3,
+        "name": "Beldum",
+        "set": "TEF",
+        "number": "113"
+      },
+      {
+        "count": 3,
+        "name": "Metang",
+        "set": "TEF",
+        "number": "114"
+      },
+      {
+        "count": 2,
+        "name": "Genesect ex",
+        "set": "BLK",
+        "number": "67"
+      },
+      {
+        "count": 1,
+        "name": "Fezandipiti ex",
+        "set": "ASC",
+        "number": "142"
+      },
+      {
+        "count": 1,
+        "name": "Shaymin",
+        "set": "DRI",
+        "number": "10"
+      }
+    ],
+    "trainer": [
+      {
+        "count": 3,
+        "name": "Boss's Orders",
+        "set": "MEG",
+        "number": "114"
+      },
+      {
+        "count": 3,
+        "name": "Dawn",
+        "set": "PFL",
+        "number": "87"
+      },
+      {
+        "count": 3,
+        "name": "Brock's Scouting",
+        "set": "JTG",
+        "number": "146"
+      },
+      {
+        "count": 2,
+        "name": "Hassel",
+        "set": "TWM",
+        "number": "151"
+      },
+      {
+        "count": 1,
+        "name": "Lana's Aid",
+        "set": "TWM",
+        "number": "155"
+      },
+      {
+        "count": 4,
+        "name": "Poké Pad",
+        "set": "POR",
+        "number": "81"
+      },
+      {
+        "count": 3,
+        "name": "Buddy-Buddy Poffin",
+        "set": "ASC",
+        "number": "184"
+      },
+      {
+        "count": 3,
+        "name": "Pokégear 3.0",
+        "set": "SVI",
+        "number": "186"
+      },
+      {
+        "count": 2,
+        "name": "Night Stretcher",
+        "set": "ASC",
+        "number": "196"
+      },
+      {
+        "count": 1,
+        "name": "Max Rod",
+        "set": "PRE",
+        "number": "116"
+      },
+      {
+        "count": 2,
+        "name": "Air Balloon",
+        "set": "ASC",
+        "number": "181"
+      },
+      {
+        "count": 1,
+        "name": "Counter Gain",
+        "set": "ASC",
+        "number": "186"
+      }
+    ],
+    "energy": [
+      {
+        "count": 10,
+        "name": "Metal Energy",
+        "set": "MEE",
+        "number": "8"
+      }
+    ]
+  }
+}

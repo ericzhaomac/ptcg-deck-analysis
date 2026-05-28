@@ -1,0 +1,161 @@
+{
+  "ok": true,
+  "message": {
+    "pokemon": [
+      {
+        "count": 4,
+        "name": "Teal Mask Ogerpon ex",
+        "set": "TWM",
+        "number": "25"
+      },
+      {
+        "count": 2,
+        "name": "Mega Kangaskhan ex",
+        "set": "MEG",
+        "number": "104"
+      },
+      {
+        "count": 2,
+        "name": "Meowth ex",
+        "set": "POR",
+        "number": "62"
+      },
+      {
+        "count": 1,
+        "name": "Koraidon ex",
+        "set": "ASC",
+        "number": "121"
+      },
+      {
+        "count": 1,
+        "name": "Iron Crown ex",
+        "set": "TEF",
+        "number": "81"
+      },
+      {
+        "count": 1,
+        "name": "Wellspring Mask Ogerpon ex",
+        "set": "TWM",
+        "number": "64"
+      },
+      {
+        "count": 1,
+        "name": "Chien-Pao",
+        "set": "SSP",
+        "number": "56"
+      },
+      {
+        "count": 1,
+        "name": "Latias ex",
+        "set": "SSP",
+        "number": "76"
+      },
+      {
+        "count": 1,
+        "name": "Fezandipiti ex",
+        "set": "ASC",
+        "number": "142"
+      },
+      {
+        "count": 1,
+        "name": "Lillie's Clefairy ex",
+        "set": "ASC",
+        "number": "76"
+      }
+    ],
+    "trainer": [
+      {
+        "count": 2,
+        "name": "N's Plan",
+        "set": "BLK",
+        "number": "83"
+      },
+      {
+        "count": 2,
+        "name": "Boss's Orders",
+        "set": "MEG",
+        "number": "114"
+      },
+      {
+        "count": 2,
+        "name": "Lillie's Determination",
+        "set": "MEG",
+        "number": "119"
+      },
+      {
+        "count": 1,
+        "name": "Ciphermaniac's Codebreaking",
+        "set": "TEF",
+        "number": "145"
+      },
+      {
+        "count": 1,
+        "name": "Briar",
+        "set": "SCR",
+        "number": "132"
+      },
+      {
+        "count": 1,
+        "name": "Cyrano",
+        "set": "SSP",
+        "number": "170"
+      },
+      {
+        "count": 4,
+        "name": "Energy Switch",
+        "set": "MEG",
+        "number": "115"
+      },
+      {
+        "count": 4,
+        "name": "Ultra Ball",
+        "set": "MEG",
+        "number": "131"
+      },
+      {
+        "count": 4,
+        "name": "Bug Catching Set",
+        "set": "TWM",
+        "number": "143"
+      },
+      {
+        "count": 2,
+        "name": "Night Stretcher",
+        "set": "ASC",
+        "number": "196"
+      },
+      {
+        "count": 2,
+        "name": "Tera Orb",
+        "set": "SSP",
+        "number": "189"
+      },
+      {
+        "count": 1,
+        "name": "Prime Catcher",
+        "set": "TEF",
+        "number": "157"
+      },
+      {
+        "count": 2,
+        "name": "Area Zero Underdepths",
+        "set": "SCR",
+        "number": "131"
+      }
+    ],
+    "energy": [
+      {
+        "count": 13,
+        "name": "Grass Energy",
+        "set": "MEE",
+        "number": "1"
+      },
+      {
+        "count": 4,
+        "name": "Prism Energy",
+        "set": "ASC",
+        "number": "216"
+      }
+    ]
+  }
+}

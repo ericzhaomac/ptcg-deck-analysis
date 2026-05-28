@@ -1,0 +1,221 @@
+{
+  "ok": true,
+  "message": {
+    "pokemon": [
+      {
+        "count": 3,
+        "name": "Hoothoot",
+        "set": "TEF",
+        "number": "126"
+      },
+      {
+        "count": 1,
+        "name": "Hoothoot",
+        "set": "SCR",
+        "number": "114"
+      },
+      {
+        "count": 4,
+        "name": "Noctowl",
+        "set": "SCR",
+        "number": "115"
+      },
+      {
+        "count": 2,
+        "name": "Eevee",
+        "set": "SSP",
+        "number": "143"
+      },
+      {
+        "count": 2,
+        "name": "Flareon ex",
+        "set": "PRE",
+        "number": "14"
+      },
+      {
+        "count": 1,
+        "name": "Jolteon ex",
+        "set": "PRE",
+        "number": "30"
+      },
+      {
+        "count": 1,
+        "name": "Sylveon ex",
+        "set": "SSP",
+        "number": "86"
+      },
+      {
+        "count": 1,
+        "name": "Leafeon ex",
+        "set": "PRE",
+        "number": "6"
+      },
+      {
+        "count": 2,
+        "name": "Fan Rotom",
+        "set": "ASC",
+        "number": "171"
+      },
+      {
+        "count": 1,
+        "name": "Eevee ex",
+        "set": "PRE",
+        "number": "75"
+      },
+      {
+        "count": 1,
+        "name": "Wellspring Mask Ogerpon ex",
+        "set": "TWM",
+        "number": "64"
+      },
+      {
+        "count": 1,
+        "name": "Lillie's Clefairy ex",
+        "set": "ASC",
+        "number": "76"
+      },
+      {
+        "count": 1,
+        "name": "Fezandipiti ex",
+        "set": "ASC",
+        "number": "142"
+      },
+      {
+        "count": 1,
+        "name": "Paldean Tauros",
+        "set": "SSP",
+        "number": "18"
+      }
+    ],
+    "trainer": [
+      {
+        "count": 3,
+        "name": "Crispin",
+        "set": "SCR",
+        "number": "133"
+      },
+      {
+        "count": 2,
+        "name": "Boss's Orders",
+        "set": "MEG",
+        "number": "114"
+      },
+      {
+        "count": 1,
+        "name": "Lillie's Determination",
+        "set": "MEG",
+        "number": "119"
+      },
+      {
+        "count": 1,
+        "name": "Cyrano",
+        "set": "SSP",
+        "number": "170"
+      },
+      {
+        "count": 1,
+        "name": "Kieran",
+        "set": "TWM",
+        "number": "154"
+      },
+      {
+        "count": 4,
+        "name": "Poké Pad",
+        "set": "POR",
+        "number": "81"
+      },
+      {
+        "count": 4,
+        "name": "Ultra Ball",
+        "set": "MEG",
+        "number": "131"
+      },
+      {
+        "count": 3,
+        "name": "Buddy-Buddy Poffin",
+        "set": "ASC",
+        "number": "184"
+      },
+      {
+        "count": 3,
+        "name": "Tera Orb",
+        "set": "SSP",
+        "number": "189"
+      },
+      {
+        "count": 1,
+        "name": "Switch",
+        "set": "MEG",
+        "number": "130"
+      },
+      {
+        "count": 1,
+        "name": "Night Stretcher",
+        "set": "ASC",
+        "number": "196"
+      },
+      {
+        "count": 1,
+        "name": "Energy Retrieval",
+        "set": "SVI",
+        "number": "171"
+      },
+      {
+        "count": 1,
+        "name": "Air Balloon",
+        "set": "ASC",
+        "number": "181"
+      },
+      {
+        "count": 1,
+        "name": "Sparkling Crystal",
+        "set": "SCR",
+        "number": "142"
+      },
+      {
+        "count": 2,
+        "name": "Area Zero Underdepths",
+        "set": "SCR",
+        "number": "131"
+      },
+      {
+        "count": 1,
+        "name": "Battle Cage",
+        "set": "PFL",
+        "number": "85"
+      }
+    ],
+    "energy": [
+      {
+        "count": 2,
+        "name": "Fire Energy",
+        "set": "MEE",
+        "number": "2"
+      },
+      {
+        "count": 2,
+        "name": "Water Energy",
+        "set": "MEE",
+        "number": "3"
+      },
+      {
+        "count": 2,
+        "name": "Psychic Energy",
+        "set": "MEE",
+        "number": "5"
+      },
+      {
+        "count": 1,
+        "name": "Grass Energy",
+        "set": "MEE",
+        "number": "1"
+      },
+      {
+        "count": 1,
+        "name": "Lightning Energy",
+        "set": "MEE",
+        "number": "4"
+      }
+    ]
+  }
+}

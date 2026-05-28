@@ -1,0 +1,221 @@
+{
+  "ok": true,
+  "message": {
+    "pokemon": [
+      {
+        "count": 3,
+        "name": "Snorunt",
+        "set": "ASC",
+        "number": "46"
+      },
+      {
+        "count": 2,
+        "name": "Froslass",
+        "set": "TWM",
+        "number": "53"
+      },
+      {
+        "count": 1,
+        "name": "Mega Froslass ex",
+        "set": "ASC",
+        "number": "47"
+      },
+      {
+        "count": 3,
+        "name": "Munkidori",
+        "set": "ASC",
+        "number": "99"
+      },
+      {
+        "count": 2,
+        "name": "Staryu",
+        "set": "POR",
+        "number": "20"
+      },
+      {
+        "count": 2,
+        "name": "Mega Starmie ex",
+        "set": "POR",
+        "number": "21"
+      },
+      {
+        "count": 1,
+        "name": "Bronzor",
+        "set": "PRE",
+        "number": "66"
+      },
+      {
+        "count": 1,
+        "name": "Bronzor",
+        "set": "TEF",
+        "number": "68"
+      },
+      {
+        "count": 2,
+        "name": "Bronzong",
+        "set": "TEF",
+        "number": "69"
+      },
+      {
+        "count": 1,
+        "name": "Lillie's Clefairy ex",
+        "set": "ASC",
+        "number": "76"
+      },
+      {
+        "count": 1,
+        "name": "Yveltal",
+        "set": "MEG",
+        "number": "88"
+      },
+      {
+        "count": 1,
+        "name": "Latias ex",
+        "set": "SSP",
+        "number": "76"
+      },
+      {
+        "count": 1,
+        "name": "Fezandipiti ex",
+        "set": "ASC",
+        "number": "142"
+      },
+      {
+        "count": 1,
+        "name": "Budew",
+        "set": "ASC",
+        "number": "16"
+      },
+      {
+        "count": 1,
+        "name": "Meowth ex",
+        "set": "POR",
+        "number": "62"
+      }
+    ],
+    "trainer": [
+      {
+        "count": 4,
+        "name": "Lillie's Determination",
+        "set": "MEG",
+        "number": "119"
+      },
+      {
+        "count": 3,
+        "name": "Hilda",
+        "set": "WHT",
+        "number": "84"
+      },
+      {
+        "count": 2,
+        "name": "Boss's Orders",
+        "set": "MEG",
+        "number": "114"
+      },
+      {
+        "count": 1,
+        "name": "Crispin",
+        "set": "SCR",
+        "number": "133"
+      },
+      {
+        "count": 1,
+        "name": "Judge",
+        "set": "POR",
+        "number": "76"
+      },
+      {
+        "count": 1,
+        "name": "Salvatore",
+        "set": "TEF",
+        "number": "160"
+      },
+      {
+        "count": 1,
+        "name": "Wally's Compassion",
+        "set": "MEG",
+        "number": "132"
+      },
+      {
+        "count": 4,
+        "name": "Poké Pad",
+        "set": "POR",
+        "number": "81"
+      },
+      {
+        "count": 4,
+        "name": "Ultra Ball",
+        "set": "MEG",
+        "number": "131"
+      },
+      {
+        "count": 2,
+        "name": "Buddy-Buddy Poffin",
+        "set": "ASC",
+        "number": "184"
+      },
+      {
+        "count": 1,
+        "name": "Switch",
+        "set": "MEG",
+        "number": "130"
+      },
+      {
+        "count": 1,
+        "name": "Night Stretcher",
+        "set": "ASC",
+        "number": "196"
+      },
+      {
+        "count": 1,
+        "name": "Air Balloon",
+        "set": "ASC",
+        "number": "181"
+      },
+      {
+        "count": 1,
+        "name": "Risky Ruins",
+        "set": "MEG",
+        "number": "127"
+      },
+      {
+        "count": 1,
+        "name": "Lumiose City",
+        "set": "POR",
+        "number": "77"
+      }
+    ],
+    "energy": [
+      {
+        "count": 3,
+        "name": "Darkness Energy",
+        "set": "MEE",
+        "number": "7"
+      },
+      {
+        "count": 2,
+        "name": "Water Energy",
+        "set": "MEE",
+        "number": "3"
+      },
+      {
+        "count": 2,
+        "name": "Psychic Energy",
+        "set": "MEE",
+        "number": "5"
+      },
+      {
+        "count": 1,
+        "name": "Legacy Energy",
+        "set": "TWM",
+        "number": "167"
+      },
+      {
+        "count": 1,
+        "name": "Telepathic Psychic Energy",
+        "set": "POR",
+        "number": "88"
+      }
+    ]
+  }
+}

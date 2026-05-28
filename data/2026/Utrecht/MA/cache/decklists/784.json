@@ -1,0 +1,233 @@
+{
+  "ok": true,
+  "message": {
+    "pokemon": [
+      {
+        "count": 3,
+        "name": "Hoothoot",
+        "set": "SCR",
+        "number": "114"
+      },
+      {
+        "count": 3,
+        "name": "Noctowl",
+        "set": "SCR",
+        "number": "115"
+      },
+      {
+        "count": 1,
+        "name": "Eevee",
+        "set": "SSP",
+        "number": "143"
+      },
+      {
+        "count": 1,
+        "name": "Eevee",
+        "set": "SFA",
+        "number": "50"
+      },
+      {
+        "count": 2,
+        "name": "Flareon ex",
+        "set": "PRE",
+        "number": "14"
+      },
+      {
+        "count": 1,
+        "name": "Jolteon ex",
+        "set": "PRE",
+        "number": "30"
+      },
+      {
+        "count": 1,
+        "name": "Leafeon ex",
+        "set": "PRE",
+        "number": "6"
+      },
+      {
+        "count": 1,
+        "name": "Sylveon ex",
+        "set": "SSP",
+        "number": "86"
+      },
+      {
+        "count": 2,
+        "name": "Eevee ex",
+        "set": "PRE",
+        "number": "75"
+      },
+      {
+        "count": 2,
+        "name": "Lillie's Clefairy ex",
+        "set": "ASC",
+        "number": "76"
+      },
+      {
+        "count": 1,
+        "name": "Dunsparce",
+        "set": "TEF",
+        "number": "128"
+      },
+      {
+        "count": 1,
+        "name": "Dudunsparce",
+        "set": "TEF",
+        "number": "129"
+      },
+      {
+        "count": 1,
+        "name": "Chien-Pao",
+        "set": "SSP",
+        "number": "56"
+      },
+      {
+        "count": 1,
+        "name": "Wellspring Mask Ogerpon ex",
+        "set": "TWM",
+        "number": "64"
+      },
+      {
+        "count": 1,
+        "name": "Paldean Tauros",
+        "set": "SSP",
+        "number": "18"
+      },
+      {
+        "count": 1,
+        "name": "Fan Rotom",
+        "set": "ASC",
+        "number": "171"
+      }
+    ],
+    "trainer": [
+      {
+        "count": 4,
+        "name": "Crispin",
+        "set": "SCR",
+        "number": "133"
+      },
+      {
+        "count": 2,
+        "name": "Judge",
+        "set": "POR",
+        "number": "76"
+      },
+      {
+        "count": 2,
+        "name": "Boss's Orders",
+        "set": "MEG",
+        "number": "114"
+      },
+      {
+        "count": 1,
+        "name": "Hilda",
+        "set": "WHT",
+        "number": "84"
+      },
+      {
+        "count": 4,
+        "name": "Poké Pad",
+        "set": "POR",
+        "number": "81"
+      },
+      {
+        "count": 2,
+        "name": "Switch",
+        "set": "MEG",
+        "number": "130"
+      },
+      {
+        "count": 2,
+        "name": "Buddy-Buddy Poffin",
+        "set": "ASC",
+        "number": "184"
+      },
+      {
+        "count": 2,
+        "name": "Ultra Ball",
+        "set": "MEG",
+        "number": "131"
+      },
+      {
+        "count": 1,
+        "name": "Tera Orb",
+        "set": "SSP",
+        "number": "189"
+      },
+      {
+        "count": 1,
+        "name": "Night Stretcher",
+        "set": "ASC",
+        "number": "196"
+      },
+      {
+        "count": 1,
+        "name": "Glass Trumpet",
+        "set": "ASC",
+        "number": "189"
+      },
+      {
+        "count": 1,
+        "name": "Energy Switch",
+        "set": "MEG",
+        "number": "115"
+      },
+      {
+        "count": 1,
+        "name": "Handheld Fan",
+        "set": "TWM",
+        "number": "150"
+      },
+      {
+        "count": 1,
+        "name": "Sparkling Crystal",
+        "set": "SCR",
+        "number": "142"
+      },
+      {
+        "count": 2,
+        "name": "Battle Cage",
+        "set": "PFL",
+        "number": "85"
+      }
+    ],
+    "energy": [
+      {
+        "count": 2,
+        "name": "Psychic Energy",
+        "set": "MEE",
+        "number": "5"
+      },
+      {
+        "count": 2,
+        "name": "Lightning Energy",
+        "set": "MEE",
+        "number": "4"
+      },
+      {
+        "count": 2,
+        "name": "Water Energy",
+        "set": "MEE",
+        "number": "3"
+      },
+      {
+        "count": 2,
+        "name": "Fire Energy",
+        "set": "MEE",
+        "number": "2"
+      },
+      {
+        "count": 1,
+        "name": "Grass Energy",
+        "set": "MEE",
+        "number": "1"
+      },
+      {
+        "count": 1,
+        "name": "Mist Energy",
+        "set": "TEF",
+        "number": "161"
+      }
+    ]
+  }
+}

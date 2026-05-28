@@ -5,8 +5,18 @@ from app.config import Settings
 from app.services.dataset_registry_service import DatasetRegistryService
 
 
+EXPECTED_2026_MA_DATASET_IDS = {
+    "2026-campinas-ma",
+    "2026-los-angeles-ma",
+    "2026-melbourne-ma",
+    "2026-prague-ma",
+    "2026-utrecht-ma",
+}
+
+
 def test_settings_default_data_root_and_state_path():
     settings = Settings.from_env()
+    assert str(settings.report_path).endswith("data/2026/Prague/MA/analysis.json")
     assert str(settings.data_root).endswith("data")
     assert str(settings.dataset_state_path).endswith("data/config/dataset_state.json")
 
@@ -34,3 +44,10 @@ def test_discovery_skips_invalid_analysis_json(tmp_path: Path):
     records = DatasetRegistryService(tmp_path).list_datasets()
 
     assert records == []
+
+
+def test_default_data_root_discovers_migrated_2026_ma_datasets():
+    records = DatasetRegistryService(Path("data")).list_datasets()
+    discovered_ids = {record.dataset_id for record in records}
+
+    assert EXPECTED_2026_MA_DATASET_IDS <= discovered_ids

@@ -1,0 +1,197 @@
+{
+  "ok": true,
+  "message": {
+    "pokemon": [
+      {
+        "count": 2,
+        "name": "Slowpoke",
+        "set": "SCR",
+        "number": "57"
+      },
+      {
+        "count": 2,
+        "name": "Slowking",
+        "set": "SCR",
+        "number": "58"
+      },
+      {
+        "count": 2,
+        "name": "Latias ex",
+        "set": "SSP",
+        "number": "76"
+      },
+      {
+        "count": 2,
+        "name": "Lunatone",
+        "set": "MEG",
+        "number": "74"
+      },
+      {
+        "count": 2,
+        "name": "Solrock",
+        "set": "MEG",
+        "number": "75"
+      },
+      {
+        "count": 2,
+        "name": "Mega Kangaskhan ex",
+        "set": "MEG",
+        "number": "104"
+      },
+      {
+        "count": 1,
+        "name": "Riolu",
+        "set": "MEG",
+        "number": "76"
+      },
+      {
+        "count": 1,
+        "name": "Mega Lucario ex",
+        "set": "MEG",
+        "number": "77"
+      },
+      {
+        "count": 1,
+        "name": "Lillie's Clefairy ex",
+        "set": "ASC",
+        "number": "76"
+      },
+      {
+        "count": 1,
+        "name": "Annihilape",
+        "set": "SSP",
+        "number": "100"
+      },
+      {
+        "count": 1,
+        "name": "Bloodmoon Ursaluna",
+        "set": "PRE",
+        "number": "54"
+      },
+      {
+        "count": 1,
+        "name": "Kyurem",
+        "set": "SFA",
+        "number": "47"
+      },
+      {
+        "count": 1,
+        "name": "Cornerstone Mask Ogerpon ex",
+        "set": "TWM",
+        "number": "112"
+      }
+    ],
+    "trainer": [
+      {
+        "count": 3,
+        "name": "Ciphermaniac's Codebreaking",
+        "set": "TEF",
+        "number": "145"
+      },
+      {
+        "count": 2,
+        "name": "Boss's Orders",
+        "set": "MEG",
+        "number": "114"
+      },
+      {
+        "count": 2,
+        "name": "Crispin",
+        "set": "SCR",
+        "number": "133"
+      },
+      {
+        "count": 2,
+        "name": "Lana's Aid",
+        "set": "TWM",
+        "number": "155"
+      },
+      {
+        "count": 1,
+        "name": "Brock's Scouting",
+        "set": "JTG",
+        "number": "146"
+      },
+      {
+        "count": 1,
+        "name": "Xerosic's Machinations",
+        "set": "SFA",
+        "number": "64"
+      },
+      {
+        "count": 4,
+        "name": "Fighting Gong",
+        "set": "MEG",
+        "number": "116"
+      },
+      {
+        "count": 4,
+        "name": "Poké Pad",
+        "set": "POR",
+        "number": "81"
+      },
+      {
+        "count": 3,
+        "name": "Night Stretcher",
+        "set": "ASC",
+        "number": "196"
+      },
+      {
+        "count": 2,
+        "name": "Energy Switch",
+        "set": "MEG",
+        "number": "115"
+      },
+      {
+        "count": 1,
+        "name": "Energy Retrieval",
+        "set": "SVI",
+        "number": "171"
+      },
+      {
+        "count": 1,
+        "name": "Secret Box",
+        "set": "TWM",
+        "number": "163"
+      },
+      {
+        "count": 1,
+        "name": "Switch",
+        "set": "MEG",
+        "number": "130"
+      },
+      {
+        "count": 1,
+        "name": "Ultra Ball",
+        "set": "MEG",
+        "number": "131"
+      },
+      {
+        "count": 1,
+        "name": "Powerglass",
+        "set": "SFA",
+        "number": "63"
+      },
+      {
+        "count": 2,
+        "name": "Academy at Night",
+        "set": "SFA",
+        "number": "54"
+      }
+    ],
+    "energy": [
+      {
+        "count": 7,
+        "name": "Fighting Energy",
+        "set": "MEE",
+        "number": "6"
+      },
+      {
+        "count": 3,
+        "name": "Psychic Energy",
+        "set": "MEE",
+        "number": "5"
+      }
+    ]
+  }
+}

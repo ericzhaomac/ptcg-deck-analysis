@@ -1,0 +1,155 @@
+{
+  "ok": true,
+  "message": {
+    "pokemon": [
+      {
+        "count": 4,
+        "name": "Fezandipiti ex",
+        "set": "ASC",
+        "number": "142"
+      },
+      {
+        "count": 4,
+        "name": "Meowth ex",
+        "set": "POR",
+        "number": "62"
+      }
+    ],
+    "trainer": [
+      {
+        "count": 4,
+        "name": "Jacinthe",
+        "set": "POR",
+        "number": "75"
+      },
+      {
+        "count": 4,
+        "name": "Briar",
+        "set": "SCR",
+        "number": "132"
+      },
+      {
+        "count": 2,
+        "name": "Rosa's Encouragement",
+        "set": "POR",
+        "number": "84"
+      },
+      {
+        "count": 1,
+        "name": "Tarragon",
+        "set": "POR",
+        "number": "85"
+      },
+      {
+        "count": 4,
+        "name": "Poké Pad",
+        "set": "POR",
+        "number": "81"
+      },
+      {
+        "count": 4,
+        "name": "Buddy-Buddy Poffin",
+        "set": "ASC",
+        "number": "184"
+      },
+      {
+        "count": 4,
+        "name": "Rare Candy",
+        "set": "MEG",
+        "number": "125"
+      },
+      {
+        "count": 2,
+        "name": "Energy Search",
+        "set": "POR",
+        "number": "72"
+      },
+      {
+        "count": 2,
+        "name": "Wondrous Patch",
+        "set": "PFL",
+        "number": "94"
+      },
+      {
+        "count": 2,
+        "name": "N's PP Up",
+        "set": "ASC",
+        "number": "195"
+      },
+      {
+        "count": 2,
+        "name": "Premium Power Pro",
+        "set": "MEG",
+        "number": "124"
+      },
+      {
+        "count": 2,
+        "name": "Team Rocket's Transceiver",
+        "set": "ASC",
+        "number": "209"
+      },
+      {
+        "count": 1,
+        "name": "Energy Recycler",
+        "set": "DRI",
+        "number": "164"
+      },
+      {
+        "count": 1,
+        "name": "Blowtorch",
+        "set": "PFL",
+        "number": "86"
+      },
+      {
+        "count": 1,
+        "name": "Iron Defender",
+        "set": "MEG",
+        "number": "118"
+      },
+      {
+        "count": 2,
+        "name": "Mystery Garden",
+        "set": "MEG",
+        "number": "122"
+      },
+      {
+        "count": 1,
+        "name": "Grand Tree",
+        "set": "SCR",
+        "number": "136"
+      },
+      {
+        "count": 1,
+        "name": "Forest of Vitality",
+        "set": "MEG",
+        "number": "117"
+      }
+    ],
+    "energy": [
+      {
+        "count": 3,
+        "name": "Growing Grass Energy",
+        "set": "POR",
+        "number": "86"
+      },
+      {
+        "count": 3,
+        "name": "Rocky Fighting Energy",
+        "set": "POR",
+        "number": "87"
+      },
+      {
+        "count": 3,
+        "name": "Telepathic Psychic Energy",
+        "set": "POR",
+        "number": "88"
+      },
+      {
+        "count": 3,
+        "name": "Team Rocket's Energy",
+        "set": "ASC",
+        "number": "217"
+      }
+    ]
+  }
+}

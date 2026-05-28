@@ -1,0 +1,35 @@
+{
+  "ok": true,
+  "message": {
+    "pokemon": [
+      {
+        "count": 3,
+        "name": "Budew",
+        "set": "ASC",
+        "number": "16"
+      }
+    ],
+    "trainer": [
+      {
+        "count": 1,
+        "name": "Hero's Cape",
+        "set": "TEF",
+        "number": "152"
+      }
+    ],
+    "energy": [
+      {
+        "count": 52,
+        "name": "Grass Energy",
+        "set": "MEE",
+        "number": "1"
+      },
+      {
+        "count": 4,
+        "name": "Growing Grass Energy",
+        "set": "POR",
+        "number": "86"
+      }
+    ]
+  }
+}

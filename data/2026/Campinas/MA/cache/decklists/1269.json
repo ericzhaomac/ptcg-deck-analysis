@@ -1,0 +1,185 @@
+{
+  "ok": true,
+  "message": {
+    "pokemon": [
+      {
+        "count": 4,
+        "name": "Honedge",
+        "set": "POR",
+        "number": "56"
+      },
+      {
+        "count": 4,
+        "name": "Doublade",
+        "set": "POR",
+        "number": "57"
+      },
+      {
+        "count": 4,
+        "name": "Aegislash",
+        "set": "POR",
+        "number": "58"
+      },
+      {
+        "count": 3,
+        "name": "Dunsparce",
+        "set": "TEF",
+        "number": "128"
+      },
+      {
+        "count": 3,
+        "name": "Dudunsparce",
+        "set": "TEF",
+        "number": "129"
+      },
+      {
+        "count": 2,
+        "name": "Genesect ex",
+        "set": "BLK",
+        "number": "67"
+      },
+      {
+        "count": 1,
+        "name": "Shaymin",
+        "set": "DRI",
+        "number": "10"
+      },
+      {
+        "count": 1,
+        "name": "Fan Rotom",
+        "set": "ASC",
+        "number": "171"
+      },
+      {
+        "count": 1,
+        "name": "Fezandipiti ex",
+        "set": "ASC",
+        "number": "142"
+      },
+      {
+        "count": 1,
+        "name": "Latias ex",
+        "set": "SSP",
+        "number": "76"
+      }
+    ],
+    "trainer": [
+      {
+        "count": 3,
+        "name": "Dawn",
+        "set": "PFL",
+        "number": "87"
+      },
+      {
+        "count": 3,
+        "name": "Boss's Orders",
+        "set": "MEG",
+        "number": "114"
+      },
+      {
+        "count": 2,
+        "name": "Brock's Scouting",
+        "set": "JTG",
+        "number": "146"
+      },
+      {
+        "count": 2,
+        "name": "Team Rocket's Petrel",
+        "set": "ASC",
+        "number": "207"
+      },
+      {
+        "count": 2,
+        "name": "Hilda",
+        "set": "WHT",
+        "number": "84"
+      },
+      {
+        "count": 1,
+        "name": "Lana's Aid",
+        "set": "TWM",
+        "number": "155"
+      },
+      {
+        "count": 1,
+        "name": "Crispin",
+        "set": "SCR",
+        "number": "133"
+      },
+      {
+        "count": 4,
+        "name": "Poké Pad",
+        "set": "POR",
+        "number": "81"
+      },
+      {
+        "count": 3,
+        "name": "Buddy-Buddy Poffin",
+        "set": "ASC",
+        "number": "184"
+      },
+      {
+        "count": 1,
+        "name": "Max Rod",
+        "set": "PRE",
+        "number": "116"
+      },
+      {
+        "count": 1,
+        "name": "Sacred Ash",
+        "set": "DRI",
+        "number": "168"
+      },
+      {
+        "count": 1,
+        "name": "Switch",
+        "set": "MEG",
+        "number": "130"
+      },
+      {
+        "count": 3,
+        "name": "Battle Cage",
+        "set": "PFL",
+        "number": "85"
+      }
+    ],
+    "energy": [
+      {
+        "count": 4,
+        "name": "Ignition Energy",
+        "set": "WHT",
+        "number": "86"
+      },
+      {
+        "count": 1,
+        "name": "Lightning Energy",
+        "set": "MEE",
+        "number": "4"
+      },
+      {
+        "count": 1,
+        "name": "Water Energy",
+        "set": "MEE",
+        "number": "3"
+      },
+      {
+        "count": 1,
+        "name": "Fire Energy",
+        "set": "MEE",
+        "number": "2"
+      },
+      {
+        "count": 1,
+        "name": "Mist Energy",
+        "set": "TEF",
+        "number": "161"
+      },
+      {
+        "count": 1,
+        "name": "Metal Energy",
+        "set": "MEE",
+        "number": "8"
+      }
+    ]
+  }
+}
