@@ -1,36 +1,39 @@
-# Deck Analysis Service
+# PTCG Deck Analysis
 
-Standalone FastAPI service for PTCG tournament deck-analysis datasets.
+Standalone FastAPI service for multi-event PTCG deck-analysis datasets.
 
-## 当前范围
+## What This Repo Does
 
-- Dataset discovery from a mounted data directory
-- Mounted/current dataset state API
-- Generic metagame summary, deck compare, and explain APIs
-- OpenAI-compatible provider abstraction（当前默认指向 Kimi Code）
-- Neutral HTTP provider 配置页（保存 custom base URL / model / API key）
-- Curated 2026 Limitless Labs MA datasets:
-  - Prague (`2026-prague-ma`, tournament `0062`)
-  - Los Angeles (`2026-los-angeles-ma`, tournament `0063`)
-  - Utrecht (`2026-utrecht-ma`, tournament `0064`)
-  - Campinas (`2026-campinas-ma`, tournament `0065`)
-  - Melbourne (`2026-melbourne-ma`, tournament `0066`)
+- Discovers datasets from a mounted data directory
+- Tracks mounted datasets and the current active dataset
+- Serves generic metagame summary, compare, and explain APIs
+- Supports OpenAI-compatible providers through env vars or a local config file
+- Ships with curated 2026 Limitless Labs MA datasets
 
-## 目录
+## Included Datasets
 
-- `app/main.py` FastAPI 入口
-- `app/config.py` 环境变量配置
-- `app/provider_config.py` provider 配置读写与 mask
-- `app/services/dataset_analysis_service.py` dataset 报告读取与分析逻辑
-- `app/providers/openai_compatible.py` 自定义 OpenAI-compatible endpoint 抽象
-- `app/api/routes.py` API routes + 配置页
-- `scripts/tools/limitless_tournament_analysis.py` Limitless Labs tournament report generator
-- `scripts/tools/prague_phase15_tools.py` Prague summary/deck comparison CLI helper
-- `scripts/tools/test_*.py` migrated tool tests
+- Prague: `2026-prague-ma` (`0062`)
+- Los Angeles: `2026-los-angeles-ma` (`0063`)
+- Utrecht: `2026-utrecht-ma` (`0064`)
+- Campinas: `2026-campinas-ma` (`0065`)
+- Melbourne: `2026-melbourne-ma` (`0066`)
 
-## Dataset directory convention
+The current mounted/current dataset state lives in `data/config/dataset_state.json`.
 
-`DATA_ROOT` 下按以下约定放置已生成的 analysis JSON：
+## Project Layout
+
+- `app/main.py`: FastAPI entrypoint
+- `app/api/routes.py`: API routes and provider config page
+- `app/config.py`: environment-backed app configuration
+- `app/provider_config.py`: provider config file read/write and masking
+- `app/services/dataset_analysis_service.py`: dataset loading and analysis logic
+- `app/providers/openai_compatible.py`: OpenAI-compatible provider adapter
+- `scripts/tools/limitless_tournament_analysis.py`: Limitless Labs dataset generator
+- `scripts/tools/test_*.py`: script-level tests
+
+## Dataset Layout
+
+Datasets are discovered under `DATA_ROOT` using this structure:
 
 ```text
 DATA_ROOT/
@@ -38,21 +41,23 @@ DATA_ROOT/
     <event>/
       <division>/
         analysis.json
+        cache/
+          tournament.json
+          decks.json
+          standings.json
+          decklists/
+            <tp_id>.json
 ```
 
-示例：`data/2026/Prague/MA/analysis.json` 会被识别为 dataset id `2026-prague-ma`。
-
-当前仓库内置 datasets：
+Example:
 
 ```text
-data/2026/Prague/MA/analysis.json
-data/2026/Los_Angeles/MA/analysis.json
-data/2026/Utrecht/MA/analysis.json
-data/2026/Campinas/MA/analysis.json
 data/2026/Melbourne/MA/analysis.json
 ```
 
-## 本地运行
+This is discovered as dataset id `2026-melbourne-ma`.
+
+## Local Run
 
 ```bash
 python3 -m venv .venv
@@ -61,13 +66,7 @@ pip install -r requirements.txt
 uvicorn app.main:app --reload --port 8010
 ```
 
-### Tests
-
-```bash
-PYTHONPATH=. pytest
-```
-
-可选环境变量：
+Useful env vars:
 
 ```bash
 export DATA_ROOT=/data
@@ -78,28 +77,22 @@ export OPENAI_COMPATIBLE_API_KEY=your_key
 export OPENAI_COMPATIBLE_MODEL=kimi-code
 ```
 
-- `DATA_ROOT`：dataset discovery 根目录，默认 `data`。
-- `DATASET_STATE_PATH`：mounted/current dataset 状态文件，默认 `data/config/dataset_state.json`。
-- `PROVIDER_CONFIG_PATH`：provider 配置文件，默认 `/data/config/provider.json`。
+Notes:
 
-`POST /api/v1/analysis/explain` 会优先读 `PROVIDER_CONFIG_PATH` 指向的 JSON 文件；如果文件不存在或不完整，再 fallback 到 env。
+- `DATA_ROOT` defaults to `data`
+- `DATASET_STATE_PATH` defaults to `data/config/dataset_state.json`
+- `PROVIDER_CONFIG_PATH` points to the persisted provider config file
+- `POST /api/v1/analysis/explain` reads `PROVIDER_CONFIG_PATH` first, then falls back to env vars
 
 ## Docker
 
-默认约定：
-
-- dataset 挂载目录：`/data`
-- dataset 状态文件：`/data/config/dataset_state.json`
-- provider 配置文件：`/data/config/provider.json`
-- Web 配置页：`/api/v1/provider/config`
-
-### build
+Build:
 
 ```bash
 docker build -t ptcg-deck-analysis .
 ```
 
-### run
+Run:
 
 ```bash
 docker run --rm -p 8010:8010 \
@@ -113,37 +106,34 @@ docker run --rm -p 8010:8010 \
   ptcg-deck-analysis
 ```
 
-即使传了 env，后续你也可以在浏览器页面里改成别的 base URL / model / key；保存后 explain 会优先使用文件配置。
+The browser config page is available at `http://localhost:8010/api/v1/provider/config`.
 
-## API
+## Tests
+
+```bash
+PYTHONPATH=. pytest
+```
+
+## API Surface
 
 - `GET /health`
-- `GET /api/v1/datasets`：列出 available datasets 与 mounted/current 状态
-- `GET /api/v1/datasets/mounted`：查看 mounted/current 状态
-- `POST /api/v1/datasets/mount`：挂载 dataset
-- `POST /api/v1/datasets/unmount`：卸载 dataset
-- `POST /api/v1/datasets/current`：设置 current dataset
-- `GET /api/v1/analysis/summary`：读取 current dataset summary；也可传 `dataset_id`
-- `POST /api/v1/analysis/compare`：对比用户 deck 与 dataset archetype
-- `POST /api/v1/analysis/explain`：基于 dataset context 调用 provider 解释
-- `GET /api/v1/provider`：查看当前 active/file/env provider（API key 已 mask）
-- `GET /api/v1/provider/config`：HTML 配置页
-- `POST /api/v1/provider/config`：保存配置表单
+- `GET /api/v1/datasets`
+- `GET /api/v1/datasets/mounted`
+- `POST /api/v1/datasets/mount`
+- `POST /api/v1/datasets/unmount`
+- `POST /api/v1/datasets/current`
+- `GET /api/v1/analysis/summary`
+- `POST /api/v1/analysis/compare`
+- `POST /api/v1/analysis/explain`
+- `GET /api/v1/provider`
+- `GET /api/v1/provider/config`
+- `POST /api/v1/provider/config`
 
-### 浏览器配置方式
+## Provider Config Safety
 
-1. 启动服务
-2. 打开 `http://localhost:8010/api/v1/provider/config`
-3. 填写：
-   - custom base URL
-   - custom model name
-   - API key
-4. 点击“保存配置”
-5. 后续调用 `POST /api/v1/analysis/explain` 会自动使用该配置
+`data/config/provider.json` is intentionally kept local and ignored by Git. Store API keys there if you want the browser config page to persist credentials across restarts.
 
-如果已经保存过 API key，后续只改 base URL / model 时可以把 API key 输入框留空，服务会保留旧 key。
-
-### compare request example
+## Compare Request Example
 
 ```json
 {
@@ -157,4 +147,4 @@ docker run --rm -p 8010:8010 \
 }
 ```
 
-`dataset_id` is optional when a current dataset is mounted.
+`dataset_id` is optional when a current dataset is already mounted.
