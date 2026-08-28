@@ -1,0 +1,173 @@
+{
+  "ok": true,
+  "message": {
+    "pokemon": [
+      {
+        "count": 4,
+        "name": "Bronzor",
+        "set": "TEF",
+        "number": "68"
+      },
+      {
+        "count": 2,
+        "name": "Bronzong",
+        "set": "TEF",
+        "number": "69"
+      },
+      {
+        "count": 3,
+        "name": "Duskull",
+        "set": "PRE",
+        "number": "35"
+      },
+      {
+        "count": 2,
+        "name": "Dusclops",
+        "set": "PRE",
+        "number": "36"
+      },
+      {
+        "count": 2,
+        "name": "Dusknoir",
+        "set": "PRE",
+        "number": "37"
+      },
+      {
+        "count": 2,
+        "name": "Girafarig",
+        "set": "TEF",
+        "number": "66"
+      },
+      {
+        "count": 1,
+        "name": "Farigiraf ex",
+        "set": "TEF",
+        "number": "108"
+      },
+      {
+        "count": 2,
+        "name": "Meowth ex",
+        "set": "POR",
+        "number": "62"
+      },
+      {
+        "count": 1,
+        "name": "Snorunt",
+        "set": "ASC",
+        "number": "46"
+      },
+      {
+        "count": 1,
+        "name": "Froslass",
+        "set": "TWM",
+        "number": "53"
+      },
+      {
+        "count": 1,
+        "name": "Munkidori",
+        "set": "ASC",
+        "number": "99"
+      },
+      {
+        "count": 1,
+        "name": "Bloodmoon Ursaluna ex",
+        "set": "TWM",
+        "number": "141"
+      },
+      {
+        "count": 1,
+        "name": "Latias ex",
+        "set": "SSP",
+        "number": "76"
+      }
+    ],
+    "trainer": [
+      {
+        "count": 4,
+        "name": "Lillie's Determination",
+        "set": "MEG",
+        "number": "119"
+      },
+      {
+        "count": 3,
+        "name": "Hilda",
+        "set": "WHT",
+        "number": "84"
+      },
+      {
+        "count": 3,
+        "name": "Surfer",
+        "set": "ASC",
+        "number": "200"
+      },
+      {
+        "count": 1,
+        "name": "Salvatore",
+        "set": "TEF",
+        "number": "160"
+      },
+      {
+        "count": 4,
+        "name": "Ultra Ball",
+        "set": "MEG",
+        "number": "131"
+      },
+      {
+        "count": 4,
+        "name": "Poké Pad",
+        "set": "POR",
+        "number": "81"
+      },
+      {
+        "count": 4,
+        "name": "Night Stretcher",
+        "set": "ASC",
+        "number": "196"
+      },
+      {
+        "count": 1,
+        "name": "Secret Box",
+        "set": "TWM",
+        "number": "163"
+      },
+      {
+        "count": 1,
+        "name": "Special Red Card",
+        "set": "CRI",
+        "number": "82"
+      },
+      {
+        "count": 1,
+        "name": "Lucky Helmet",
+        "set": "TWM",
+        "number": "158"
+      },
+      {
+        "count": 2,
+        "name": "Mystery Garden",
+        "set": "MEG",
+        "number": "122"
+      }
+    ],
+    "energy": [
+      {
+        "count": 4,
+        "name": "Telepathic Psychic Energy",
+        "set": "POR",
+        "number": "88"
+      },
+      {
+        "count": 4,
+        "name": "Psychic Energy",
+        "set": "MEE",
+        "number": "5"
+      },
+      {
+        "count": 1,
+        "name": "Darkness Energy",
+        "set": "MEE",
+        "number": "7"
+      }
+    ]
+  }
+}

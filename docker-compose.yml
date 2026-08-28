@@ -1,6 +1,7 @@
 services:
   deck-analysis:
     build: .
+    restart: always
     ports:
       - "8010:8010"
     environment:

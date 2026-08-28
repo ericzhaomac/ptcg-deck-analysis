@@ -1,0 +1,64 @@
+{
+  "ok": true,
+  "message": {
+    "pokemon": [
+      {
+        "count": 1,
+        "name": "Abra",
+        "set": "TWM",
+        "number": "80"
+      }
+    ],
+    "trainer": [],
+    "energy": [
+      {
+        "count": 8,
+        "name": "Water Energy",
+        "set": "MEE",
+        "number": "3"
+      },
+      {
+        "count": 8,
+        "name": "Darkness Energy",
+        "set": "MEE",
+        "number": "7"
+      },
+      {
+        "count": 8,
+        "name": "Grass Energy",
+        "set": "MEE",
+        "number": "1"
+      },
+      {
+        "count": 8,
+        "name": "Psychic Energy",
+        "set": "MEE",
+        "number": "5"
+      },
+      {
+        "count": 8,
+        "name": "Fighting Energy",
+        "set": "MEE",
+        "number": "6"
+      },
+      {
+        "count": 7,
+        "name": "Metal Energy",
+        "set": "MEE",
+        "number": "8"
+      },
+      {
+        "count": 6,
+        "name": "Lightning Energy",
+        "set": "MEE",
+        "number": "4"
+      },
+      {
+        "count": 6,
+        "name": "Fire Energy",
+        "set": "MEE",
+        "number": "2"
+      }
+    ]
+  }
+}

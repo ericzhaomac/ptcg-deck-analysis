@@ -1,0 +1,155 @@
+{
+  "ok": true,
+  "message": {
+    "pokemon": [
+      {
+        "count": 4,
+        "name": "Duskull",
+        "set": "PRE",
+        "number": "35"
+      },
+      {
+        "count": 3,
+        "name": "Dusclops",
+        "set": "PRE",
+        "number": "36"
+      },
+      {
+        "count": 2,
+        "name": "Dusknoir",
+        "set": "PRE",
+        "number": "37"
+      },
+      {
+        "count": 3,
+        "name": "Smoliv",
+        "set": "DRI",
+        "number": "21"
+      },
+      {
+        "count": 2,
+        "name": "Dolliv",
+        "set": "DRI",
+        "number": "22"
+      },
+      {
+        "count": 2,
+        "name": "Arboliva ex",
+        "set": "DRI",
+        "number": "23"
+      },
+      {
+        "count": 1,
+        "name": "Flutter Mane",
+        "set": "TEF",
+        "number": "78"
+      },
+      {
+        "count": 1,
+        "name": "Meowth ex",
+        "set": "POR",
+        "number": "62"
+      }
+    ],
+    "trainer": [
+      {
+        "count": 4,
+        "name": "Lillie's Determination",
+        "set": "MEG",
+        "number": "119"
+      },
+      {
+        "count": 4,
+        "name": "Carmine",
+        "set": "TWM",
+        "number": "145"
+      },
+      {
+        "count": 2,
+        "name": "Hilda",
+        "set": "WHT",
+        "number": "84"
+      },
+      {
+        "count": 2,
+        "name": "Dawn",
+        "set": "PFL",
+        "number": "87"
+      },
+      {
+        "count": 2,
+        "name": "Boss's Orders",
+        "set": "MEG",
+        "number": "114"
+      },
+      {
+        "count": 4,
+        "name": "Night Stretcher",
+        "set": "ASC",
+        "number": "196"
+      },
+      {
+        "count": 4,
+        "name": "Buddy-Buddy Poffin",
+        "set": "ASC",
+        "number": "184"
+      },
+      {
+        "count": 4,
+        "name": "Rare Candy",
+        "set": "MEG",
+        "number": "125"
+      },
+      {
+        "count": 4,
+        "name": "Pokégear 3.0",
+        "set": "SVI",
+        "number": "186"
+      },
+      {
+        "count": 4,
+        "name": "Poké Pad",
+        "set": "POR",
+        "number": "81"
+      },
+      {
+        "count": 2,
+        "name": "Ultra Ball",
+        "set": "MEG",
+        "number": "131"
+      },
+      {
+        "count": 1,
+        "name": "Tool Scrapper",
+        "set": "ASC",
+        "number": "212"
+      },
+      {
+        "count": 1,
+        "name": "Gravity Gemstone",
+        "set": "SCR",
+        "number": "137"
+      },
+      {
+        "count": 1,
+        "name": "Forest of Vitality",
+        "set": "MEG",
+        "number": "117"
+      }
+    ],
+    "energy": [
+      {
+        "count": 2,
+        "name": "Growing Grass Energy",
+        "set": "POR",
+        "number": "86"
+      },
+      {
+        "count": 1,
+        "name": "Legacy Energy",
+        "set": "TWM",
+        "number": "167"
+      }
+    ]
+  }
+}

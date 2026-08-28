@@ -1,0 +1,19 @@
+{
+  "ok": true,
+  "message": {
+    "rk9_id": "TU01w1D52rjGebrE8szS",
+    "playlatam_id": null,
+    "type": "special",
+    "city": "Turin",
+    "name": null,
+    "date": "June 6–7, 2026",
+    "country": "IT",
+    "updated_at": "2026-06-07 16:51:33",
+    "decklists": 1,
+    "round": 16,
+    "players": 2033,
+    "players_r1": 2021,
+    "started": 1,
+    "completed": 1
+  }
+}

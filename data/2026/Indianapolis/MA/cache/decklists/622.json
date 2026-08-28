@@ -1,0 +1,173 @@
+{
+  "ok": true,
+  "message": {
+    "pokemon": [
+      {
+        "count": 4,
+        "name": "Mega Kangaskhan ex",
+        "set": "MEG",
+        "number": "104"
+      },
+      {
+        "count": 3,
+        "name": "Meowth ex",
+        "set": "POR",
+        "number": "62"
+      },
+      {
+        "count": 2,
+        "name": "Teal Mask Ogerpon ex",
+        "set": "TWM",
+        "number": "25"
+      },
+      {
+        "count": 2,
+        "name": "Latias ex",
+        "set": "SSP",
+        "number": "76"
+      },
+      {
+        "count": 2,
+        "name": "Raging Bolt ex",
+        "set": "TEF",
+        "number": "123"
+      },
+      {
+        "count": 1,
+        "name": "Chien-Pao",
+        "set": "SSP",
+        "number": "56"
+      },
+      {
+        "count": 1,
+        "name": "Passimian",
+        "set": "SSP",
+        "number": "111"
+      },
+      {
+        "count": 1,
+        "name": "Wellspring Mask Ogerpon ex",
+        "set": "TWM",
+        "number": "64"
+      },
+      {
+        "count": 1,
+        "name": "Lillie's Clefairy ex",
+        "set": "ASC",
+        "number": "76"
+      },
+      {
+        "count": 1,
+        "name": "Fezandipiti ex",
+        "set": "ASC",
+        "number": "142"
+      }
+    ],
+    "trainer": [
+      {
+        "count": 4,
+        "name": "Crispin",
+        "set": "SCR",
+        "number": "133"
+      },
+      {
+        "count": 2,
+        "name": "Boss's Orders",
+        "set": "MEG",
+        "number": "114"
+      },
+      {
+        "count": 2,
+        "name": "Cyrano",
+        "set": "SSP",
+        "number": "170"
+      },
+      {
+        "count": 1,
+        "name": "Ciphermaniac's Codebreaking",
+        "set": "TEF",
+        "number": "145"
+      },
+      {
+        "count": 1,
+        "name": "N's Plan",
+        "set": "BLK",
+        "number": "83"
+      },
+      {
+        "count": 1,
+        "name": "Xerosic's Machinations",
+        "set": "SFA",
+        "number": "64"
+      },
+      {
+        "count": 4,
+        "name": "Ultra Ball",
+        "set": "MEG",
+        "number": "131"
+      },
+      {
+        "count": 3,
+        "name": "Energy Switch",
+        "set": "MEG",
+        "number": "115"
+      },
+      {
+        "count": 2,
+        "name": "Night Stretcher",
+        "set": "ASC",
+        "number": "196"
+      },
+      {
+        "count": 2,
+        "name": "Glass Trumpet",
+        "set": "ASC",
+        "number": "189"
+      },
+      {
+        "count": 1,
+        "name": "Unfair Stamp",
+        "set": "TWM",
+        "number": "165"
+      },
+      {
+        "count": 4,
+        "name": "Area Zero Underdepths",
+        "set": "SCR",
+        "number": "131"
+      }
+    ],
+    "energy": [
+      {
+        "count": 8,
+        "name": "Grass Energy",
+        "set": "MEE",
+        "number": "1"
+      },
+      {
+        "count": 2,
+        "name": "Psychic Energy",
+        "set": "MEE",
+        "number": "5"
+      },
+      {
+        "count": 2,
+        "name": "Lightning Energy",
+        "set": "MEE",
+        "number": "4"
+      },
+      {
+        "count": 2,
+        "name": "Fighting Energy",
+        "set": "MEE",
+        "number": "6"
+      },
+      {
+        "count": 1,
+        "name": "Water Energy",
+        "set": "MEE",
+        "number": "3"
+      }
+    ]
+  }
+}

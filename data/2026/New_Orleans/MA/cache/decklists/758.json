@@ -1,0 +1,131 @@
+{
+  "ok": true,
+  "message": {
+    "pokemon": [
+      {
+        "count": 4,
+        "name": "Weedle",
+        "set": "CRI",
+        "number": "1"
+      },
+      {
+        "count": 4,
+        "name": "Kakuna",
+        "set": "CRI",
+        "number": "2"
+      },
+      {
+        "count": 4,
+        "name": "Beedrill ex",
+        "set": "CRI",
+        "number": "3"
+      },
+      {
+        "count": 3,
+        "name": "Dunsparce",
+        "set": "JTG",
+        "number": "120"
+      },
+      {
+        "count": 3,
+        "name": "Dudunsparce",
+        "set": "TEF",
+        "number": "129"
+      },
+      {
+        "count": 2,
+        "name": "Scatterbug",
+        "set": "POR",
+        "number": "7"
+      },
+      {
+        "count": 2,
+        "name": "Spewpa",
+        "set": "POR",
+        "number": "8"
+      },
+      {
+        "count": 2,
+        "name": "Vivillon",
+        "set": "POR",
+        "number": "9"
+      }
+    ],
+    "trainer": [
+      {
+        "count": 4,
+        "name": "Lillie's Determination",
+        "set": "MEG",
+        "number": "119"
+      },
+      {
+        "count": 3,
+        "name": "Dawn",
+        "set": "PFL",
+        "number": "87"
+      },
+      {
+        "count": 1,
+        "name": "Boss's Orders",
+        "set": "MEG",
+        "number": "114"
+      },
+      {
+        "count": 4,
+        "name": "Buddy-Buddy Poffin",
+        "set": "ASC",
+        "number": "184"
+      },
+      {
+        "count": 4,
+        "name": "Poké Pad",
+        "set": "POR",
+        "number": "81"
+      },
+      {
+        "count": 4,
+        "name": "Bug Catching Set",
+        "set": "TWM",
+        "number": "143"
+      },
+      {
+        "count": 2,
+        "name": "Ultra Ball",
+        "set": "MEG",
+        "number": "131"
+      },
+      {
+        "count": 2,
+        "name": "Sacred Ash",
+        "set": "DRI",
+        "number": "168"
+      },
+      {
+        "count": 1,
+        "name": "Secret Box",
+        "set": "TWM",
+        "number": "163"
+      },
+      {
+        "count": 2,
+        "name": "Air Balloon",
+        "set": "ASC",
+        "number": "181"
+      },
+      {
+        "count": 4,
+        "name": "Forest of Vitality",
+        "set": "MEG",
+        "number": "117"
+      }
+    ],
+    "energy": [
+      {
+        "count": 5,
+        "name": "Grass Energy",
+        "set": "MEE",
+        "number": "1"
+      }
+    ]
+  }
+}

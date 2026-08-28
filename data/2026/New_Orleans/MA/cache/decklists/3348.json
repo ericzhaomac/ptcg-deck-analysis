@@ -1,0 +1,155 @@
+{
+  "ok": true,
+  "message": {
+    "pokemon": [
+      {
+        "count": 4,
+        "name": "Slowpoke",
+        "set": "SCR",
+        "number": "57"
+      },
+      {
+        "count": 3,
+        "name": "Slowking",
+        "set": "SCR",
+        "number": "58"
+      },
+      {
+        "count": 3,
+        "name": "Mega Kangaskhan ex",
+        "set": "MEG",
+        "number": "104"
+      },
+      {
+        "count": 2,
+        "name": "Latias ex",
+        "set": "SSP",
+        "number": "76"
+      },
+      {
+        "count": 2,
+        "name": "Metagross",
+        "set": "CRI",
+        "number": "61"
+      },
+      {
+        "count": 2,
+        "name": "Kyurem",
+        "set": "SFA",
+        "number": "47"
+      },
+      {
+        "count": 1,
+        "name": "Meowth ex",
+        "set": "POR",
+        "number": "62"
+      },
+      {
+        "count": 1,
+        "name": "Lillie's Clefairy ex",
+        "set": "ASC",
+        "number": "76"
+      },
+      {
+        "count": 1,
+        "name": "Fezandipiti ex",
+        "set": "ASC",
+        "number": "142"
+      },
+      {
+        "count": 1,
+        "name": "Smoochum",
+        "set": "SSP",
+        "number": "75"
+      }
+    ],
+    "trainer": [
+      {
+        "count": 4,
+        "name": "Ciphermaniac's Codebreaking",
+        "set": "TEF",
+        "number": "145"
+      },
+      {
+        "count": 4,
+        "name": "Lillie's Determination",
+        "set": "MEG",
+        "number": "119"
+      },
+      {
+        "count": 4,
+        "name": "Ultra Ball",
+        "set": "MEG",
+        "number": "131"
+      },
+      {
+        "count": 4,
+        "name": "Poké Pad",
+        "set": "POR",
+        "number": "81"
+      },
+      {
+        "count": 3,
+        "name": "Wondrous Patch",
+        "set": "PFL",
+        "number": "94"
+      },
+      {
+        "count": 2,
+        "name": "Night Stretcher",
+        "set": "ASC",
+        "number": "196"
+      },
+      {
+        "count": 1,
+        "name": "Secret Box",
+        "set": "TWM",
+        "number": "163"
+      },
+      {
+        "count": 1,
+        "name": "Switch",
+        "set": "MEG",
+        "number": "130"
+      },
+      {
+        "count": 1,
+        "name": "Brave Bangle",
+        "set": "WHT",
+        "number": "80"
+      },
+      {
+        "count": 1,
+        "name": "Lucky Helmet",
+        "set": "TWM",
+        "number": "158"
+      },
+      {
+        "count": 4,
+        "name": "Academy at Night",
+        "set": "SFA",
+        "number": "54"
+      }
+    ],
+    "energy": [
+      {
+        "count": 4,
+        "name": "Telepathic Psychic Energy",
+        "set": "POR",
+        "number": "88"
+      },
+      {
+        "count": 4,
+        "name": "Psychic Energy",
+        "set": "MEE",
+        "number": "5"
+      },
+      {
+        "count": 3,
+        "name": "Boomerang Energy",
+        "set": "TWM",
+        "number": "166"
+      }
+    ]
+  }
+}

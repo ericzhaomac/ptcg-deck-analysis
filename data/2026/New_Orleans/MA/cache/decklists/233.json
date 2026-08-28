@@ -1,0 +1,22 @@
+{
+  "ok": true,
+  "message": {
+    "pokemon": [
+      {
+        "count": 4,
+        "name": "Budew",
+        "set": "ASC",
+        "number": "16"
+      }
+    ],
+    "trainer": [],
+    "energy": [
+      {
+        "count": 56,
+        "name": "Grass Energy",
+        "set": "MEE",
+        "number": "1"
+      }
+    ]
+  }
+}

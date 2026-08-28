@@ -1,0 +1,173 @@
+{
+  "ok": true,
+  "message": {
+    "pokemon": [
+      {
+        "count": 4,
+        "name": "N's Zorua",
+        "set": "ASC",
+        "number": "136"
+      },
+      {
+        "count": 4,
+        "name": "N's Zoroark ex",
+        "set": "ASC",
+        "number": "137"
+      },
+      {
+        "count": 2,
+        "name": "N's Darumaka",
+        "set": "ASC",
+        "number": "32"
+      },
+      {
+        "count": 1,
+        "name": "N's Darmanitan",
+        "set": "ASC",
+        "number": "33"
+      },
+      {
+        "count": 2,
+        "name": "N's Zekrom",
+        "set": "ASC",
+        "number": "155"
+      },
+      {
+        "count": 2,
+        "name": "Munkidori",
+        "set": "ASC",
+        "number": "99"
+      },
+      {
+        "count": 1,
+        "name": "Buneary",
+        "set": "PFL",
+        "number": "83"
+      },
+      {
+        "count": 1,
+        "name": "Mega Lopunny ex",
+        "set": "PFL",
+        "number": "84"
+      },
+      {
+        "count": 1,
+        "name": "Yveltal",
+        "set": "MEG",
+        "number": "88"
+      },
+      {
+        "count": 1,
+        "name": "Pecharunt ex",
+        "set": "SFA",
+        "number": "39"
+      },
+      {
+        "count": 1,
+        "name": "Fezandipiti ex",
+        "set": "ASC",
+        "number": "142"
+      },
+      {
+        "count": 1,
+        "name": "Meowth ex",
+        "set": "POR",
+        "number": "62"
+      }
+    ],
+    "trainer": [
+      {
+        "count": 4,
+        "name": "Lillie's Determination",
+        "set": "MEG",
+        "number": "119"
+      },
+      {
+        "count": 4,
+        "name": "Boss's Orders",
+        "set": "MEG",
+        "number": "114"
+      },
+      {
+        "count": 2,
+        "name": "Cyrano",
+        "set": "SSP",
+        "number": "170"
+      },
+      {
+        "count": 1,
+        "name": "Black Belt's Training",
+        "set": "JTG",
+        "number": "143"
+      },
+      {
+        "count": 1,
+        "name": "Ciphermaniac's Codebreaking",
+        "set": "TEF",
+        "number": "145"
+      },
+      {
+        "count": 1,
+        "name": "Xerosic's Machinations",
+        "set": "SFA",
+        "number": "64"
+      },
+      {
+        "count": 4,
+        "name": "Buddy-Buddy Poffin",
+        "set": "ASC",
+        "number": "184"
+      },
+      {
+        "count": 4,
+        "name": "Ultra Ball",
+        "set": "MEG",
+        "number": "131"
+      },
+      {
+        "count": 3,
+        "name": "N's PP Up",
+        "set": "ASC",
+        "number": "195"
+      },
+      {
+        "count": 2,
+        "name": "Night Stretcher",
+        "set": "ASC",
+        "number": "196"
+      },
+      {
+        "count": 1,
+        "name": "Poké Pad",
+        "set": "POR",
+        "number": "81"
+      },
+      {
+        "count": 1,
+        "name": "Scoop Up Cyclone",
+        "set": "TWM",
+        "number": "162"
+      },
+      {
+        "count": 1,
+        "name": "Binding Mochi",
+        "set": "PRE",
+        "number": "95"
+      },
+      {
+        "count": 2,
+        "name": "N's Castle",
+        "set": "JTG",
+        "number": "152"
+      }
+    ],
+    "energy": [
+      {
+        "count": 8,
+        "name": "Darkness Energy",
+        "set": "MEE",
+        "number": "7"
+      }
+    ]
+  }
+}

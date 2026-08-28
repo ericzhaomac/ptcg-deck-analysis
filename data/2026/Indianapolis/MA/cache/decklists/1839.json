@@ -1,0 +1,137 @@
+{
+  "ok": true,
+  "message": {
+    "pokemon": [
+      {
+        "count": 2,
+        "name": "Charcadet",
+        "set": "SCR",
+        "number": "29"
+      },
+      {
+        "count": 1,
+        "name": "Charcadet",
+        "set": "SSP",
+        "number": "32"
+      },
+      {
+        "count": 1,
+        "name": "Charcadet",
+        "set": "PFL",
+        "number": "19"
+      },
+      {
+        "count": 3,
+        "name": "Ceruledge ex",
+        "set": "SSP",
+        "number": "36"
+      },
+      {
+        "count": 3,
+        "name": "Solrock",
+        "set": "MEG",
+        "number": "75"
+      },
+      {
+        "count": 2,
+        "name": "Lunatone",
+        "set": "MEG",
+        "number": "74"
+      },
+      {
+        "count": 1,
+        "name": "Moltres",
+        "set": "PFL",
+        "number": "14"
+      },
+      {
+        "count": 1,
+        "name": "Fezandipiti ex",
+        "set": "ASC",
+        "number": "142"
+      },
+      {
+        "count": 1,
+        "name": "Meowth ex",
+        "set": "POR",
+        "number": "62"
+      }
+    ],
+    "trainer": [
+      {
+        "count": 4,
+        "name": "Carmine",
+        "set": "TWM",
+        "number": "145"
+      },
+      {
+        "count": 3,
+        "name": "Explorer's Guidance",
+        "set": "TEF",
+        "number": "147"
+      },
+      {
+        "count": 2,
+        "name": "Boss's Orders",
+        "set": "MEG",
+        "number": "114"
+      },
+      {
+        "count": 1,
+        "name": "Briar",
+        "set": "SCR",
+        "number": "132"
+      },
+      {
+        "count": 4,
+        "name": "Fighting Gong",
+        "set": "MEG",
+        "number": "116"
+      },
+      {
+        "count": 4,
+        "name": "Ultra Ball",
+        "set": "MEG",
+        "number": "131"
+      },
+      {
+        "count": 3,
+        "name": "Night Stretcher",
+        "set": "ASC",
+        "number": "196"
+      },
+      {
+        "count": 1,
+        "name": "Brilliant Blender",
+        "set": "SSP",
+        "number": "164"
+      },
+      {
+        "count": 1,
+        "name": "Poké Pad",
+        "set": "POR",
+        "number": "81"
+      },
+      {
+        "count": 1,
+        "name": "Blowtorch",
+        "set": "PFL",
+        "number": "86"
+      }
+    ],
+    "energy": [
+      {
+        "count": 13,
+        "name": "Fighting Energy",
+        "set": "MEE",
+        "number": "6"
+      },
+      {
+        "count": 8,
+        "name": "Fire Energy",
+        "set": "MEE",
+        "number": "2"
+      }
+    ]
+  }
+}

@@ -1,0 +1,179 @@
+{
+  "ok": true,
+  "message": {
+    "pokemon": [
+      {
+        "count": 3,
+        "name": "Dunsparce",
+        "set": "JTG",
+        "number": "120"
+      },
+      {
+        "count": 2,
+        "name": "Dudunsparce",
+        "set": "TEF",
+        "number": "129"
+      },
+      {
+        "count": 2,
+        "name": "Abra",
+        "set": "MEG",
+        "number": "54"
+      },
+      {
+        "count": 1,
+        "name": "Abra",
+        "set": "TWM",
+        "number": "80"
+      },
+      {
+        "count": 3,
+        "name": "Kadabra",
+        "set": "MEG",
+        "number": "55"
+      },
+      {
+        "count": 3,
+        "name": "Alakazam",
+        "set": "MEG",
+        "number": "56"
+      },
+      {
+        "count": 2,
+        "name": "Slowpoke",
+        "set": "SCR",
+        "number": "57"
+      },
+      {
+        "count": 2,
+        "name": "Slowking",
+        "set": "SCR",
+        "number": "58"
+      },
+      {
+        "count": 2,
+        "name": "Kyurem",
+        "set": "SFA",
+        "number": "47"
+      },
+      {
+        "count": 1,
+        "name": "Fezandipiti ex",
+        "set": "ASC",
+        "number": "142"
+      },
+      {
+        "count": 1,
+        "name": "Shaymin",
+        "set": "DRI",
+        "number": "10"
+      },
+      {
+        "count": 1,
+        "name": "Metagross",
+        "set": "CRI",
+        "number": "61"
+      },
+      {
+        "count": 1,
+        "name": "Annihilape",
+        "set": "SSP",
+        "number": "100"
+      }
+    ],
+    "trainer": [
+      {
+        "count": 3,
+        "name": "Dawn",
+        "set": "PFL",
+        "number": "87"
+      },
+      {
+        "count": 3,
+        "name": "Hilda",
+        "set": "WHT",
+        "number": "84"
+      },
+      {
+        "count": 2,
+        "name": "Ciphermaniac's Codebreaking",
+        "set": "TEF",
+        "number": "145"
+      },
+      {
+        "count": 2,
+        "name": "Boss's Orders",
+        "set": "MEG",
+        "number": "114"
+      },
+      {
+        "count": 4,
+        "name": "Buddy-Buddy Poffin",
+        "set": "ASC",
+        "number": "184"
+      },
+      {
+        "count": 4,
+        "name": "Poké Pad",
+        "set": "POR",
+        "number": "81"
+      },
+      {
+        "count": 2,
+        "name": "Wondrous Patch",
+        "set": "PFL",
+        "number": "94"
+      },
+      {
+        "count": 2,
+        "name": "Rare Candy",
+        "set": "MEG",
+        "number": "125"
+      },
+      {
+        "count": 1,
+        "name": "Night Stretcher",
+        "set": "ASC",
+        "number": "196"
+      },
+      {
+        "count": 1,
+        "name": "Switch",
+        "set": "MEG",
+        "number": "130"
+      },
+      {
+        "count": 1,
+        "name": "Sacred Ash",
+        "set": "DRI",
+        "number": "168"
+      },
+      {
+        "count": 3,
+        "name": "Academy at Night",
+        "set": "SFA",
+        "number": "54"
+      }
+    ],
+    "energy": [
+      {
+        "count": 4,
+        "name": "Telepathic Psychic Energy",
+        "set": "POR",
+        "number": "88"
+      },
+      {
+        "count": 3,
+        "name": "Psychic Energy",
+        "set": "MEE",
+        "number": "5"
+      },
+      {
+        "count": 1,
+        "name": "Enriching Energy",
+        "set": "SSP",
+        "number": "191"
+      }
+    ]
+  }
+}

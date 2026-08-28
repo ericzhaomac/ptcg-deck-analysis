@@ -1,0 +1,155 @@
+{
+  "ok": true,
+  "message": {
+    "pokemon": [
+      {
+        "count": 4,
+        "name": "Teal Mask Ogerpon ex",
+        "set": "TWM",
+        "number": "25"
+      },
+      {
+        "count": 2,
+        "name": "Chikorita",
+        "set": "ASC",
+        "number": "8"
+      },
+      {
+        "count": 2,
+        "name": "Bayleef",
+        "set": "MEG",
+        "number": "9"
+      },
+      {
+        "count": 2,
+        "name": "Meganium",
+        "set": "MEG",
+        "number": "10"
+      },
+      {
+        "count": 2,
+        "name": "Applin",
+        "set": "SCR",
+        "number": "12"
+      },
+      {
+        "count": 2,
+        "name": "Dipplin",
+        "set": "TWM",
+        "number": "18"
+      },
+      {
+        "count": 2,
+        "name": "Hydrapple ex",
+        "set": "SCR",
+        "number": "14"
+      },
+      {
+        "count": 1,
+        "name": "Celebi",
+        "set": "MEG",
+        "number": "12"
+      },
+      {
+        "count": 1,
+        "name": "Regigigas",
+        "set": "PRE",
+        "number": "86"
+      },
+      {
+        "count": 1,
+        "name": "Meowth ex",
+        "set": "POR",
+        "number": "62"
+      },
+      {
+        "count": 1,
+        "name": "Fezandipiti ex",
+        "set": "ASC",
+        "number": "142"
+      }
+    ],
+    "trainer": [
+      {
+        "count": 4,
+        "name": "Lillie's Determination",
+        "set": "MEG",
+        "number": "119"
+      },
+      {
+        "count": 3,
+        "name": "Boss's Orders",
+        "set": "MEG",
+        "number": "114"
+      },
+      {
+        "count": 2,
+        "name": "Dawn",
+        "set": "PFL",
+        "number": "87"
+      },
+      {
+        "count": 1,
+        "name": "Briar",
+        "set": "SCR",
+        "number": "132"
+      },
+      {
+        "count": 1,
+        "name": "Team Rocket's Petrel",
+        "set": "ASC",
+        "number": "207"
+      },
+      {
+        "count": 4,
+        "name": "Bug Catching Set",
+        "set": "TWM",
+        "number": "143"
+      },
+      {
+        "count": 3,
+        "name": "Ultra Ball",
+        "set": "MEG",
+        "number": "131"
+      },
+      {
+        "count": 2,
+        "name": "Night Stretcher",
+        "set": "ASC",
+        "number": "196"
+      },
+      {
+        "count": 1,
+        "name": "Unfair Stamp",
+        "set": "TWM",
+        "number": "165"
+      },
+      {
+        "count": 1,
+        "name": "Energy Retrieval",
+        "set": "SVI",
+        "number": "171"
+      },
+      {
+        "count": 1,
+        "name": "Special Red Card",
+        "set": "CRI",
+        "number": "82"
+      },
+      {
+        "count": 4,
+        "name": "Forest of Vitality",
+        "set": "MEG",
+        "number": "117"
+      }
+    ],
+    "energy": [
+      {
+        "count": 13,
+        "name": "Grass Energy",
+        "set": "MEE",
+        "number": "1"
+      }
+    ]
+  }
+}

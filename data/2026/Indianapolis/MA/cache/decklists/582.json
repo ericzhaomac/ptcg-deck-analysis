@@ -1,0 +1,173 @@
+{
+  "ok": true,
+  "message": {
+    "pokemon": [
+      {
+        "count": 3,
+        "name": "Ralts",
+        "set": "MEG",
+        "number": "58"
+      },
+      {
+        "count": 2,
+        "name": "Kirlia",
+        "set": "MEG",
+        "number": "59"
+      },
+      {
+        "count": 2,
+        "name": "Mega Gardevoir ex",
+        "set": "MEG",
+        "number": "60"
+      },
+      {
+        "count": 2,
+        "name": "Clefairy",
+        "set": "POR",
+        "number": "30"
+      },
+      {
+        "count": 1,
+        "name": "Clefable",
+        "set": "ASC",
+        "number": "75"
+      },
+      {
+        "count": 1,
+        "name": "Psyduck",
+        "set": "ASC",
+        "number": "39"
+      },
+      {
+        "count": 1,
+        "name": "Lillie's Clefairy ex",
+        "set": "ASC",
+        "number": "76"
+      },
+      {
+        "count": 1,
+        "name": "Frillish",
+        "set": "WHT",
+        "number": "44"
+      },
+      {
+        "count": 1,
+        "name": "Meowth ex",
+        "set": "POR",
+        "number": "62"
+      },
+      {
+        "count": 1,
+        "name": "Latias ex",
+        "set": "SSP",
+        "number": "76"
+      },
+      {
+        "count": 1,
+        "name": "Shaymin",
+        "set": "DRI",
+        "number": "10"
+      },
+      {
+        "count": 1,
+        "name": "Fezandipiti ex",
+        "set": "ASC",
+        "number": "142"
+      }
+    ],
+    "trainer": [
+      {
+        "count": 4,
+        "name": "Lillie's Determination",
+        "set": "MEG",
+        "number": "119"
+      },
+      {
+        "count": 2,
+        "name": "Iris's Fighting Spirit",
+        "set": "ASC",
+        "number": "190"
+      },
+      {
+        "count": 1,
+        "name": "Explorer's Guidance",
+        "set": "TEF",
+        "number": "147"
+      },
+      {
+        "count": 1,
+        "name": "Boss's Orders",
+        "set": "MEG",
+        "number": "114"
+      },
+      {
+        "count": 1,
+        "name": "Wally's Compassion",
+        "set": "MEG",
+        "number": "132"
+      },
+      {
+        "count": 4,
+        "name": "Buddy-Buddy Poffin",
+        "set": "ASC",
+        "number": "184"
+      },
+      {
+        "count": 4,
+        "name": "Poké Pad",
+        "set": "POR",
+        "number": "81"
+      },
+      {
+        "count": 4,
+        "name": "Ultra Ball",
+        "set": "MEG",
+        "number": "131"
+      },
+      {
+        "count": 4,
+        "name": "Wondrous Patch",
+        "set": "PFL",
+        "number": "94"
+      },
+      {
+        "count": 2,
+        "name": "Night Stretcher",
+        "set": "ASC",
+        "number": "196"
+      },
+      {
+        "count": 2,
+        "name": "Rare Candy",
+        "set": "MEG",
+        "number": "125"
+      },
+      {
+        "count": 1,
+        "name": "Unfair Stamp",
+        "set": "TWM",
+        "number": "165"
+      },
+      {
+        "count": 2,
+        "name": "Mystery Garden",
+        "set": "MEG",
+        "number": "122"
+      }
+    ],
+    "energy": [
+      {
+        "count": 7,
+        "name": "Psychic Energy",
+        "set": "MEE",
+        "number": "5"
+      },
+      {
+        "count": 4,
+        "name": "Telepathic Psychic Energy",
+        "set": "POR",
+        "number": "88"
+      }
+    ]
+  }
+}

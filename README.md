@@ -17,6 +17,10 @@ Standalone FastAPI service for multi-event PTCG deck-analysis datasets.
 - Utrecht: `2026-utrecht-ma` (`0064`)
 - Campinas: `2026-campinas-ma` (`0065`)
 - Melbourne: `2026-melbourne-ma` (`0066`)
+- Lima: `2026-lima-ma` (`0067`)
+- Indianapolis: `2026-indianapolis-ma` (`0068`)
+- Turin: `2026-turin-ma` (`0069`)
+- New Orleans: `2026-new-orleans-ma` (`0070`)
 
 The current mounted/current dataset state lives in `data/config/dataset_state.json`.
 
@@ -56,6 +60,21 @@ data/2026/Melbourne/MA/analysis.json
 ```
 
 This is discovered as dataset id `2026-melbourne-ma`.
+
+## Updating Tournament Data
+
+Use the existing Limitless Labs pipeline with an event-specific cache directory. The flat cache layout matches the dataset structure above:
+
+```bash
+PYTHONPATH=. python3 scripts/tools/limitless_tournament_analysis.py \
+  --tournament-id 0070 \
+  --division MA \
+  --cache-dir data/2026/New_Orleans/MA/cache \
+  --flat-cache \
+  --output-json data/2026/New_Orleans/MA/analysis.json
+```
+
+Successful responses are cached individually and written atomically. Re-running the same command reuses valid cache files and retries only missing, invalid, or unsuccessful responses. Keep each tournament in its own cache directory, verify its `analysis.json`, and then add its dataset id to `data/config/dataset_state.json` without changing a valid existing `current_dataset_id`.
 
 ## Local Run
 

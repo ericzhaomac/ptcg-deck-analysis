@@ -1,0 +1,179 @@
+{
+  "ok": true,
+  "message": {
+    "pokemon": [
+      {
+        "count": 4,
+        "name": "Ralts",
+        "set": "MEG",
+        "number": "58"
+      },
+      {
+        "count": 2,
+        "name": "Kirlia",
+        "set": "MEG",
+        "number": "59"
+      },
+      {
+        "count": 3,
+        "name": "Mega Gardevoir ex",
+        "set": "MEG",
+        "number": "60"
+      },
+      {
+        "count": 1,
+        "name": "Marill",
+        "set": "ASC",
+        "number": "83"
+      },
+      {
+        "count": 1,
+        "name": "Azumarill ex",
+        "set": "ASC",
+        "number": "84"
+      },
+      {
+        "count": 1,
+        "name": "Latias ex",
+        "set": "SSP",
+        "number": "76"
+      },
+      {
+        "count": 1,
+        "name": "Fezandipiti ex",
+        "set": "ASC",
+        "number": "142"
+      },
+      {
+        "count": 1,
+        "name": "Meowth ex",
+        "set": "POR",
+        "number": "62"
+      },
+      {
+        "count": 1,
+        "name": "Lillie's Clefairy ex",
+        "set": "ASC",
+        "number": "76"
+      },
+      {
+        "count": 1,
+        "name": "Mega Diancie ex",
+        "set": "PFL",
+        "number": "41"
+      },
+      {
+        "count": 1,
+        "name": "Smoochum",
+        "set": "SSP",
+        "number": "75"
+      },
+      {
+        "count": 1,
+        "name": "Munkidori",
+        "set": "ASC",
+        "number": "99"
+      }
+    ],
+    "trainer": [
+      {
+        "count": 4,
+        "name": "Colress's Tenacity",
+        "set": "SFA",
+        "number": "57"
+      },
+      {
+        "count": 3,
+        "name": "Lillie's Determination",
+        "set": "MEG",
+        "number": "119"
+      },
+      {
+        "count": 2,
+        "name": "Wally's Compassion",
+        "set": "MEG",
+        "number": "132"
+      },
+      {
+        "count": 2,
+        "name": "Boss's Orders",
+        "set": "MEG",
+        "number": "114"
+      },
+      {
+        "count": 2,
+        "name": "Judge",
+        "set": "POR",
+        "number": "76"
+      },
+      {
+        "count": 4,
+        "name": "Ultra Ball",
+        "set": "MEG",
+        "number": "131"
+      },
+      {
+        "count": 3,
+        "name": "Wondrous Patch",
+        "set": "PFL",
+        "number": "94"
+      },
+      {
+        "count": 3,
+        "name": "Poké Pad",
+        "set": "POR",
+        "number": "81"
+      },
+      {
+        "count": 2,
+        "name": "Night Stretcher",
+        "set": "ASC",
+        "number": "196"
+      },
+      {
+        "count": 2,
+        "name": "Rare Candy",
+        "set": "MEG",
+        "number": "125"
+      },
+      {
+        "count": 1,
+        "name": "Team Rocket's Watchtower",
+        "set": "ASC",
+        "number": "210"
+      },
+      {
+        "count": 1,
+        "name": "Mystery Garden",
+        "set": "MEG",
+        "number": "122"
+      },
+      {
+        "count": 1,
+        "name": "Grand Tree",
+        "set": "SCR",
+        "number": "136"
+      }
+    ],
+    "energy": [
+      {
+        "count": 7,
+        "name": "Psychic Energy",
+        "set": "MEE",
+        "number": "5"
+      },
+      {
+        "count": 4,
+        "name": "Telepathic Psychic Energy",
+        "set": "POR",
+        "number": "88"
+      },
+      {
+        "count": 1,
+        "name": "Prism Energy",
+        "set": "ASC",
+        "number": "216"
+      }
+    ]
+  }
+}

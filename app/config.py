@@ -4,7 +4,6 @@ import os
 from dataclasses import dataclass
 from pathlib import Path
 
-DEFAULT_REPORT_PATH = Path("data/2026/Prague/MA/analysis.json")
 DEFAULT_PROVIDER_CONFIG_PATH = Path("/data/config/provider.json")
 DEFAULT_DATA_ROOT = Path("data")
 DEFAULT_DATASET_STATE_PATH = Path("data/config/dataset_state.json")
@@ -13,7 +12,6 @@ DEFAULT_DATASET_STATE_PATH = Path("data/config/dataset_state.json")
 @dataclass(frozen=True)
 class Settings:
     app_name: str = "Ptcg Deck Analysis Service"
-    report_path: Path = DEFAULT_REPORT_PATH
     openai_base_url: str | None = None
     openai_api_key: str | None = None
     openai_model: str = "kimi-code"
@@ -24,12 +22,10 @@ class Settings:
     @classmethod
     def from_env(
         cls,
-        report_path: Path | None = None,
         data_root: Path | None = None,
         dataset_state_path: Path | None = None,
     ) -> "Settings":
         return cls(
-            report_path=report_path or Path(os.getenv("PRAGUE_ANALYSIS_REPORT_PATH", DEFAULT_REPORT_PATH)),
             openai_base_url=os.getenv("OPENAI_COMPATIBLE_BASE_URL"),
             openai_api_key=os.getenv("OPENAI_COMPATIBLE_API_KEY"),
             openai_model=os.getenv("OPENAI_COMPATIBLE_MODEL", "kimi-code"),

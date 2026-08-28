@@ -1,0 +1,143 @@
+{
+  "ok": true,
+  "message": {
+    "pokemon": [
+      {
+        "count": 4,
+        "name": "Duraludon",
+        "set": "SCR",
+        "number": "106"
+      },
+      {
+        "count": 3,
+        "name": "Archaludon ex",
+        "set": "SSP",
+        "number": "130"
+      },
+      {
+        "count": 4,
+        "name": "Dunsparce",
+        "set": "JTG",
+        "number": "120"
+      },
+      {
+        "count": 3,
+        "name": "Dudunsparce",
+        "set": "TEF",
+        "number": "129"
+      },
+      {
+        "count": 1,
+        "name": "Dudunsparce ex",
+        "set": "JTG",
+        "number": "121"
+      },
+      {
+        "count": 1,
+        "name": "Mega Mawile ex",
+        "set": "MEG",
+        "number": "94"
+      },
+      {
+        "count": 1,
+        "name": "Meowth ex",
+        "set": "POR",
+        "number": "62"
+      },
+      {
+        "count": 1,
+        "name": "Relicanth",
+        "set": "TEF",
+        "number": "84"
+      }
+    ],
+    "trainer": [
+      {
+        "count": 4,
+        "name": "Boss's Orders",
+        "set": "MEG",
+        "number": "114"
+      },
+      {
+        "count": 4,
+        "name": "Lillie's Determination",
+        "set": "MEG",
+        "number": "119"
+      },
+      {
+        "count": 2,
+        "name": "Hilda",
+        "set": "WHT",
+        "number": "84"
+      },
+      {
+        "count": 2,
+        "name": "Explorer's Guidance",
+        "set": "TEF",
+        "number": "147"
+      },
+      {
+        "count": 2,
+        "name": "Judge",
+        "set": "POR",
+        "number": "76"
+      },
+      {
+        "count": 4,
+        "name": "Poké Pad",
+        "set": "POR",
+        "number": "81"
+      },
+      {
+        "count": 4,
+        "name": "Ultra Ball",
+        "set": "MEG",
+        "number": "131"
+      },
+      {
+        "count": 2,
+        "name": "Night Stretcher",
+        "set": "ASC",
+        "number": "196"
+      },
+      {
+        "count": 2,
+        "name": "Buddy-Buddy Poffin",
+        "set": "ASC",
+        "number": "184"
+      },
+      {
+        "count": 1,
+        "name": "Unfair Stamp",
+        "set": "TWM",
+        "number": "165"
+      },
+      {
+        "count": 1,
+        "name": "Special Red Card",
+        "set": "CRI",
+        "number": "82"
+      },
+      {
+        "count": 2,
+        "name": "Prism Tower",
+        "set": "CRI",
+        "number": "80"
+      },
+      {
+        "count": 2,
+        "name": "Jamming Tower",
+        "set": "TWM",
+        "number": "153"
+      }
+    ],
+    "energy": [
+      {
+        "count": 10,
+        "name": "Metal Energy",
+        "set": "MEE",
+        "number": "8"
+      }
+    ]
+  }
+}

@@ -1,0 +1,131 @@
+{
+  "ok": true,
+  "message": {
+    "pokemon": [
+      {
+        "count": 4,
+        "name": "Team Rocket's Murkrow",
+        "set": "ASC",
+        "number": "126"
+      },
+      {
+        "count": 3,
+        "name": "Team Rocket's Honchkrow",
+        "set": "ASC",
+        "number": "127"
+      },
+      {
+        "count": 2,
+        "name": "Team Rocket's Porygon",
+        "set": "DRI",
+        "number": "153"
+      },
+      {
+        "count": 1,
+        "name": "Team Rocket's Porygon2",
+        "set": "DRI",
+        "number": "154"
+      },
+      {
+        "count": 2,
+        "name": "Team Rocket's Articuno",
+        "set": "DRI",
+        "number": "51"
+      }
+    ],
+    "trainer": [
+      {
+        "count": 4,
+        "name": "Team Rocket's Archer",
+        "set": "ASC",
+        "number": "201"
+      },
+      {
+        "count": 4,
+        "name": "Team Rocket's Ariana",
+        "set": "ASC",
+        "number": "202"
+      },
+      {
+        "count": 4,
+        "name": "Team Rocket's Petrel",
+        "set": "ASC",
+        "number": "207"
+      },
+      {
+        "count": 4,
+        "name": "Team Rocket's Proton",
+        "set": "ASC",
+        "number": "208"
+      },
+      {
+        "count": 4,
+        "name": "Team Rocket's Giovanni",
+        "set": "ASC",
+        "number": "204"
+      },
+      {
+        "count": 4,
+        "name": "Team Rocket's Transceiver",
+        "set": "ASC",
+        "number": "209"
+      },
+      {
+        "count": 4,
+        "name": "Poké Pad",
+        "set": "POR",
+        "number": "81"
+      },
+      {
+        "count": 3,
+        "name": "Night Stretcher",
+        "set": "ASC",
+        "number": "196"
+      },
+      {
+        "count": 3,
+        "name": "Roto-Stick",
+        "set": "PRE",
+        "number": "127"
+      },
+      {
+        "count": 1,
+        "name": "Pokégear 3.0",
+        "set": "SVI",
+        "number": "186"
+      },
+      {
+        "count": 1,
+        "name": "Ultra Ball",
+        "set": "MEG",
+        "number": "131"
+      },
+      {
+        "count": 1,
+        "name": "Miracle Headset",
+        "set": "SSP",
+        "number": "183"
+      },
+      {
+        "count": 3,
+        "name": "Team Rocket's Factory",
+        "set": "ASC",
+        "number": "203"
+      }
+    ],
+    "energy": [
+      {
+        "count": 4,
+        "name": "Ignition Energy",
+        "set": "WHT",
+        "number": "86"
+      },
+      {
+        "count": 4,
+        "name": "Team Rocket's Energy",
+        "set": "ASC",
+        "number": "217"
+      }
+    ]
+  }
+}

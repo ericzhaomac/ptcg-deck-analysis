@@ -1,0 +1,185 @@
+{
+  "ok": true,
+  "message": {
+    "pokemon": [
+      {
+        "count": 4,
+        "name": "N's Zorua",
+        "set": "ASC",
+        "number": "136"
+      },
+      {
+        "count": 4,
+        "name": "N's Zoroark ex",
+        "set": "ASC",
+        "number": "137"
+      },
+      {
+        "count": 2,
+        "name": "N's Darumaka",
+        "set": "ASC",
+        "number": "32"
+      },
+      {
+        "count": 2,
+        "name": "N's Darmanitan",
+        "set": "ASC",
+        "number": "33"
+      },
+      {
+        "count": 1,
+        "name": "Fezandipiti ex",
+        "set": "ASC",
+        "number": "142"
+      },
+      {
+        "count": 1,
+        "name": "Reshiram ex",
+        "set": "JTG",
+        "number": "30"
+      },
+      {
+        "count": 1,
+        "name": "N's Zekrom",
+        "set": "ASC",
+        "number": "155"
+      },
+      {
+        "count": 1,
+        "name": "N's Reshiram",
+        "set": "ASC",
+        "number": "154"
+      }
+    ],
+    "trainer": [
+      {
+        "count": 3,
+        "name": "Boss's Orders",
+        "set": "MEG",
+        "number": "114"
+      },
+      {
+        "count": 3,
+        "name": "Cyrano",
+        "set": "SSP",
+        "number": "170"
+      },
+      {
+        "count": 2,
+        "name": "Ciphermaniac's Codebreaking",
+        "set": "TEF",
+        "number": "145"
+      },
+      {
+        "count": 2,
+        "name": "Crispin",
+        "set": "SCR",
+        "number": "133"
+      },
+      {
+        "count": 1,
+        "name": "Judge",
+        "set": "POR",
+        "number": "76"
+      },
+      {
+        "count": 3,
+        "name": "N's PP Up",
+        "set": "ASC",
+        "number": "195"
+      },
+      {
+        "count": 3,
+        "name": "Buddy-Buddy Poffin",
+        "set": "ASC",
+        "number": "184"
+      },
+      {
+        "count": 3,
+        "name": "Pokégear 3.0",
+        "set": "SVI",
+        "number": "186"
+      },
+      {
+        "count": 2,
+        "name": "Energy Switch",
+        "set": "MEG",
+        "number": "115"
+      },
+      {
+        "count": 2,
+        "name": "Ultra Ball",
+        "set": "MEG",
+        "number": "131"
+      },
+      {
+        "count": 2,
+        "name": "Night Stretcher",
+        "set": "ASC",
+        "number": "196"
+      },
+      {
+        "count": 1,
+        "name": "Energy Search",
+        "set": "POR",
+        "number": "72"
+      },
+      {
+        "count": 1,
+        "name": "Energy Recycler",
+        "set": "DRI",
+        "number": "164"
+      },
+      {
+        "count": 1,
+        "name": "Redeemable Ticket",
+        "set": "JTG",
+        "number": "156"
+      },
+      {
+        "count": 1,
+        "name": "Secret Box",
+        "set": "TWM",
+        "number": "163"
+      },
+      {
+        "count": 1,
+        "name": "Poké Pad",
+        "set": "POR",
+        "number": "81"
+      },
+      {
+        "count": 1,
+        "name": "Tool Scrapper",
+        "set": "ASC",
+        "number": "212"
+      },
+      {
+        "count": 1,
+        "name": "Powerglass",
+        "set": "SFA",
+        "number": "63"
+      },
+      {
+        "count": 3,
+        "name": "N's Castle",
+        "set": "JTG",
+        "number": "152"
+      }
+    ],
+    "energy": [
+      {
+        "count": 5,
+        "name": "Darkness Energy",
+        "set": "MEE",
+        "number": "7"
+      },
+      {
+        "count": 3,
+        "name": "Fire Energy",
+        "set": "MEE",
+        "number": "2"
+      }
+    ]
+  }
+}

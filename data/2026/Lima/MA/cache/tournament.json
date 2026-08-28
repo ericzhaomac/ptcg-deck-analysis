@@ -1,0 +1,19 @@
+{
+  "ok": true,
+  "message": {
+    "rk9_id": null,
+    "playlatam_id": "LIM26-TCG-MA",
+    "type": "special",
+    "city": "Lima",
+    "name": null,
+    "date": "May 23–24, 2026",
+    "country": "PE",
+    "updated_at": null,
+    "decklists": 1,
+    "round": 15,
+    "players": 499,
+    "players_r1": 496,
+    "started": 1,
+    "completed": 1
+  }
+}

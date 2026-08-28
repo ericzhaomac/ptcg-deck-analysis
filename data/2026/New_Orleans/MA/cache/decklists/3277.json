@@ -1,0 +1,173 @@
+{
+  "ok": true,
+  "message": {
+    "pokemon": [
+      {
+        "count": 4,
+        "name": "Ethan's Cyndaquil",
+        "set": "DRI",
+        "number": "32"
+      },
+      {
+        "count": 4,
+        "name": "Ethan's Quilava",
+        "set": "DRI",
+        "number": "33"
+      },
+      {
+        "count": 3,
+        "name": "Ethan's Typhlosion",
+        "set": "DRI",
+        "number": "34"
+      },
+      {
+        "count": 2,
+        "name": "Victini",
+        "set": "SSP",
+        "number": "21"
+      },
+      {
+        "count": 1,
+        "name": "Ethan's Pichu",
+        "set": "DRI",
+        "number": "71"
+      },
+      {
+        "count": 1,
+        "name": "Cinderace",
+        "set": "MEG",
+        "number": "28"
+      },
+      {
+        "count": 1,
+        "name": "Shaymin",
+        "set": "DRI",
+        "number": "10"
+      }
+    ],
+    "trainer": [
+      {
+        "count": 4,
+        "name": "Ethan's Adventure",
+        "set": "DRI",
+        "number": "165"
+      },
+      {
+        "count": 3,
+        "name": "Boss's Orders",
+        "set": "MEG",
+        "number": "114"
+      },
+      {
+        "count": 2,
+        "name": "Dawn",
+        "set": "PFL",
+        "number": "87"
+      },
+      {
+        "count": 2,
+        "name": "Lillie's Determination",
+        "set": "MEG",
+        "number": "119"
+      },
+      {
+        "count": 2,
+        "name": "Naveen",
+        "set": "POR",
+        "number": "79"
+      },
+      {
+        "count": 2,
+        "name": "Acerola's Mischief",
+        "set": "MEG",
+        "number": "113"
+      },
+      {
+        "count": 3,
+        "name": "Ultra Ball",
+        "set": "MEG",
+        "number": "131"
+      },
+      {
+        "count": 3,
+        "name": "Pokégear 3.0",
+        "set": "SVI",
+        "number": "186"
+      },
+      {
+        "count": 2,
+        "name": "Buddy-Buddy Poffin",
+        "set": "ASC",
+        "number": "184"
+      },
+      {
+        "count": 2,
+        "name": "Rare Candy",
+        "set": "MEG",
+        "number": "125"
+      },
+      {
+        "count": 2,
+        "name": "Night Stretcher",
+        "set": "ASC",
+        "number": "196"
+      },
+      {
+        "count": 1,
+        "name": "Sacred Ash",
+        "set": "DRI",
+        "number": "168"
+      },
+      {
+        "count": 1,
+        "name": "Special Red Card",
+        "set": "CRI",
+        "number": "82"
+      },
+      {
+        "count": 1,
+        "name": "Redeemable Ticket",
+        "set": "JTG",
+        "number": "156"
+      },
+      {
+        "count": 2,
+        "name": "Brave Bangle",
+        "set": "WHT",
+        "number": "80"
+      },
+      {
+        "count": 1,
+        "name": "Maximum Belt",
+        "set": "TEF",
+        "number": "154"
+      },
+      {
+        "count": 2,
+        "name": "Gravity Mountain",
+        "set": "SSP",
+        "number": "177"
+      },
+      {
+        "count": 1,
+        "name": "Battle Cage",
+        "set": "PFL",
+        "number": "85"
+      },
+      {
+        "count": 1,
+        "name": "Nighttime Mine",
+        "set": "ASC",
+        "number": "197"
+      }
+    ],
+    "energy": [
+      {
+        "count": 7,
+        "name": "Fire Energy",
+        "set": "MEE",
+        "number": "2"
+      }
+    ]
+  }
+}

@@ -1,0 +1,137 @@
+{
+  "ok": true,
+  "message": {
+    "pokemon": [
+      {
+        "count": 3,
+        "name": "Riolu",
+        "set": "MEG",
+        "number": "76"
+      },
+      {
+        "count": 3,
+        "name": "Mega Lucario ex",
+        "set": "MEG",
+        "number": "77"
+      },
+      {
+        "count": 3,
+        "name": "Solrock",
+        "set": "MEG",
+        "number": "75"
+      },
+      {
+        "count": 3,
+        "name": "Lunatone",
+        "set": "MEG",
+        "number": "74"
+      },
+      {
+        "count": 2,
+        "name": "Makuhita",
+        "set": "MEG",
+        "number": "72"
+      },
+      {
+        "count": 2,
+        "name": "Hariyama",
+        "set": "MEG",
+        "number": "73"
+      },
+      {
+        "count": 1,
+        "name": "Meowth ex",
+        "set": "POR",
+        "number": "62"
+      }
+    ],
+    "trainer": [
+      {
+        "count": 4,
+        "name": "Lillie's Determination",
+        "set": "MEG",
+        "number": "119"
+      },
+      {
+        "count": 2,
+        "name": "Boss's Orders",
+        "set": "MEG",
+        "number": "114"
+      },
+      {
+        "count": 2,
+        "name": "Judge",
+        "set": "POR",
+        "number": "76"
+      },
+      {
+        "count": 1,
+        "name": "Wally's Compassion",
+        "set": "MEG",
+        "number": "132"
+      },
+      {
+        "count": 4,
+        "name": "Fighting Gong",
+        "set": "MEG",
+        "number": "116"
+      },
+      {
+        "count": 4,
+        "name": "Poké Pad",
+        "set": "POR",
+        "number": "81"
+      },
+      {
+        "count": 4,
+        "name": "Ultra Ball",
+        "set": "MEG",
+        "number": "131"
+      },
+      {
+        "count": 4,
+        "name": "Premium Power Pro",
+        "set": "MEG",
+        "number": "124"
+      },
+      {
+        "count": 2,
+        "name": "Switch",
+        "set": "MEG",
+        "number": "130"
+      },
+      {
+        "count": 2,
+        "name": "Air Balloon",
+        "set": "ASC",
+        "number": "181"
+      },
+      {
+        "count": 1,
+        "name": "Maximum Belt",
+        "set": "TEF",
+        "number": "154"
+      },
+      {
+        "count": 1,
+        "name": "Gravity Mountain",
+        "set": "SSP",
+        "number": "177"
+      }
+    ],
+    "energy": [
+      {
+        "count": 10,
+        "name": "Fighting Energy",
+        "set": "MEE",
+        "number": "6"
+      },
+      {
+        "count": 2,
+        "name": "Rocky Fighting Energy",
+        "set": "POR",
+        "number": "87"
+      }
+    ]
+  }
+}

@@ -1,0 +1,149 @@
+{
+  "ok": true,
+  "message": {
+    "pokemon": [
+      {
+        "count": 4,
+        "name": "Cynthia's Gible",
+        "set": "ASC",
+        "number": "109"
+      },
+      {
+        "count": 4,
+        "name": "Cynthia's Gabite",
+        "set": "ASC",
+        "number": "110"
+      },
+      {
+        "count": 3,
+        "name": "Cynthia's Garchomp ex",
+        "set": "ASC",
+        "number": "111"
+      },
+      {
+        "count": 4,
+        "name": "Cynthia's Roselia",
+        "set": "DRI",
+        "number": "7"
+      },
+      {
+        "count": 3,
+        "name": "Cynthia's Roserade",
+        "set": "DRI",
+        "number": "8"
+      },
+      {
+        "count": 1,
+        "name": "Cynthia's Spiritomb",
+        "set": "ASC",
+        "number": "133"
+      }
+    ],
+    "trainer": [
+      {
+        "count": 4,
+        "name": "Lillie's Determination",
+        "set": "MEG",
+        "number": "119"
+      },
+      {
+        "count": 3,
+        "name": "Boss's Orders",
+        "set": "MEG",
+        "number": "114"
+      },
+      {
+        "count": 2,
+        "name": "Team Rocket's Petrel",
+        "set": "ASC",
+        "number": "207"
+      },
+      {
+        "count": 1,
+        "name": "Surfer",
+        "set": "ASC",
+        "number": "200"
+      },
+      {
+        "count": 1,
+        "name": "Colress's Tenacity",
+        "set": "SFA",
+        "number": "57"
+      },
+      {
+        "count": 4,
+        "name": "Buddy-Buddy Poffin",
+        "set": "ASC",
+        "number": "184"
+      },
+      {
+        "count": 4,
+        "name": "Poké Pad",
+        "set": "POR",
+        "number": "81"
+      },
+      {
+        "count": 3,
+        "name": "Fighting Gong",
+        "set": "MEG",
+        "number": "116"
+      },
+      {
+        "count": 2,
+        "name": "Premium Power Pro",
+        "set": "MEG",
+        "number": "124"
+      },
+      {
+        "count": 2,
+        "name": "Night Stretcher",
+        "set": "ASC",
+        "number": "196"
+      },
+      {
+        "count": 1,
+        "name": "Rare Candy",
+        "set": "MEG",
+        "number": "125"
+      },
+      {
+        "count": 1,
+        "name": "Pokégear 3.0",
+        "set": "SVI",
+        "number": "186"
+      },
+      {
+        "count": 3,
+        "name": "Cynthia's Power Weight",
+        "set": "DRI",
+        "number": "162"
+      },
+      {
+        "count": 1,
+        "name": "Team Rocket's Watchtower",
+        "set": "ASC",
+        "number": "210"
+      }
+    ],
+    "energy": [
+      {
+        "count": 5,
+        "name": "Fighting Energy",
+        "set": "MEE",
+        "number": "6"
+      },
+      {
+        "count": 3,
+        "name": "Rocky Fighting Energy",
+        "set": "POR",
+        "number": "87"
+      },
+      {
+        "count": 1,
+        "name": "Neo Upper Energy",
+        "set": "TEF",
+        "number": "162"
+      }
+    ]
+  }
+}

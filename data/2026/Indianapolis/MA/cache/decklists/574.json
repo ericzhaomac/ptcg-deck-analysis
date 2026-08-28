@@ -1,0 +1,167 @@
+{
+  "ok": true,
+  "message": {
+    "pokemon": [
+      {
+        "count": 4,
+        "name": "Abra",
+        "set": "MEG",
+        "number": "54"
+      },
+      {
+        "count": 4,
+        "name": "Kadabra",
+        "set": "MEG",
+        "number": "55"
+      },
+      {
+        "count": 3,
+        "name": "Alakazam",
+        "set": "MEG",
+        "number": "56"
+      },
+      {
+        "count": 3,
+        "name": "Dunsparce",
+        "set": "JTG",
+        "number": "120"
+      },
+      {
+        "count": 3,
+        "name": "Dudunsparce",
+        "set": "TEF",
+        "number": "129"
+      },
+      {
+        "count": 1,
+        "name": "Rellor",
+        "set": "TEF",
+        "number": "23"
+      },
+      {
+        "count": 1,
+        "name": "Rabsca",
+        "set": "TEF",
+        "number": "24"
+      },
+      {
+        "count": 1,
+        "name": "Dedenne",
+        "set": "SSP",
+        "number": "87"
+      },
+      {
+        "count": 1,
+        "name": "Genesect",
+        "set": "SFA",
+        "number": "40"
+      },
+      {
+        "count": 1,
+        "name": "Psyduck",
+        "set": "ASC",
+        "number": "39"
+      },
+      {
+        "count": 1,
+        "name": "Fezandipiti ex",
+        "set": "ASC",
+        "number": "142"
+      }
+    ],
+    "trainer": [
+      {
+        "count": 4,
+        "name": "Dawn",
+        "set": "PFL",
+        "number": "87"
+      },
+      {
+        "count": 3,
+        "name": "Hilda",
+        "set": "WHT",
+        "number": "84"
+      },
+      {
+        "count": 2,
+        "name": "Boss's Orders",
+        "set": "MEG",
+        "number": "114"
+      },
+      {
+        "count": 1,
+        "name": "Lana's Aid",
+        "set": "TWM",
+        "number": "155"
+      },
+      {
+        "count": 4,
+        "name": "Buddy-Buddy Poffin",
+        "set": "ASC",
+        "number": "184"
+      },
+      {
+        "count": 4,
+        "name": "Poké Pad",
+        "set": "POR",
+        "number": "81"
+      },
+      {
+        "count": 3,
+        "name": "Rare Candy",
+        "set": "MEG",
+        "number": "125"
+      },
+      {
+        "count": 2,
+        "name": "Enhanced Hammer",
+        "set": "TWM",
+        "number": "148"
+      },
+      {
+        "count": 1,
+        "name": "Night Stretcher",
+        "set": "ASC",
+        "number": "196"
+      },
+      {
+        "count": 1,
+        "name": "Sacred Ash",
+        "set": "DRI",
+        "number": "168"
+      },
+      {
+        "count": 3,
+        "name": "Handheld Fan",
+        "set": "TWM",
+        "number": "150"
+      },
+      {
+        "count": 3,
+        "name": "Forest of Vitality",
+        "set": "MEG",
+        "number": "117"
+      }
+    ],
+    "energy": [
+      {
+        "count": 4,
+        "name": "Telepathic Psychic Energy",
+        "set": "POR",
+        "number": "88"
+      },
+      {
+        "count": 1,
+        "name": "Psychic Energy",
+        "set": "MEE",
+        "number": "5"
+      },
+      {
+        "count": 1,
+        "name": "Enriching Energy",
+        "set": "SSP",
+        "number": "191"
+      }
+    ]
+  }
+}

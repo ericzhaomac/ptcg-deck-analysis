@@ -1,0 +1,179 @@
+{
+  "ok": true,
+  "message": {
+    "pokemon": [
+      {
+        "count": 4,
+        "name": "Hop's Phantump",
+        "set": "ASC",
+        "number": "95"
+      },
+      {
+        "count": 3,
+        "name": "Hop's Trevenant",
+        "set": "ASC",
+        "number": "96"
+      },
+      {
+        "count": 2,
+        "name": "Hop's Snorlax",
+        "set": "JTG",
+        "number": "117"
+      },
+      {
+        "count": 1,
+        "name": "Hop's Cramorant",
+        "set": "ASC",
+        "number": "177"
+      },
+      {
+        "count": 1,
+        "name": "Hop's Zacian ex",
+        "set": "JTG",
+        "number": "111"
+      },
+      {
+        "count": 1,
+        "name": "Latias ex",
+        "set": "SSP",
+        "number": "76"
+      },
+      {
+        "count": 1,
+        "name": "Lillie's Clefairy ex",
+        "set": "ASC",
+        "number": "76"
+      },
+      {
+        "count": 1,
+        "name": "Shaymin",
+        "set": "DRI",
+        "number": "10"
+      }
+    ],
+    "trainer": [
+      {
+        "count": 4,
+        "name": "Lillie's Determination",
+        "set": "MEG",
+        "number": "119"
+      },
+      {
+        "count": 3,
+        "name": "Boss's Orders",
+        "set": "MEG",
+        "number": "114"
+      },
+      {
+        "count": 2,
+        "name": "Hilda",
+        "set": "WHT",
+        "number": "84"
+      },
+      {
+        "count": 2,
+        "name": "Hassel",
+        "set": "TWM",
+        "number": "151"
+      },
+      {
+        "count": 1,
+        "name": "Morty's Conviction",
+        "set": "TEF",
+        "number": "155"
+      },
+      {
+        "count": 1,
+        "name": "Colress's Tenacity",
+        "set": "SFA",
+        "number": "57"
+      },
+      {
+        "count": 1,
+        "name": "Judge",
+        "set": "POR",
+        "number": "76"
+      },
+      {
+        "count": 4,
+        "name": "Poké Pad",
+        "set": "POR",
+        "number": "81"
+      },
+      {
+        "count": 3,
+        "name": "Hop's Bag",
+        "set": "JTG",
+        "number": "147"
+      },
+      {
+        "count": 3,
+        "name": "Night Stretcher",
+        "set": "ASC",
+        "number": "196"
+      },
+      {
+        "count": 2,
+        "name": "Pokégear 3.0",
+        "set": "SVI",
+        "number": "186"
+      },
+      {
+        "count": 2,
+        "name": "Buddy-Buddy Poffin",
+        "set": "ASC",
+        "number": "184"
+      },
+      {
+        "count": 1,
+        "name": "Ultra Ball",
+        "set": "MEG",
+        "number": "131"
+      },
+      {
+        "count": 1,
+        "name": "Unfair Stamp",
+        "set": "TWM",
+        "number": "165"
+      },
+      {
+        "count": 1,
+        "name": "Switch",
+        "set": "MEG",
+        "number": "130"
+      },
+      {
+        "count": 4,
+        "name": "Hop's Choice Band",
+        "set": "JTG",
+        "number": "148"
+      },
+      {
+        "count": 1,
+        "name": "Lillie's Pearl",
+        "set": "JTG",
+        "number": "151"
+      },
+      {
+        "count": 4,
+        "name": "Postwick",
+        "set": "JTG",
+        "number": "154"
+      }
+    ],
+    "energy": [
+      {
+        "count": 3,
+        "name": "Mist Energy",
+        "set": "TEF",
+        "number": "161"
+      },
+      {
+        "count": 3,
+        "name": "Telepathic Psychic Energy",
+        "set": "POR",
+        "number": "88"
+      }
+    ]
+  }
+}

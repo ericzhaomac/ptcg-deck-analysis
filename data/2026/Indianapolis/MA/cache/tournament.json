@@ -1,0 +1,19 @@
+{
+  "ok": true,
+  "message": {
+    "rk9_id": "IN01wT0IVRulcJxVUEZ0",
+    "playlatam_id": null,
+    "type": "regional",
+    "city": "Indianapolis",
+    "name": null,
+    "date": "May 29–31, 2026",
+    "country": "US",
+    "updated_at": "2026-05-31 21:53:35",
+    "decklists": 1,
+    "round": 17,
+    "players": 1974,
+    "players_r1": 1963,
+    "started": 1,
+    "completed": 1
+  }
+}

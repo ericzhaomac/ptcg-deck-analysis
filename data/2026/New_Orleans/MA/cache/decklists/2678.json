@@ -1,0 +1,167 @@
+{
+  "ok": true,
+  "message": {
+    "pokemon": [
+      {
+        "count": 3,
+        "name": "Staryu",
+        "set": "POR",
+        "number": "20"
+      },
+      {
+        "count": 2,
+        "name": "Mega Starmie ex",
+        "set": "POR",
+        "number": "21"
+      },
+      {
+        "count": 3,
+        "name": "Froakie",
+        "set": "CRI",
+        "number": "20"
+      },
+      {
+        "count": 1,
+        "name": "Frogadier",
+        "set": "CRI",
+        "number": "21"
+      },
+      {
+        "count": 2,
+        "name": "Mega Greninja ex",
+        "set": "CRI",
+        "number": "22"
+      },
+      {
+        "count": 1,
+        "name": "Greninja ex",
+        "set": "TWM",
+        "number": "106"
+      },
+      {
+        "count": 2,
+        "name": "Dunsparce",
+        "set": "JTG",
+        "number": "120"
+      },
+      {
+        "count": 1,
+        "name": "Dunsparce",
+        "set": "TEF",
+        "number": "128"
+      },
+      {
+        "count": 3,
+        "name": "Dudunsparce",
+        "set": "TEF",
+        "number": "129"
+      },
+      {
+        "count": 1,
+        "name": "Patrat",
+        "set": "CRI",
+        "number": "70"
+      },
+      {
+        "count": 1,
+        "name": "Chien-Pao",
+        "set": "SSP",
+        "number": "56"
+      }
+    ],
+    "trainer": [
+      {
+        "count": 3,
+        "name": "Wally's Compassion",
+        "set": "MEG",
+        "number": "132"
+      },
+      {
+        "count": 3,
+        "name": "Dawn",
+        "set": "PFL",
+        "number": "87"
+      },
+      {
+        "count": 3,
+        "name": "Hilda",
+        "set": "WHT",
+        "number": "84"
+      },
+      {
+        "count": 2,
+        "name": "Lillie's Determination",
+        "set": "MEG",
+        "number": "119"
+      },
+      {
+        "count": 2,
+        "name": "Boss's Orders",
+        "set": "MEG",
+        "number": "114"
+      },
+      {
+        "count": 4,
+        "name": "Poké Pad",
+        "set": "POR",
+        "number": "81"
+      },
+      {
+        "count": 4,
+        "name": "Buddy-Buddy Poffin",
+        "set": "ASC",
+        "number": "184"
+      },
+      {
+        "count": 2,
+        "name": "Ultra Ball",
+        "set": "MEG",
+        "number": "131"
+      },
+      {
+        "count": 2,
+        "name": "Rare Candy",
+        "set": "MEG",
+        "number": "125"
+      },
+      {
+        "count": 1,
+        "name": "Energy Retrieval",
+        "set": "SVI",
+        "number": "171"
+      },
+      {
+        "count": 2,
+        "name": "Air Balloon",
+        "set": "ASC",
+        "number": "181"
+      },
+      {
+        "count": 1,
+        "name": "Hero's Cape",
+        "set": "TEF",
+        "number": "152"
+      },
+      {
+        "count": 2,
+        "name": "Surfing Beach",
+        "set": "MEG",
+        "number": "129"
+      }
+    ],
+    "energy": [
+      {
+        "count": 7,
+        "name": "Water Energy",
+        "set": "MEE",
+        "number": "3"
+      },
+      {
+        "count": 2,
+        "name": "Ignition Energy",
+        "set": "WHT",
+        "number": "86"
+      }
+    ]
+  }
+}

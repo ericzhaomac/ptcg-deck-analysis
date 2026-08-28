@@ -1,0 +1,185 @@
+{
+  "ok": true,
+  "message": {
+    "pokemon": [
+      {
+        "count": 3,
+        "name": "Mega Kangaskhan ex",
+        "set": "MEG",
+        "number": "104"
+      },
+      {
+        "count": 3,
+        "name": "Bouffalant",
+        "set": "SCR",
+        "number": "119"
+      },
+      {
+        "count": 2,
+        "name": "Aurorus",
+        "set": "POR",
+        "number": "24"
+      },
+      {
+        "count": 2,
+        "name": "Munkidori",
+        "set": "ASC",
+        "number": "99"
+      },
+      {
+        "count": 1,
+        "name": "Skrelp",
+        "set": "CRI",
+        "number": "58"
+      },
+      {
+        "count": 1,
+        "name": "Mega Dragalge ex",
+        "set": "CRI",
+        "number": "65"
+      }
+    ],
+    "trainer": [
+      {
+        "count": 3,
+        "name": "Lillie's Determination",
+        "set": "MEG",
+        "number": "119"
+      },
+      {
+        "count": 2,
+        "name": "Crispin",
+        "set": "SCR",
+        "number": "133"
+      },
+      {
+        "count": 2,
+        "name": "Ciphermaniac's Codebreaking",
+        "set": "TEF",
+        "number": "145"
+      },
+      {
+        "count": 2,
+        "name": "Boss's Orders",
+        "set": "MEG",
+        "number": "114"
+      },
+      {
+        "count": 1,
+        "name": "Judge",
+        "set": "POR",
+        "number": "76"
+      },
+      {
+        "count": 1,
+        "name": "AZ's Tranquility",
+        "set": "CRI",
+        "number": "76"
+      },
+      {
+        "count": 4,
+        "name": "Poké Pad",
+        "set": "POR",
+        "number": "81"
+      },
+      {
+        "count": 3,
+        "name": "Pokégear 3.0",
+        "set": "SVI",
+        "number": "186"
+      },
+      {
+        "count": 2,
+        "name": "Antique Sail Fossil",
+        "set": "POR",
+        "number": "69"
+      },
+      {
+        "count": 2,
+        "name": "Ultra Ball",
+        "set": "MEG",
+        "number": "131"
+      },
+      {
+        "count": 2,
+        "name": "Rare Candy",
+        "set": "MEG",
+        "number": "125"
+      },
+      {
+        "count": 2,
+        "name": "Switch",
+        "set": "MEG",
+        "number": "130"
+      },
+      {
+        "count": 2,
+        "name": "Energy Switch",
+        "set": "MEG",
+        "number": "115"
+      },
+      {
+        "count": 2,
+        "name": "Jumbo Ice Cream",
+        "set": "PFL",
+        "number": "91"
+      },
+      {
+        "count": 1,
+        "name": "Mega Signal",
+        "set": "MEG",
+        "number": "121"
+      },
+      {
+        "count": 1,
+        "name": "Special Red Card",
+        "set": "CRI",
+        "number": "82"
+      },
+      {
+        "count": 1,
+        "name": "Night Stretcher",
+        "set": "ASC",
+        "number": "196"
+      },
+      {
+        "count": 2,
+        "name": "Air Balloon",
+        "set": "ASC",
+        "number": "181"
+      },
+      {
+        "count": 1,
+        "name": "Hero's Cape",
+        "set": "TEF",
+        "number": "152"
+      },
+      {
+        "count": 2,
+        "name": "Lively Stadium",
+        "set": "SSP",
+        "number": "180"
+      }
+    ],
+    "energy": [
+      {
+        "count": 4,
+        "name": "Water Energy",
+        "set": "MEE",
+        "number": "3"
+      },
+      {
+        "count": 4,
+        "name": "Darkness Energy",
+        "set": "MEE",
+        "number": "7"
+      },
+      {
+        "count": 2,
+        "name": "Prism Energy",
+        "set": "ASC",
+        "number": "216"
+      }
+    ]
+  }
+}

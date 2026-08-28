@@ -1,15 +1,83 @@
+import json
+import tempfile
 import unittest
 from pathlib import Path
+from urllib.error import URLError
+from unittest.mock import patch
 
 from scripts.tools.limitless_tournament_analysis import (
     TournamentRef,
     _cache_base,
+    _fetch_json,
     build_archetype_card_summary,
     build_archetype_summary,
 )
 
 
+class FakeResponse:
+    def __init__(self, payload: dict) -> None:
+        self._body = json.dumps(payload).encode("utf-8")
+
+    def __enter__(self):
+        return self
+
+    def __exit__(self, exc_type, exc, traceback) -> None:
+        return None
+
+    def read(self) -> bytes:
+        return self._body
+
+
 class LimitlessTournamentAnalysisTests(unittest.TestCase):
+    def test_fetch_json_retries_transient_failure_and_caches_success(self) -> None:
+        payload = {"ok": True, "message": {"players": 42}}
+        with tempfile.TemporaryDirectory() as directory:
+            cache_path = Path(directory) / "tournament.json"
+            with (
+                patch(
+                    "scripts.tools.limitless_tournament_analysis.urlopen",
+                    side_effect=[URLError("temporary"), FakeResponse(payload)],
+                ) as mocked_urlopen,
+                patch("scripts.tools.limitless_tournament_analysis.time.sleep") as mocked_sleep,
+            ):
+                result = _fetch_json("tournament", {"id": "0069"}, cache_path)
+
+            self.assertEqual(result, payload)
+            self.assertEqual(json.loads(cache_path.read_text(encoding="utf-8")), payload)
+            self.assertEqual(mocked_urlopen.call_count, 2)
+            mocked_sleep.assert_called_once_with(1.0)
+
+    def test_fetch_json_replaces_invalid_cache_only_after_success(self) -> None:
+        payload = {"ok": True, "message": [{"placement": 1}]}
+        with tempfile.TemporaryDirectory() as directory:
+            cache_path = Path(directory) / "standings.json"
+            cache_path.write_text("incomplete", encoding="utf-8")
+
+            with patch(
+                "scripts.tools.limitless_tournament_analysis.urlopen",
+                return_value=FakeResponse(payload),
+            ):
+                result = _fetch_json("standings", {"tournamentId": "0069"}, cache_path)
+
+            self.assertEqual(result, payload)
+            self.assertEqual(json.loads(cache_path.read_text(encoding="utf-8")), payload)
+            self.assertFalse(cache_path.with_suffix(".json.tmp").exists())
+
+    def test_fetch_json_refetches_empty_success_payload(self) -> None:
+        payload = {"ok": True, "message": {"pokemon": [{"name": "Dreepy", "count": 4}]}}
+        with tempfile.TemporaryDirectory() as directory:
+            cache_path = Path(directory) / "decklist.json"
+            cache_path.write_text(json.dumps({"ok": True, "message": {}}), encoding="utf-8")
+
+            with patch(
+                "scripts.tools.limitless_tournament_analysis.urlopen",
+                return_value=FakeResponse(payload),
+            ) as mocked_urlopen:
+                result = _fetch_json("decklist", {"tournamentId": "0069", "playerId": "1"}, cache_path)
+
+            self.assertEqual(result, payload)
+            mocked_urlopen.assert_called_once()
+
     def test_cache_base_supports_nested_and_flat_layouts(self) -> None:
         ref = TournamentRef(tournament_id="0066", division="MA")
         cache_root = Path("/repo/data/2026/Melbourne/MA/cache")

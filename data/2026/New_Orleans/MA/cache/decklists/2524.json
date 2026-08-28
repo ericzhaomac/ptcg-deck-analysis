@@ -1,0 +1,125 @@
+{
+  "ok": true,
+  "message": {
+    "pokemon": [
+      {
+        "count": 4,
+        "name": "Frillish",
+        "set": "WHT",
+        "number": "44"
+      },
+      {
+        "count": 4,
+        "name": "Jellicent ex",
+        "set": "WHT",
+        "number": "45"
+      }
+    ],
+    "trainer": [
+      {
+        "count": 4,
+        "name": "Boss's Orders",
+        "set": "MEG",
+        "number": "114"
+      },
+      {
+        "count": 4,
+        "name": "Lillie's Determination",
+        "set": "MEG",
+        "number": "119"
+      },
+      {
+        "count": 4,
+        "name": "Hilda",
+        "set": "WHT",
+        "number": "84"
+      },
+      {
+        "count": 2,
+        "name": "Crispin",
+        "set": "SCR",
+        "number": "133"
+      },
+      {
+        "count": 4,
+        "name": "Crushing Hammer",
+        "set": "POR",
+        "number": "71"
+      },
+      {
+        "count": 4,
+        "name": "Ultra Ball",
+        "set": "MEG",
+        "number": "131"
+      },
+      {
+        "count": 3,
+        "name": "Jumbo Ice Cream",
+        "set": "PFL",
+        "number": "91"
+      },
+      {
+        "count": 2,
+        "name": "Enhanced Hammer",
+        "set": "TWM",
+        "number": "148"
+      },
+      {
+        "count": 2,
+        "name": "Special Red Card",
+        "set": "CRI",
+        "number": "82"
+      },
+      {
+        "count": 1,
+        "name": "Unfair Stamp",
+        "set": "TWM",
+        "number": "165"
+      },
+      {
+        "count": 4,
+        "name": "Handheld Fan",
+        "set": "TWM",
+        "number": "150"
+      },
+      {
+        "count": 2,
+        "name": "Nighttime Mine",
+        "set": "ASC",
+        "number": "197"
+      },
+      {
+        "count": 2,
+        "name": "Team Rocket's Watchtower",
+        "set": "ASC",
+        "number": "210"
+      }
+    ],
+    "energy": [
+      {
+        "count": 4,
+        "name": "Telepathic Psychic Energy",
+        "set": "POR",
+        "number": "88"
+      },
+      {
+        "count": 4,
+        "name": "Ignition Energy",
+        "set": "WHT",
+        "number": "86"
+      },
+      {
+        "count": 3,
+        "name": "Psychic Energy",
+        "set": "MEE",
+        "number": "5"
+      },
+      {
+        "count": 3,
+        "name": "Darkness Energy",
+        "set": "MEE",
+        "number": "7"
+      }
+    ]
+  }
+}

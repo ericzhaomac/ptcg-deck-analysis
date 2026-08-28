@@ -1,0 +1,197 @@
+{
+  "ok": true,
+  "message": {
+    "pokemon": [
+      {
+        "count": 4,
+        "name": "Galarian Zigzagoon",
+        "set": "ASC",
+        "number": "130"
+      },
+      {
+        "count": 2,
+        "name": "Galarian Linoone",
+        "set": "ASC",
+        "number": "131"
+      },
+      {
+        "count": 3,
+        "name": "Galarian Obstagoon",
+        "set": "ASC",
+        "number": "132"
+      },
+      {
+        "count": 3,
+        "name": "Toxel",
+        "set": "PFL",
+        "number": "67"
+      },
+      {
+        "count": 2,
+        "name": "Toxtricity",
+        "set": "PFL",
+        "number": "68"
+      },
+      {
+        "count": 2,
+        "name": "Munkidori",
+        "set": "ASC",
+        "number": "99"
+      },
+      {
+        "count": 1,
+        "name": "Budew",
+        "set": "ASC",
+        "number": "16"
+      },
+      {
+        "count": 1,
+        "name": "Pecharunt ex",
+        "set": "SFA",
+        "number": "39"
+      },
+      {
+        "count": 1,
+        "name": "Fezandipiti ex",
+        "set": "ASC",
+        "number": "142"
+      },
+      {
+        "count": 1,
+        "name": "Yveltal",
+        "set": "MEG",
+        "number": "88"
+      }
+    ],
+    "trainer": [
+      {
+        "count": 4,
+        "name": "Lillie's Determination",
+        "set": "MEG",
+        "number": "119"
+      },
+      {
+        "count": 2,
+        "name": "Hilda",
+        "set": "WHT",
+        "number": "84"
+      },
+      {
+        "count": 2,
+        "name": "Boss's Orders",
+        "set": "MEG",
+        "number": "114"
+      },
+      {
+        "count": 1,
+        "name": "Grimsley's Move",
+        "set": "PFL",
+        "number": "90"
+      },
+      {
+        "count": 1,
+        "name": "Janine's Secret Art",
+        "set": "PRE",
+        "number": "112"
+      },
+      {
+        "count": 1,
+        "name": "Team Rocket's Petrel",
+        "set": "ASC",
+        "number": "207"
+      },
+      {
+        "count": 4,
+        "name": "Poké Pad",
+        "set": "POR",
+        "number": "81"
+      },
+      {
+        "count": 2,
+        "name": "Buddy-Buddy Poffin",
+        "set": "ASC",
+        "number": "184"
+      },
+      {
+        "count": 2,
+        "name": "Night Stretcher",
+        "set": "ASC",
+        "number": "196"
+      },
+      {
+        "count": 2,
+        "name": "Rare Candy",
+        "set": "MEG",
+        "number": "125"
+      },
+      {
+        "count": 1,
+        "name": "Switch",
+        "set": "MEG",
+        "number": "130"
+      },
+      {
+        "count": 1,
+        "name": "Energy Recycler",
+        "set": "DRI",
+        "number": "164"
+      },
+      {
+        "count": 1,
+        "name": "Sacred Ash",
+        "set": "DRI",
+        "number": "168"
+      },
+      {
+        "count": 1,
+        "name": "Precious Trolley",
+        "set": "SSP",
+        "number": "185"
+      },
+      {
+        "count": 3,
+        "name": "Punk Helmet",
+        "set": "PFL",
+        "number": "92"
+      },
+      {
+        "count": 1,
+        "name": "Binding Mochi",
+        "set": "PRE",
+        "number": "95"
+      },
+      {
+        "count": 1,
+        "name": "Air Balloon",
+        "set": "ASC",
+        "number": "181"
+      },
+      {
+        "count": 2,
+        "name": "Risky Ruins",
+        "set": "MEG",
+        "number": "127"
+      }
+    ],
+    "energy": [
+      {
+        "count": 5,
+        "name": "Darkness Energy",
+        "set": "MEE",
+        "number": "7"
+      },
+      {
+        "count": 2,
+        "name": "Mist Energy",
+        "set": "TEF",
+        "number": "161"
+      },
+      {
+        "count": 1,
+        "name": "Prism Energy",
+        "set": "ASC",
+        "number": "216"
+      }
+    ]
+  }
+}

@@ -7,18 +7,30 @@ from app.services.dataset_registry_service import DatasetRegistryService
 
 EXPECTED_2026_MA_DATASET_IDS = {
     "2026-campinas-ma",
+    "2026-indianapolis-ma",
+    "2026-lima-ma",
     "2026-los-angeles-ma",
     "2026-melbourne-ma",
+    "2026-new-orleans-ma",
     "2026-prague-ma",
+    "2026-turin-ma",
     "2026-utrecht-ma",
 }
 
 
 def test_settings_default_data_root_and_state_path():
     settings = Settings.from_env()
-    assert str(settings.report_path).endswith("data/2026/Prague/MA/analysis.json")
     assert str(settings.data_root).endswith("data")
     assert str(settings.dataset_state_path).endswith("data/config/dataset_state.json")
+    assert not hasattr(settings, "report_path")
+
+
+def test_example_compose_uses_dataset_mode():
+    compose_text = Path("docker-compose.example.yml").read_text(encoding="utf-8")
+
+    assert "DATA_ROOT: /data" in compose_text
+    assert "DATASET_STATE_PATH: /data/config/dataset_state.json" in compose_text
+    assert "PRAGUE_ANALYSIS_REPORT_PATH" not in compose_text
 
 
 def test_discovery_builds_dataset_records(tmp_path: Path):

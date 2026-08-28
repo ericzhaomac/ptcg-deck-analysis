@@ -1,0 +1,155 @@
+{
+  "ok": true,
+  "message": {
+    "pokemon": [
+      {
+        "count": 4,
+        "name": "Hop's Phantump",
+        "set": "ASC",
+        "number": "95"
+      },
+      {
+        "count": 3,
+        "name": "Hop's Trevenant",
+        "set": "ASC",
+        "number": "96"
+      },
+      {
+        "count": 2,
+        "name": "Hop's Snorlax",
+        "set": "JTG",
+        "number": "117"
+      },
+      {
+        "count": 1,
+        "name": "Hop's Wooloo",
+        "set": "JTG",
+        "number": "135"
+      },
+      {
+        "count": 1,
+        "name": "Hop's Dubwool",
+        "set": "JTG",
+        "number": "136"
+      },
+      {
+        "count": 1,
+        "name": "Lillie's Clefairy ex",
+        "set": "ASC",
+        "number": "76"
+      },
+      {
+        "count": 1,
+        "name": "Hop's Cramorant",
+        "set": "ASC",
+        "number": "177"
+      },
+      {
+        "count": 1,
+        "name": "Shaymin",
+        "set": "DRI",
+        "number": "10"
+      }
+    ],
+    "trainer": [
+      {
+        "count": 4,
+        "name": "Team Rocket's Petrel",
+        "set": "ASC",
+        "number": "207"
+      },
+      {
+        "count": 4,
+        "name": "Lillie's Determination",
+        "set": "MEG",
+        "number": "119"
+      },
+      {
+        "count": 3,
+        "name": "Boss's Orders",
+        "set": "MEG",
+        "number": "114"
+      },
+      {
+        "count": 2,
+        "name": "Hassel",
+        "set": "TWM",
+        "number": "151"
+      },
+      {
+        "count": 4,
+        "name": "Poké Pad",
+        "set": "POR",
+        "number": "81"
+      },
+      {
+        "count": 4,
+        "name": "Pokégear 3.0",
+        "set": "SVI",
+        "number": "186"
+      },
+      {
+        "count": 3,
+        "name": "Night Stretcher",
+        "set": "ASC",
+        "number": "196"
+      },
+      {
+        "count": 2,
+        "name": "Hop's Bag",
+        "set": "JTG",
+        "number": "147"
+      },
+      {
+        "count": 1,
+        "name": "Ultra Ball",
+        "set": "MEG",
+        "number": "131"
+      },
+      {
+        "count": 1,
+        "name": "Switch",
+        "set": "MEG",
+        "number": "130"
+      },
+      {
+        "count": 1,
+        "name": "Secret Box",
+        "set": "TWM",
+        "number": "163"
+      },
+      {
+        "count": 4,
+        "name": "Hop's Choice Band",
+        "set": "JTG",
+        "number": "148"
+      },
+      {
+        "count": 1,
+        "name": "Air Balloon",
+        "set": "ASC",
+        "number": "181"
+      },
+      {
+        "count": 4,
+        "name": "Postwick",
+        "set": "JTG",
+        "number": "154"
+      }
+    ],
+    "energy": [
+      {
+        "count": 4,
+        "name": "Mist Energy",
+        "set": "TEF",
+        "number": "161"
+      },
+      {
+        "count": 4,
+        "name": "Telepathic Psychic Energy",
+        "set": "POR",
+        "number": "88"
+      }
+    ]
+  }
+}
