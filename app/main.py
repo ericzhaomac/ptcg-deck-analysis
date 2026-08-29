@@ -8,6 +8,7 @@ from fastapi.staticfiles import StaticFiles
 
 from .api.routes import build_router
 from .config import Settings
+from .deck_store import DeckStore
 from .provider_config import ProviderConfig, ProviderConfigStore
 from .services.dataset_analysis_service import DatasetAnalysisService
 from .services.dataset_registry_service import DatasetRegistryService
@@ -17,15 +18,20 @@ from .services.dataset_state_store import DatasetStateStore
 def create_app(
     data_root: str | Path | None = None,
     dataset_state_path: str | Path | None = None,
+    provider_config_path: str | Path | None = None,
+    user_decks_path: str | Path | None = None,
 ) -> FastAPI:
     settings = Settings.from_env(
         data_root=Path(data_root) if data_root else None,
         dataset_state_path=Path(dataset_state_path) if dataset_state_path else None,
+        provider_config_path=Path(provider_config_path) if provider_config_path else None,
+        user_decks_path=Path(user_decks_path) if user_decks_path else None,
     )
     service = DatasetAnalysisService()
     dataset_registry = DatasetRegistryService(settings.data_root)
     dataset_state_store = DatasetStateStore(settings.dataset_state_path)
     provider_config_store = ProviderConfigStore(config_path=settings.provider_config_path)
+    deck_store = DeckStore(path=settings.user_decks_path)
     env_provider_config = None
     if settings.openai_base_url and settings.openai_api_key:
         env_provider_config = ProviderConfig(
@@ -60,6 +66,7 @@ def create_app(
             env_provider_config=env_provider_config,
             dataset_registry=dataset_registry,
             dataset_state_store=dataset_state_store,
+            deck_store=deck_store,
         )
     )
     return app

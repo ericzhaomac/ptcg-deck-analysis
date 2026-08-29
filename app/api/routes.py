@@ -2,9 +2,11 @@ from __future__ import annotations
 
 import json
 
-from fastapi import APIRouter, Form, HTTPException
+import httpx
+from fastapi import APIRouter, Form, HTTPException, Response, status
 from fastapi.responses import HTMLResponse, RedirectResponse
 
+from ..deck_store import DeckNotFoundError, DeckStore
 from ..models import (
     DatasetIdRequest,
     DatasetListResponse,
@@ -12,8 +14,12 @@ from ..models import (
     DatasetState,
     DatasetStateResponse,
     DeckCompareRequest,
+    DeckWrite,
     ExplainRequest,
     ExplainResponse,
+    ModelDiscoveryRequest,
+    ProviderSettingsWrite,
+    SavedDeck,
 )
 from ..provider_config import ProviderConfig, ProviderConfigStore
 from ..providers.openai_compatible import OpenAICompatibleProvider
@@ -34,11 +40,31 @@ def build_router(
     env_provider_config: ProviderConfig | None,
     dataset_registry: DatasetRegistryService,
     dataset_state_store: DatasetStateStore,
+    deck_store: DeckStore,
 ) -> APIRouter:
     router = APIRouter()
     analysis_router = APIRouter(prefix=API_PREFIX, tags=["dataset-analysis"])
     datasets_router = APIRouter(prefix="/api/v1/datasets", tags=["datasets"])
     provider_router = APIRouter(prefix=PROVIDER_PREFIX, tags=["provider-config"])
+    decks_router = APIRouter(prefix="/api/v1/decks", tags=["saved-decks"])
+
+    def deck_or_404(deck_id: str) -> SavedDeck:
+        try:
+            return deck_store.get(deck_id)
+        except DeckNotFoundError as error:
+            raise HTTPException(status_code=404, detail="Saved deck not found") from error
+
+    def provider_key_for_save(base_url: str, submitted_key: str, existing: ProviderConfig | None) -> str:
+        api_key = submitted_key.strip()
+        normalized_base_url = base_url.strip().rstrip("/")
+        if not api_key and existing and normalized_base_url == existing.base_url.rstrip("/"):
+            api_key = existing.api_key
+        if not api_key:
+            detail = "API key is required for first-time save"
+            if existing:
+                detail = "API key is required when changing the Base URL"
+            raise HTTPException(status_code=400, detail=detail)
+        return api_key
 
     def available_records() -> list[DatasetRecord]:
         return dataset_registry.list_datasets()
@@ -151,8 +177,45 @@ def build_router(
         result = provider.generate(system_prompt=system_prompt, user_prompt=user_prompt)
         return ExplainResponse(provider=result["provider"], model=result["model"], answer=result["answer"], context=context)
 
+    @decks_router.get("", response_model=list[SavedDeck])
+    def list_saved_decks() -> list[SavedDeck]:
+        return deck_store.list_decks()
+
+    @decks_router.post("", response_model=SavedDeck, status_code=status.HTTP_201_CREATED)
+    def create_saved_deck(request: DeckWrite) -> SavedDeck:
+        return deck_store.create(request)
+
+    @decks_router.get("/{deck_id}", response_model=SavedDeck)
+    def get_saved_deck(deck_id: str) -> SavedDeck:
+        return deck_or_404(deck_id)
+
+    @decks_router.put("/{deck_id}", response_model=SavedDeck)
+    def update_saved_deck(deck_id: str, request: DeckWrite) -> SavedDeck:
+        try:
+            return deck_store.update(deck_id, request)
+        except DeckNotFoundError as error:
+            raise HTTPException(status_code=404, detail="Saved deck not found") from error
+
+    @decks_router.post("/{deck_id}/duplicate", response_model=SavedDeck, status_code=status.HTTP_201_CREATED)
+    def duplicate_saved_deck(deck_id: str) -> SavedDeck:
+        try:
+            return deck_store.duplicate(deck_id)
+        except DeckNotFoundError as error:
+            raise HTTPException(status_code=404, detail="Saved deck not found") from error
+
+    @decks_router.delete("/{deck_id}", status_code=status.HTTP_204_NO_CONTENT)
+    def delete_saved_deck(deck_id: str) -> Response:
+        try:
+            deck_store.delete(deck_id)
+        except DeckNotFoundError as error:
+            raise HTTPException(status_code=404, detail="Saved deck not found") from error
+        return Response(status_code=status.HTTP_204_NO_CONTENT)
+
     @provider_router.get("")
     def get_provider_config() -> dict[str, object]:
+        return provider_settings_response()
+
+    def provider_settings_response() -> dict[str, object]:
         active_config = get_active_provider_config()
         file_config = provider_config_store.load()
         return {
@@ -160,6 +223,53 @@ def build_router(
             "file": file_config.masked() if file_config else None,
             "env": env_provider_config.masked() if env_provider_config else None,
         }
+
+    @provider_router.get("/settings")
+    def get_provider_settings() -> dict[str, object]:
+        return provider_settings_response()
+
+    @provider_router.put("/settings")
+    def update_provider_settings(request: ProviderSettingsWrite) -> dict[str, str | bool]:
+        existing = provider_config_store.load()
+        final_api_key = provider_key_for_save(request.base_url, request.api_key, existing)
+        saved = provider_config_store.save(
+            base_url=request.base_url,
+            api_key=final_api_key,
+            model=request.model,
+        )
+        return saved.masked()
+
+    @provider_router.post("/models")
+    def discover_provider_models(request: ModelDiscoveryRequest) -> dict[str, object]:
+        active = get_active_provider_config()
+        base_url = request.base_url.strip() or (active.base_url if active else "")
+        if not base_url:
+            raise HTTPException(status_code=400, detail="Base URL is required to fetch models")
+        api_key = request.api_key.strip()
+        if not api_key and active and base_url.rstrip("/") == active.base_url.rstrip("/"):
+            api_key = active.api_key
+        if not api_key:
+            detail = "API key is required to fetch models"
+            if active and request.base_url.strip():
+                detail = "API key is required when fetching models from a different Base URL"
+            raise HTTPException(status_code=400, detail=detail)
+        provider = OpenAICompatibleProvider(
+            base_url=base_url,
+            api_key=api_key,
+            model=active.model if active else "model-discovery",
+        )
+        try:
+            models = provider.list_models()
+        except httpx.HTTPStatusError as error:
+            raise HTTPException(
+                status_code=502,
+                detail=f"Unable to fetch models from the configured provider (HTTP {error.response.status_code})",
+            ) from error
+        except httpx.HTTPError as error:
+            raise HTTPException(status_code=502, detail="Unable to connect to the configured provider") from error
+        except (ValueError, KeyError) as error:
+            raise HTTPException(status_code=502, detail="The configured provider returned an invalid model list") from error
+        return {"base_url": base_url, "models": models}
 
     @provider_router.get(CONFIG_PAGE_PATH, include_in_schema=False, response_class=HTMLResponse)
     def provider_page(saved: int = 0) -> str:
@@ -220,15 +330,14 @@ def build_router(
         api_key: str = Form(""),
     ) -> RedirectResponse:
         existing = provider_config_store.load()
-        final_api_key = api_key.strip() or (existing.api_key if existing else "")
-        if not final_api_key:
-            raise HTTPException(status_code=400, detail="API key is required for first-time save")
+        final_api_key = provider_key_for_save(base_url, api_key, existing)
         provider_config_store.save(base_url=base_url, api_key=final_api_key, model=model)
         return RedirectResponse(url=f"{CONFIG_PAGE_URL}?saved=1", status_code=303)
 
     router.include_router(analysis_router)
     router.include_router(datasets_router)
     router.include_router(provider_router)
+    router.include_router(decks_router)
     return router
 
 

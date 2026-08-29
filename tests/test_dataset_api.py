@@ -46,6 +46,25 @@ def test_mount_then_set_current(tmp_path):
     assert current_response.json()["current_dataset_id"] == "2026-prague-ma"
 
 
+def test_unmount_endpoint_removes_dataset_and_reassigns_current(tmp_path):
+    write_analysis(tmp_path, event="Prague")
+    write_analysis(tmp_path, event="Utrecht")
+    state_path = tmp_path / "data" / "config" / "dataset_state.json"
+    client = TestClient(create_app(data_root=tmp_path / "data", dataset_state_path=state_path))
+    client.post("/api/v1/datasets/mount", json={"dataset_id": "2026-prague-ma"})
+    client.post("/api/v1/datasets/mount", json={"dataset_id": "2026-utrecht-ma"})
+    client.post("/api/v1/datasets/current", json={"dataset_id": "2026-prague-ma"})
+
+    response = client.post("/api/v1/datasets/unmount", json={"dataset_id": "2026-prague-ma"})
+
+    assert response.status_code == 200
+    assert response.json() == {
+        "mounted_dataset_ids": ["2026-utrecht-ma"],
+        "current_dataset_id": "2026-utrecht-ma",
+    }
+    assert client.get("/api/v1/datasets/mounted").json() == response.json()
+
+
 def test_summary_uses_current_dataset_from_state(tmp_path):
     prague_dir = tmp_path / "data" / "2026" / "Prague" / "MA"
     prague_dir.mkdir(parents=True)

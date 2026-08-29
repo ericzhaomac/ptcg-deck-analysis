@@ -3,4 +3,7 @@
 *.pyc
 __pycache__/
 .pytest_cache/
+.superpowers/
+.venv/
 data/config/provider.json
+data/runtime/

@@ -8,6 +8,8 @@ Standalone FastAPI service for multi-event PTCG deck-analysis datasets.
 - Tracks mounted datasets and the current active dataset
 - Serves generic metagame summary, compare, and explain APIs
 - Supports OpenAI-compatible providers through env vars or a local config file
+- Saves reusable deck lists by pasting, parsing, and validating a complete list in the local Deck Library
+- Discovers available models from an OpenAI-compatible provider
 - Ships with curated 2026 Limitless Labs MA datasets
 
 ## Included Datasets
@@ -30,6 +32,7 @@ The current mounted/current dataset state lives in `data/config/dataset_state.js
 - `app/api/routes.py`: API routes and provider config page
 - `app/config.py`: environment-backed app configuration
 - `app/provider_config.py`: provider config file read/write and masking
+- `app/deck_store.py`: validated local saved-deck persistence
 - `app/services/dataset_analysis_service.py`: dataset loading and analysis logic
 - `app/providers/openai_compatible.py`: OpenAI-compatible provider adapter
 - `scripts/tools/limitless_tournament_analysis.py`: Limitless Labs dataset generator
@@ -100,7 +103,8 @@ Useful env vars:
 ```bash
 export DATA_ROOT=/data
 export DATASET_STATE_PATH=/data/config/dataset_state.json
-export PROVIDER_CONFIG_PATH=/data/config/provider.json
+export PROVIDER_CONFIG_PATH=data/runtime/provider.json
+export USER_DECKS_PATH=data/runtime/decks.json
 export OPENAI_COMPATIBLE_BASE_URL=https://api.kimi.com/coding/
 export OPENAI_COMPATIBLE_API_KEY=your_key
 export OPENAI_COMPATIBLE_MODEL=kimi-code
@@ -110,7 +114,8 @@ Notes:
 
 - `DATA_ROOT` defaults to `data`
 - `DATASET_STATE_PATH` defaults to `data/config/dataset_state.json`
-- `PROVIDER_CONFIG_PATH` points to the persisted provider config file
+- `PROVIDER_CONFIG_PATH` points to the persisted provider config file and defaults locally to the ignored `data/runtime/provider.json`
+- `USER_DECKS_PATH` points to the saved-deck library and defaults to the ignored `data/runtime/decks.json`
 - `POST /api/v1/analysis/explain` reads `PROVIDER_CONFIG_PATH` first, then falls back to env vars
 
 ## Docker
@@ -129,18 +134,20 @@ docker run --rm -p 8010:8010 \
   -e DATA_ROOT=/data \
   -e DATASET_STATE_PATH=/data/config/dataset_state.json \
   -e PROVIDER_CONFIG_PATH=/data/config/provider.json \
+  -e USER_DECKS_PATH=/data/runtime/decks.json \
   -e OPENAI_COMPATIBLE_BASE_URL=https://api.kimi.com/coding/ \
   -e OPENAI_COMPATIBLE_API_KEY=$OPENAI_COMPATIBLE_API_KEY \
   -e OPENAI_COMPATIBLE_MODEL=kimi-code \
   ptcg-deck-analysis
 ```
 
-The browser config page is available at `http://localhost:8010/api/v1/provider/config`.
+The application at `http://localhost:8010/` has three top tabs: Analysis, Deck Library, and AI Backend. The legacy provider config page remains available at `http://localhost:8010/api/v1/provider/config`.
 
 ## Tests
 
 ```bash
 PYTHONPATH=. pytest
+node --test tests/frontend/*.test.mjs
 ```
 
 ## API Surface
@@ -154,13 +161,22 @@ PYTHONPATH=. pytest
 - `GET /api/v1/analysis/summary`
 - `POST /api/v1/analysis/compare`
 - `POST /api/v1/analysis/explain`
+- `GET /api/v1/decks`
+- `POST /api/v1/decks`
+- `GET /api/v1/decks/{deck_id}`
+- `PUT /api/v1/decks/{deck_id}`
+- `POST /api/v1/decks/{deck_id}/duplicate`
+- `DELETE /api/v1/decks/{deck_id}`
 - `GET /api/v1/provider`
+- `GET /api/v1/provider/settings`
+- `PUT /api/v1/provider/settings`
+- `POST /api/v1/provider/models`
 - `GET /api/v1/provider/config`
 - `POST /api/v1/provider/config`
 
 ## Provider Config Safety
 
-`data/config/provider.json` is intentionally kept local and ignored by Git. Store API keys there if you want the browser config page to persist credentials across restarts.
+`data/runtime/` and the legacy `data/config/provider.json` are intentionally ignored by Git. Provider API keys and user deck lists are plaintext local runtime state; keep them out of commits and secure the host filesystem appropriately. Docker uses explicit paths under its `/data` volume.
 
 ## Compare Request Example
 

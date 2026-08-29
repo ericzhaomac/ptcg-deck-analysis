@@ -1,860 +1,134 @@
 <!DOCTYPE html>
-<html lang="zh-CN">
+<html lang="en">
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>PTCG Deck Analysis</title>
-  <style>
-    * { box-sizing: border-box; margin: 0; padding: 0; }
-    body {
-      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Arial, sans-serif;
-      background: #0d1117;
-      color: #c9d1d9;
-      height: 100vh;
-      display: flex;
-      flex-direction: column;
-    }
-    header {
-      background: #161b22;
-      border-bottom: 1px solid #30363d;
-      padding: 12px 20px;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-    }
-    header h1 { font-size: 18px; color: #58a6ff; }
-    header nav a {
-      color: #8b949e;
-      text-decoration: none;
-      margin-left: 20px;
-      font-size: 14px;
-    }
-    header nav a:hover { color: #58a6ff; }
-    .container {
-      display: flex;
-      flex: 1;
-      overflow: hidden;
-    }
-    .column {
-      flex: 1;
-      padding: 16px;
-      overflow-y: auto;
-      border-right: 1px solid #30363d;
-    }
-    .column:last-child { border-right: none; }
-    .column h2 {
-      font-size: 16px;
-      color: #58a6ff;
-      margin-bottom: 12px;
-      padding-bottom: 8px;
-      border-bottom: 1px solid #30363d;
-    }
-    .loading { color: #8b949e; font-style: italic; }
-    .error { color: #f85149; }
-
-    /* Left: Meta Summary */
-    .selector-panel {
-      background: #161b22;
-      border: 1px solid #30363d;
-      border-radius: 6px;
-      padding: 12px;
-      margin-bottom: 12px;
-    }
-    .selector-panel h3 {
-      font-size: 13px;
-      color: #8b949e;
-      margin-bottom: 10px;
-    }
-    .selector-list {
-      display: flex;
-      flex-direction: column;
-      gap: 8px;
-    }
-    .selector-item {
-      display: flex;
-      align-items: flex-start;
-      gap: 8px;
-      padding: 6px 0;
-    }
-    .selector-item label {
-      display: flex;
-      flex-direction: column;
-      gap: 2px;
-      cursor: pointer;
-      font-size: 12px;
-    }
-    .selector-item .dataset-name {
-      color: #c9d1d9;
-    }
-    .selector-item .dataset-meta {
-      color: #8b949e;
-      font-size: 11px;
-    }
-    .selector-empty,
-    .selector-status {
-      font-size: 12px;
-      color: #8b949e;
-    }
-    .selector-status.error {
-      color: #f85149;
-    }
-    .archetype-card {
-      background: #161b22;
-      border: 1px solid #30363d;
-      border-radius: 6px;
-      padding: 12px;
-      margin-bottom: 10px;
-    }
-    .archetype-card h3 {
-      font-size: 14px;
-      color: #c9d1d9;
-      margin-bottom: 6px;
-    }
-    .archetype-card .stats {
-      font-size: 12px;
-      color: #8b949e;
-      line-height: 1.6;
-    }
-    .archetype-card .core-cards {
-      font-size: 11px;
-      color: #7ee787;
-      margin-top: 6px;
-    }
-
-    /* Center: Deck Import */
-    .deck-input {
-      width: 100%;
-      height: 300px;
-      background: #161b22;
-      border: 1px solid #30363d;
-      border-radius: 6px;
-      padding: 12px;
-      color: #c9d1d9;
-      font-family: "SF Mono", Monaco, monospace;
-      font-size: 12px;
-      resize: vertical;
-      margin-bottom: 10px;
-    }
-    .btn {
-      background: #238636;
-      color: #fff;
-      border: none;
-      padding: 8px 16px;
-      border-radius: 6px;
-      cursor: pointer;
-      font-size: 13px;
-      margin-right: 8px;
-    }
-    .btn:hover { background: #2ea043; }
-    .btn-secondary {
-      background: #1f6feb;
-    }
-    .btn-secondary:hover { background: #388bfd; }
-    .deck-preview {
-      background: #161b22;
-      border: 1px solid #30363d;
-      border-radius: 6px;
-      padding: 12px;
-      margin-top: 12px;
-      font-size: 12px;
-    }
-    .deck-preview h4 {
-      color: #58a6ff;
-      margin-bottom: 8px;
-    }
-    .deck-section {
-      margin-bottom: 8px;
-    }
-    .deck-section-title {
-      color: #8b949e;
-      font-weight: 600;
-      margin-bottom: 4px;
-    }
-    .deck-card {
-      display: inline-block;
-      background: #21262d;
-      padding: 2px 8px;
-      border-radius: 3px;
-      margin: 2px;
-      font-size: 11px;
-    }
-    .deck-card .count { color: #7ee787; font-weight: 600; }
-
-    /* Right: AI Chat */
-    .chat-container {
-      display: flex;
-      flex-direction: column;
-      height: calc(100% - 40px);
-    }
-    .chat-messages {
-      flex: 1;
-      overflow-y: auto;
-      background: #161b22;
-      border: 1px solid #30363d;
-      border-radius: 6px;
-      padding: 12px;
-      margin-bottom: 10px;
-    }
-    .chat-message {
-      margin-bottom: 12px;
-      padding: 8px 12px;
-      border-radius: 6px;
-      max-width: 90%;
-    }
-    .chat-message.user {
-      background: #1f6feb;
-      margin-left: auto;
-      color: #fff;
-    }
-    .chat-message.ai {
-      background: #21262d;
-      border: 1px solid #30363d;
-    }
-    .chat-message.ai .content {
-      white-space: pre-wrap;
-      line-height: 1.5;
-      font-size: 13px;
-    }
-    .chat-input-area {
-      display: flex;
-      gap: 8px;
-    }
-    .chat-input {
-      flex: 1;
-      background: #161b22;
-      border: 1px solid #30363d;
-      border-radius: 6px;
-      padding: 8px 12px;
-      color: #c9d1d9;
-      font-size: 13px;
-    }
-    .chat-status {
-      font-size: 12px;
-      color: #8b949e;
-      margin-top: 6px;
-      min-height: 18px;
-    }
-
-    /* Comparison result */
-    .compare-result {
-      background: #161b22;
-      border: 1px solid #30363d;
-      border-radius: 6px;
-      padding: 12px;
-      margin-top: 12px;
-      font-size: 12px;
-    }
-    .compare-result h4 {
-      color: #f0883e;
-      margin-bottom: 8px;
-    }
-    .missing-core { color: #f85149; }
-    .missing-common { color: #f0883e; }
-    .tech-deviation { color: #d2a8ff; }
-
-    @media (max-width: 900px) {
-      .container { flex-direction: column; }
-      .column { border-right: none; border-bottom: 1px solid #30363d; }
-    }
-  </style>
+  <link rel="stylesheet" href="/static/styles.css">
 </head>
 <body>
-  <header>
-    <h1>🎴 PTCG Deck Analysis</h1>
-    <nav>
-      <a href="/api/v1/provider/config">⚙️ AI Provider 配置</a>
-      <a href="/api/v1/provider">🔍 当前配置</a>
+  <div class="app-shell">
+    <header class="app-header"><h1>PTCG Deck Analysis</h1></header>
+    <nav class="tab-bar" role="tablist" aria-label="Application sections">
+      <button class="tab-button active" id="analysis-tab" role="tab" aria-selected="true" aria-controls="analysis-panel" tabindex="0" data-tab="analysis">Analysis</button>
+      <button class="tab-button" id="deck-library-tab" role="tab" aria-selected="false" aria-controls="deck-library-panel" tabindex="-1" data-tab="deck-library">Deck Library</button>
+      <button class="tab-button" id="ai-backend-tab" role="tab" aria-selected="false" aria-controls="ai-backend-panel" tabindex="-1" data-tab="ai-backend">AI Backend</button>
     </nav>
-  </header>
 
-  <div class="container">
-    <!-- Dataset selector target:
-    1. Available datasets block with checkboxes
-    2. Mounted datasets block with radios
-    3. Selector status/error area
-    4. Current dataset meta summary below selector
-    -->
-    <div class="column" id="meta-column">
-      <h2>🗂️ Dataset Selector</h2>
-      <div class="selector-panel">
-        <h3>Available datasets</h3>
-        <div id="available-datasets" class="selector-list"></div>
-        <div style="margin-top:10px;">
-          <button class="btn" id="apply-mounts-btn" onclick="applyMounts()">Apply Mounts</button>
-          <span style="font-size:11px;color:#8b949e;margin-left:8px;">Check datasets to mount, then click Apply</span>
+    <main>
+      <section class="tab-panel" id="analysis-panel" role="tabpanel" aria-labelledby="analysis-tab">
+        <div class="analysis-grid">
+          <section class="workspace-column">
+            <div class="section-heading"><div><p class="eyebrow">Tournament context</p><h2>Dataset &amp; Meta</h2></div></div>
+            <div class="card">
+              <h3>Available datasets</h3>
+              <div id="available-datasets" class="selector-list"></div>
+              <button class="button primary" id="apply-mounts-btn" type="button">Apply mounts</button>
+            </div>
+            <div class="card" id="mounted-panel" hidden>
+              <h3>Mounted datasets</h3>
+              <p class="helper">Choose the current dataset for analysis.</p>
+              <div id="mounted-datasets" class="selector-list"></div>
+            </div>
+            <div id="selector-status" class="status" role="status"></div>
+            <div class="section-heading compact"><div><p class="eyebrow">Current dataset</p><h2>Meta summary</h2></div></div>
+            <div id="meta-loading" class="status">Loading current dataset summary…</div>
+            <div id="meta-content"></div>
+          </section>
+
+          <section class="workspace-column">
+            <div class="section-heading"><div><p class="eyebrow">Your list</p><h2>Deck input</h2></div></div>
+            <label for="analysis-saved-deck">Use a saved deck</label>
+            <select id="analysis-saved-deck"><option value="">Temporary import</option></select>
+            <label for="deck-input">Paste a deck list</label>
+            <textarea id="deck-input" class="deck-input" placeholder="Pokémon: 22&#10;4 Dreepy TWM 128&#10;&#10;Trainer: 31&#10;4 Buddy-Buddy Poffin TEF 144&#10;&#10;Energy: 7&#10;3 Psychic Energy MEE 5"></textarea>
+            <div class="button-row">
+              <button class="button primary" id="parse-deck-btn" type="button">Parse deck</button>
+              <button class="button" id="compare-btn" type="button">Compare with meta</button>
+            </div>
+            <label for="archetype-select">Comparison archetype</label>
+            <select id="archetype-select"><option value="">Select an archetype</option></select>
+            <div id="analysis-deck-status" class="status" role="status"></div>
+            <div id="deck-preview"></div>
+            <div id="compare-result"></div>
+          </section>
+
+          <section class="workspace-column chat-column">
+            <div class="section-heading"><div><p class="eyebrow">Explain</p><h2>AI deck discussion</h2></div></div>
+            <div class="chat-messages" id="chat-messages" aria-live="polite">
+              <div class="chat-message ai">Import or select a deck, then ask about its position in the current dataset.</div>
+            </div>
+            <div class="chat-input-row">
+              <label class="sr-only" for="chat-input">Question for AI</label>
+              <input id="chat-input" type="text" placeholder="Ask about this deck…">
+              <button class="button primary" id="send-chat-btn" type="button">Send</button>
+            </div>
+            <div id="chat-status" class="status" role="status"></div>
+          </section>
         </div>
-      </div>
-      <div class="selector-panel" id="mounted-panel" style="display:none;">
-        <h3>Mounted datasets — select current</h3>
-        <div id="mounted-datasets" class="selector-list"></div>
-      </div>
-      <div id="selector-status" class="selector-status"></div>
+      </section>
 
-      <h2 style="margin-top:20px;">📊 Current Dataset Meta</h2>
-      <div id="meta-loading" class="loading">Loading current dataset summary...</div>
-      <div id="meta-content" style="display:none;"></div>
-    </div>
-
-    <!-- Center: Deck Import -->
-    <div class="column" id="deck-column">
-      <h2>📝 卡组导入</h2>
-      <textarea id="deck-input" class="deck-input" placeholder="在此粘贴卡组列表...
-
-格式示例：
-Pokémon: 22
-4 Dreepy TWM 128
-4 Drakloak TWM 129
-3 Dragapult ex TWM 130
-
-Trainer: 31
-4 Buddy-Buddy Poffin TEF 144
-4 Poké Pad POR 81
-
-Energy: 7
-3 Psychic Energy MEE 5
-3 Fire Energy MEE 2
-1 Darkness Energy MEE 7"></textarea>
-      <div>
-        <button class="btn" onclick="parseDeck()">📋 解析卡组</button>
-        <button class="btn btn-secondary" onclick="compareWithMeta()">🔍 对比环境</button>
-        <select id="archetype-select" style="background:#161b22;border:1px solid #30363d;color:#c9d1d9;padding:6px;border-radius:4px;margin-left:8px;">
-          <option value="">选择 archetype</option>
-        </select>
-      </div>
-      <div id="deck-preview"></div>
-      <div id="compare-result"></div>
-    </div>
-
-    <!-- Right: AI Chat -->
-    <div class="column" id="chat-column">
-      <h2>💬 AI 构筑讨论</h2>
-      <div class="chat-container">
-        <div class="chat-messages" id="chat-messages">
-          <div class="chat-message ai">
-            <div class="content">你好！我可以帮你分析 current dataset 环境下的卡组构筑。请先导入你的卡组，然后向我提问。</div>
-          </div>
+      <section class="tab-panel" id="deck-library-panel" role="tabpanel" aria-labelledby="deck-library-tab" hidden>
+        <div class="page-heading">
+          <div><p class="eyebrow">Saved locally</p><h2>Deck Library</h2><p>Search, load, rename, overwrite, duplicate, or delete reusable deck lists.</p></div>
+          <button class="button primary" id="new-deck-btn" type="button">New deck</button>
         </div>
-        <div class="chat-input-area">
-          <input type="text" id="chat-input" class="chat-input" placeholder="问 AI 关于构筑的问题..." onkeypress="if(event.key==='Enter') sendMessage()">
-          <button class="btn" onclick="sendMessage()">发送</button>
+        <div class="library-grid">
+          <aside class="card library-sidebar">
+            <label for="deck-search">Search decks</label>
+            <input id="deck-search" type="search" placeholder="Search by name">
+            <div id="deck-list" class="deck-list"></div>
+          </aside>
+          <section class="card editor-card">
+            <div id="editor-empty" class="empty-state">Choose a saved deck or create a new one.</div>
+            <form id="deck-editor" hidden>
+              <div class="editor-heading">
+                <div class="field-grow"><label for="deck-name">Deck name</label><input id="deck-name" maxlength="120" required></div>
+                <div id="deck-timestamps" class="timestamp"></div>
+              </div>
+              <label for="deck-library-input">Complete deck list</label>
+              <textarea id="deck-library-input" class="deck-input deck-library-input" placeholder="Pokémon: 18&#10;4 Dreepy ASC 158&#10;&#10;Trainer: 33&#10;4 Lillie's Determination MEG 119&#10;&#10;Energy: 9&#10;4 Psychic Energy MEE 5"></textarea>
+              <div class="editor-toolbar">
+                <button class="button" id="parse-library-deck-btn" type="button">Parse and validate</button>
+                <span id="deck-total" class="total-pill">Not validated</span>
+              </div>
+              <div id="deck-editor-status" class="status" role="status"></div>
+              <div class="button-row editor-actions">
+                <button class="button primary" id="save-deck-btn" type="submit">Save deck</button>
+                <button class="button" id="load-analysis-btn" type="button">Load in Analysis</button>
+                <button class="button" id="duplicate-deck-btn" type="button">Duplicate</button>
+                <button class="button danger" id="delete-deck-btn" type="button">Delete</button>
+              </div>
+            </form>
+          </section>
         </div>
-        <div class="chat-status" id="chat-status"></div>
-      </div>
-    </div>
+      </section>
+
+      <section class="tab-panel" id="ai-backend-panel" role="tabpanel" aria-labelledby="ai-backend-tab" hidden>
+        <div class="page-heading"><div><p class="eyebrow">OpenAI-compatible</p><h2>AI Backend</h2><p>Configure the provider used for deck explanations and discover its available models.</p></div></div>
+        <div class="settings-grid">
+          <form class="card settings-card" id="provider-form">
+            <div><label for="provider-type">Provider</label><input id="provider-type" value="OpenAI-compatible" disabled></div>
+            <div><label for="provider-base-url">Base URL</label><input id="provider-base-url" type="url" placeholder="https://api.example.com/v1" required></div>
+            <div><label for="provider-api-key">API key</label><input id="provider-api-key" type="password" autocomplete="new-password" placeholder="Enter API key"></div>
+            <div><label for="provider-model">Model</label><input id="provider-model" placeholder="Enter a model name" required></div>
+            <div><label for="discovered-models">Available models</label><select id="discovered-models"><option value="">Fetch models to choose</option></select></div>
+            <div class="button-row">
+              <button class="button" id="fetch-models-btn" type="button">Fetch models</button>
+              <button class="button primary" id="save-provider-btn" type="submit">Save settings</button>
+            </div>
+            <div id="provider-form-status" class="status" role="status"></div>
+          </form>
+          <aside class="card provider-summary">
+            <p class="eyebrow">Current connection</p>
+            <h3>Provider status</h3>
+            <dl id="provider-summary"></dl>
+            <p class="helper">A blank API-key field keeps the previously saved key only while the Base URL is unchanged. Masked keys are never loaded into the input.</p>
+          </aside>
+        </div>
+      </section>
+    </main>
   </div>
-
-  <script>
-    const state = {
-      datasets: [],
-      mountedDatasetIds: [],
-      currentDatasetId: null,
-      currentDatasetDisplayName: null,
-      currentSummary: null,
-      archetypes: [],
-      parsedDeck: null,
-    };
-
-    async function loadDatasets() {
-      const res = await fetch('/api/v1/datasets');
-      if (!res.ok) {
-        throw new Error(`Failed to load datasets: ${res.status}`);
-      }
-      const data = await res.json();
-      state.datasets = data.datasets || [];
-      state.mountedDatasetIds = data.mounted_dataset_ids || [];
-      state.currentDatasetId = data.current_dataset_id || null;
-      const current = state.datasets.find(d => d.dataset_id === state.currentDatasetId);
-      state.currentDatasetDisplayName = current ? current.display_name : null;
-      renderDatasetSelector();
-    }
-
-    function renderDatasetSelector() {
-      renderAvailableDatasets();
-      renderMountedDatasets();
-    }
-
-    function renderAvailableDatasets() {
-      const container = document.getElementById('available-datasets');
-      if (!state.datasets.length) {
-        container.innerHTML = '<div class="selector-empty">No available datasets found.</div>';
-        return;
-      }
-
-      container.innerHTML = '';
-      state.datasets.forEach(dataset => {
-        const item = document.createElement('div');
-        item.className = 'selector-item';
-
-        const checkbox = document.createElement('input');
-        checkbox.type = 'checkbox';
-        checkbox.value = dataset.dataset_id;
-        checkbox.checked = state.mountedDatasetIds.includes(dataset.dataset_id);
-        checkbox.dataset.datasetId = dataset.dataset_id;
-        checkbox.className = 'dataset-checkbox';
-
-        const label = document.createElement('label');
-        label.appendChild(datasetName(dataset));
-        label.appendChild(datasetMeta(dataset));
-
-        item.appendChild(checkbox);
-        item.appendChild(label);
-        container.appendChild(item);
-      });
-    }
-
-    function renderMountedDatasets() {
-      const container = document.getElementById('mounted-datasets');
-      const panel = document.getElementById('mounted-panel');
-      const mounted = state.datasets.filter(dataset => state.mountedDatasetIds.includes(dataset.dataset_id));
-      if (!mounted.length) {
-        panel.style.display = 'none';
-        container.innerHTML = '';
-        return;
-      }
-
-      panel.style.display = 'block';
-      container.innerHTML = '';
-      mounted.forEach(dataset => {
-        const item = document.createElement('div');
-        item.className = 'selector-item';
-
-        const radio = document.createElement('input');
-        radio.type = 'radio';
-        radio.name = 'current-dataset';
-        radio.value = dataset.dataset_id;
-        radio.checked = dataset.dataset_id === state.currentDatasetId;
-        radio.addEventListener('change', (e) => {
-          if (e.target.checked) {
-            changeCurrentDataset(dataset.dataset_id);
-          }
-        });
-
-        const label = document.createElement('label');
-        label.appendChild(datasetName(dataset));
-        label.appendChild(datasetMeta(dataset));
-
-        item.appendChild(radio);
-        item.appendChild(label);
-        container.appendChild(item);
-      });
-    }
-
-    function datasetName(dataset) {
-      const el = document.createElement('span');
-      el.className = 'dataset-name';
-      el.textContent = dataset.display_name || dataset.dataset_id;
-      return el;
-    }
-
-    function datasetMeta(dataset) {
-      const el = document.createElement('span');
-      el.className = 'dataset-meta';
-      const parts = [dataset.year, dataset.event_name, dataset.division, dataset.city, dataset.source_provider].filter(Boolean);
-      el.textContent = parts.join(' · ') || dataset.dataset_id;
-      return el;
-    }
-
-    function setSelectorStatus(message = '', isError = false) {
-      const el = document.getElementById('selector-status');
-      el.textContent = message;
-      el.className = isError ? 'selector-status error' : 'selector-status';
-    }
-
-    async function applyMounts() {
-      const checkboxes = document.querySelectorAll('#available-datasets .dataset-checkbox');
-      const desired = Array.from(checkboxes).filter(cb => cb.checked).map(cb => cb.value);
-      const currentlyMounted = new Set(state.mountedDatasetIds);
-      const desiredSet = new Set(desired);
-
-      const toMount = desired.filter(id => !currentlyMounted.has(id));
-      const toUnmount = state.mountedDatasetIds.filter(id => !desiredSet.has(id));
-
-      if (!toMount.length && !toUnmount.length) {
-        setSelectorStatus('No changes to apply.');
-        return;
-      }
-
-      setSelectorStatus('Applying mounts...');
-      document.getElementById('apply-mounts-btn').disabled = true;
-
-      try {
-        for (const datasetId of toMount) {
-          const res = await fetch('/api/v1/datasets/mount', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ dataset_id: datasetId, mount: true })
-          });
-          if (!res.ok) {
-            const err = await res.json().catch(() => ({}));
-            throw new Error(`Mount ${datasetId} failed: ${err.detail || res.status}`);
-          }
-        }
-
-        for (const datasetId of toUnmount) {
-          const res = await fetch('/api/v1/datasets/mount', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ dataset_id: datasetId, mount: false })
-          });
-          if (!res.ok) {
-            const err = await res.json().catch(() => ({}));
-            throw new Error(`Unmount ${datasetId} failed: ${err.detail || res.status}`);
-          }
-        }
-
-        await loadDatasets();
-
-        if (desired.length === 1 && !state.currentDatasetId) {
-          await changeCurrentDataset(desired[0]);
-        } else if (desired.length > 0 && !state.currentDatasetId) {
-          setSelectorStatus('Datasets mounted. Select a current dataset below.');
-        } else {
-          setSelectorStatus('Mounts applied.');
-        }
-      } catch (e) {
-        setSelectorStatus(`Apply failed: ${e.message}`, true);
-        await loadDatasets();
-      } finally {
-        document.getElementById('apply-mounts-btn').disabled = false;
-      }
-    }
-
-    async function toggleDatasetMount(datasetId, shouldMount) {
-      setSelectorStatus(shouldMount ? 'Mounting dataset...' : 'Unmounting dataset...');
-      try {
-        const res = await fetch('/api/v1/datasets/mount', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ dataset_id: datasetId, mount: shouldMount })
-        });
-        if (!res.ok) {
-          const err = await res.json().catch(() => ({}));
-          throw new Error(err.detail || `HTTP ${res.status}`);
-        }
-        const data = await res.json();
-        state.mountedDatasetIds = data.mounted_dataset_ids || [];
-        renderDatasetSelector();
-        setSelectorStatus(shouldMount ? 'Dataset mounted.' : 'Dataset unmounted.');
-      } catch (e) {
-        setSelectorStatus(`Failed to ${shouldMount ? 'mount' : 'unmount'}: ${e.message}`, true);
-        renderDatasetSelector();
-      }
-    }
-
-    async function changeCurrentDataset(datasetId) {
-      setSelectorStatus('Switching current dataset...');
-      try {
-        const res = await fetch('/api/v1/datasets/current', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ dataset_id: datasetId })
-        });
-        if (!res.ok) {
-          const err = await res.json().catch(() => ({}));
-          throw new Error(err.detail || `HTTP ${res.status}`);
-        }
-        const data = await res.json();
-        state.currentDatasetId = data.current_dataset_id || datasetId;
-        const current = state.datasets.find(d => d.dataset_id === state.currentDatasetId);
-        state.currentDatasetDisplayName = current ? current.display_name : null;
-        renderDatasetSelector();
-        await loadSummary(state.currentDatasetId);
-        setSelectorStatus('Current dataset switched.');
-      } catch (e) {
-        setSelectorStatus(`Failed to switch dataset: ${e.message}`, true);
-        renderDatasetSelector();
-      }
-    }
-
-    function refreshCurrentDatasetUi() {
-      renderDatasetSelector();
-      if (state.currentDatasetId) {
-        loadSummary(state.currentDatasetId);
-      } else {
-        renderNoCurrentDataset();
-      }
-    }
-
-    async function loadSummary(datasetId) {
-      document.getElementById('meta-loading').style.display = 'block';
-      document.getElementById('meta-loading').textContent = 'Loading dataset summary...';
-      document.getElementById('meta-loading').className = 'loading';
-      document.getElementById('meta-content').style.display = 'none';
-      try {
-        const res = await fetch(`/api/v1/analysis/summary?dataset_id=${encodeURIComponent(datasetId)}`);
-        if (!res.ok) throw new Error(`HTTP ${res.status}`);
-        const data = await res.json();
-        state.currentSummary = data;
-        state.archetypes = data.archetypes || [];
-        renderMeta(data);
-        populateArchetypeSelect(state.archetypes);
-      } catch (e) {
-        document.getElementById('meta-loading').textContent = '加载失败: ' + e.message;
-        document.getElementById('meta-loading').className = 'error';
-      }
-    }
-
-    function renderNoCurrentDataset() {
-      document.getElementById('meta-loading').style.display = 'none';
-      const container = document.getElementById('meta-content');
-      container.style.display = 'block';
-      container.innerHTML = '<div class="selector-empty">No current dataset selected. Mount a dataset and select it as current to view meta summary.</div>';
-      state.archetypes = [];
-      populateArchetypeSelect([]);
-    }
-
-    function resetDatasetDependentUi() {
-      document.getElementById('meta-loading').style.display = 'block';
-      document.getElementById('meta-loading').textContent = 'Loading current dataset summary...';
-      document.getElementById('meta-loading').className = 'loading';
-      document.getElementById('meta-content').style.display = 'none';
-      document.getElementById('compare-result').innerHTML = '';
-      state.currentSummary = null;
-      state.archetypes = [];
-      state.parsedDeck = null;
-      populateArchetypeSelect([]);
-      document.getElementById('deck-preview').innerHTML = '';
-    }
-
-    // Load meta summary on startup
-    async function loadMeta() {
-      try {
-        const res = await fetch('/api/v1/analysis/summary');
-        const data = await res.json();
-        state.currentSummary = data;
-        state.archetypes = data.archetypes || [];
-        renderMeta(data);
-        populateArchetypeSelect(state.archetypes);
-      } catch (e) {
-        document.getElementById('meta-loading').textContent = '加载失败: ' + e.message;
-        document.getElementById('meta-loading').className = 'error';
-      }
-    }
-
-    function renderMeta(data) {
-      document.getElementById('meta-loading').style.display = 'none';
-      const container = document.getElementById('meta-content');
-      container.style.display = 'block';
-
-      const field = data.field || {};
-      let html = `<div style="font-size:12px;color:#8b949e;margin-bottom:12px;">
-        Current dataset: ${escapeHtml(state.currentDatasetDisplayName || 'Unknown')} | 总人数: ${field.total_players || '-'} | 主流 archetype: ${field.qualified_archetype_count || '-'} 个
-      </div>`;
-
-      (data.archetypes || []).slice(0, 8).forEach((a, i) => {
-        const meta = a.meta || {};
-        const perf = a.performance || {};
-        const core = (a.card_summary || {});
-        const coreCards = [];
-        ['pokemon', 'trainer', 'energy'].forEach(sec => {
-          (core[sec] || []).filter(c => c.bucket === 'core').slice(0, 3).forEach(c => {
-            coreCards.push(`${c.name}×${c.avg_when_present.toFixed(1)}`);
-          });
-        });
-
-        html += `<div class="archetype-card">
-          <h3>${i + 1}. ${a.archetype_name}</h3>
-          <div class="stats">
-            人数: ${meta.players || 0} | 占比: ${(meta.share * 100).toFixed(1)}% | Day2 转化: ${(meta.day2_conversion * 100).toFixed(1)}%<br>
-            胜率: ${(perf.win_rate * 100).toFixed(1)}% | Top8/Top16: ${perf.top8_count || 0}/${perf.top16_count || 0}
-          </div>
-          <div class="core-cards">核心: ${coreCards.join('、')}</div>
-        </div>`;
-      });
-
-      container.innerHTML = html;
-    }
-
-    function populateArchetypeSelect(archetypes) {
-      const select = document.getElementById('archetype-select');
-      select.innerHTML = '<option value="">选择 archetype</option>';
-      archetypes.forEach(a => {
-        const option = document.createElement('option');
-        option.value = a.archetype_id;
-        option.textContent = a.archetype_name;
-        select.appendChild(option);
-      });
-    }
-
-    function parseDeck() {
-      const text = document.getElementById('deck-input').value.trim();
-      if (!text) return;
-
-      state.parsedDeck = { pokemon: [], trainer: [], energy: [] };
-      let currentSection = null;
-
-      text.split('\n').forEach(line => {
-        line = line.trim();
-        if (!line) return;
-
-        if (line.toLowerCase().startsWith('pokemon:') || line.toLowerCase().startsWith('pokémon:')) { currentSection = 'pokemon'; return; }
-        if (line.toLowerCase().startsWith('trainer:')) { currentSection = 'trainer'; return; }
-        if (line.toLowerCase().startsWith('energy:')) { currentSection = 'energy'; return; }
-
-        const match = line.match(/^(\d+)\s+(.+)$/);
-        if (match && currentSection) {
-          state.parsedDeck[currentSection].push({
-            name: match[2].trim(),
-            count: parseInt(match[1])
-          });
-        }
-      });
-
-      renderDeckPreview();
-      addChatMessage('ai', '卡组已导入！你可以问我关于这套牌的问题，或者点击"对比环境"查看与 current dataset 主流构筑的差异。');
-    }
-
-    function renderDeckPreview() {
-      if (!state.parsedDeck) return;
-      let html = '<div class="deck-preview"><h4>📋 已解析卡组</h4>';
-      ['pokemon', 'trainer', 'energy'].forEach(sec => {
-        const items = state.parsedDeck[sec];
-        if (!items.length) return;
-        html += `<div class="deck-section">
-          <div class="deck-section-title">${sec === 'pokemon' ? '宝可梦' : sec === 'trainer' ? '训练家' : '能量'}</div>`;
-        items.forEach(item => {
-          html += `<span class="deck-card"><span class="count">${item.count}</span> ${item.name}</span>`;
-        });
-        html += '</div>';
-      });
-      html += '</div>';
-      document.getElementById('deck-preview').innerHTML = html;
-    }
-
-    async function compareWithMeta() {
-      if (!state.parsedDeck) {
-        alert('请先导入卡组');
-        return;
-      }
-      const archetype = document.getElementById('archetype-select').value;
-      if (!archetype) {
-        alert('请选择一个 archetype');
-        return;
-      }
-
-      document.getElementById('compare-result').innerHTML = '<div class="loading">分析中...</div>';
-
-      try {
-        const payload = { archetype, deck: state.parsedDeck };
-        if (state.currentDatasetId) {
-          payload.dataset_id = state.currentDatasetId;
-        }
-        const res = await fetch('/api/v1/analysis/compare', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify(payload)
-        });
-        const data = await res.json();
-        renderCompareResult(data);
-      } catch (e) {
-        document.getElementById('compare-result').innerHTML = `<div class="error">对比失败: ${e.message}</div>`;
-      }
-    }
-
-    function renderCompareResult(data) {
-      const summary = data.summary || {};
-      let html = `<div class="compare-result">
-        <h4>🔍 与 ${data.archetype?.name || '环境'} 对比</h4>
-        <div style="margin-bottom:8px;font-size:12px;color:#8b949e;">
-          缺失核心: ${summary.missing_core_count || 0} | 常见偏差: ${summary.missing_common_count || 0} | Tech 偏离: ${summary.tech_deviation_count || 0}
-        </div>`;
-
-      if (data.missing_core?.length) {
-        html += '<div style="margin-top:8px;"><strong style="color:#f85149;">缺失核心:</strong></div>';
-        data.missing_core.forEach(c => {
-          html += `<div class="missing-core">• ${c.name} (${c.section_label}) - ${c.note}</div>`;
-        });
-      }
-
-      if (data.missing_common?.length) {
-        html += '<div style="margin-top:8px;"><strong style="color:#f0883e;">缺失常见卡:</strong></div>';
-        data.missing_common.forEach(c => {
-          html += `<div class="missing-common">• ${c.name} (${c.section_label}) - ${c.note}</div>`;
-        });
-      }
-
-      if (data.tech_deviations?.length) {
-        html += '<div style="margin-top:8px;"><strong style="color:#d2a8ff;">Tech 偏离:</strong></div>';
-        data.tech_deviations.forEach(c => {
-          html += `<div class="tech-deviation">• ${c.name} (${c.section_label}) - ${c.note}</div>`;
-        });
-      }
-
-      html += '</div>';
-      document.getElementById('compare-result').innerHTML = html;
-    }
-
-    async function sendMessage() {
-      const input = document.getElementById('chat-input');
-      const message = input.value.trim();
-      if (!message) return;
-
-      if (!state.parsedDeck) {
-        addChatMessage('ai', '请先导入你的卡组，我才能针对构筑进行讨论。');
-        return;
-      }
-
-      addChatMessage('user', message);
-      input.value = '';
-      document.getElementById('chat-status').textContent = 'AI 思考中...';
-
-      try {
-        const archetype = document.getElementById('archetype-select').value || 'dragapult-ex';
-        const payload = {
-          archetype,
-          deck: state.parsedDeck,
-          question: message
-        };
-        if (state.currentDatasetId) {
-          payload.dataset_id = state.currentDatasetId;
-        }
-        const res = await fetch('/api/v1/analysis/explain', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify(payload)
-        });
-
-        if (res.status === 501) {
-          addChatMessage('ai', '⚠️ AI Provider 未配置。请先前往 [AI Provider 配置页](/api/v1/provider/config) 设置你的 API Key。');
-          document.getElementById('chat-status').textContent = '';
-          return;
-        }
-
-        const data = await res.json();
-        addChatMessage('ai', data.answer || 'AI 没有返回有效回答');
-        document.getElementById('chat-status').textContent = `模型: ${data.model || 'unknown'}`;
-      } catch (e) {
-        addChatMessage('ai', '请求出错: ' + e.message);
-        document.getElementById('chat-status').textContent = '';
-      }
-    }
-
-    function addChatMessage(role, content) {
-      const container = document.getElementById('chat-messages');
-      const div = document.createElement('div');
-      div.className = `chat-message ${role}`;
-      div.innerHTML = `<div class="content">${escapeHtml(content)}</div>`;
-      container.appendChild(div);
-      container.scrollTop = container.scrollHeight;
-    }
-
-    function escapeHtml(text) {
-      const div = document.createElement('div');
-      div.textContent = text;
-      return div.innerHTML;
-    }
-
-    async function initializePage() {
-      try {
-        await loadDatasets();
-        refreshCurrentDatasetUi();
-      } catch (e) {
-        setSelectorStatus(e.message, true);
-      }
-    }
-
-    // Init
-    initializePage();
-  </script>
+  <script type="module" src="/static/app.js"></script>
 </body>
 </html>

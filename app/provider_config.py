@@ -49,10 +49,16 @@ class ProviderConfigStore:
             source="file",
         )
         self.config_path.parent.mkdir(parents=True, exist_ok=True)
-        self.config_path.write_text(
+        temporary_path = self.config_path.with_suffix(f"{self.config_path.suffix}.tmp")
+        temporary_path.write_text(
             json.dumps(asdict(config), ensure_ascii=False, indent=2),
             encoding="utf-8",
         )
+        try:
+            temporary_path.replace(self.config_path)
+        finally:
+            if temporary_path.exists():
+                temporary_path.unlink()
         return config
 
 
