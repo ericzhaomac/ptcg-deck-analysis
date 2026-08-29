@@ -143,6 +143,15 @@ docker run --rm -p 8010:8010 \
 
 The application at `http://localhost:8010/` has three top tabs: Analysis, Deck Library, and AI Backend. The legacy provider config page remains available at `http://localhost:8010/api/v1/provider/config`.
 
+## Development Worktrees and UI Review
+
+- `main` is the integration and formal Docker deployment checkout. Port `8010` belongs to the service built from merged `main`.
+- `tournament-data-updates` is the persistent worktree for future tournament dataset updates. Generate and verify data there, then merge it into `main` through the normal non-force workflow.
+- New application features use dedicated, temporary feature worktrees based on a clean `main`.
+- Before acceptance, run feature previews on an unused non-`8010` port; do not replace the formal service.
+- If the Orca pane cannot render or scroll the complete UI, use the `orca-companion-ui-preview` skill. Companion is a temporary authenticated wrapper, not part of the formal deployment.
+- After acceptance, verify and push the feature, integrate it into `main`, rebuild and smoke-test `8010`, then stop preview/Companion processes and remove obsolete local worktrees only after their commits are preserved remotely.
+
 ## Tests
 
 ```bash
