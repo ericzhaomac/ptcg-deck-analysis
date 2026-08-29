@@ -76,6 +76,16 @@ PYTHONPATH=. python3 scripts/tools/limitless_tournament_analysis.py \
 
 Successful responses are cached individually and written atomically. Re-running the same command reuses valid cache files and retries only missing, invalid, or unsuccessful responses. Keep each tournament in its own cache directory, verify its `analysis.json`, and then add its dataset id to `data/config/dataset_state.json` without changing a valid existing `current_dataset_id`.
 
+### Season Update Convention
+
+- Keep completed seasons immutable: do not overwrite or remove an existing tournament dataset when starting a new season.
+- Store each tournament under `data/<year>/<Event_Name>/<division>/`, with `analysis.json` and its event-specific `cache/` kept together.
+- Use dataset ids in the form `<year>-<event-slug>-<division-lowercase>` and record the Limitless tournament id beside the event in **Included Datasets**.
+- For each new tournament, generate and verify `analysis.json`, add the dataset id to `mounted_dataset_ids`, and set `current_dataset_id` to the newest verified tournament only when intentionally advancing the default view.
+- Treat New Orleans (`0070`) as the penultimate 2026 event. Complete and tag the 2026 season only after adding the 2026 World Championships (WCS); classify every tournament after WCS as part of the 2027 season.
+- Start 2027 datasets under `data/2027/`; keep the 2026 datasets mounted for cross-event and cross-season access.
+- Update **Included Datasets** and `data/config/dataset_state.json` in the same commit as the new tournament data.
+
 ## Local Run
 
 ```bash
