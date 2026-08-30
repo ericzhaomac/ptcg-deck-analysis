@@ -11,6 +11,18 @@
  * @property {Object|null} report
  */
 
+export const ARCHETYPE_MODULE_IDS = Object.freeze([
+  'headline_performance',
+  'phase_performance',
+  'top_finishers',
+  'matchups_overall',
+  'matchups_day2',
+  'deck_composition_first_phase',
+  'deck_composition_day2',
+  'deck_composition_top_cut',
+  'representative_lists',
+]);
+
 /**
  * @typedef {{type: string, familyId?: string, variantId?: string, generation?: number, report?: Object}} ReportUiAction
  */
@@ -56,6 +68,16 @@ export function reduceReportSelection(state, action) {
         selection: {grain: 'variant', selectionId: action.variantId},
         modulePhases: {matchups: 'overall', composition: 'first_phase'},
       };
+    case 'set-matchup-phase':
+      return {
+        ...state,
+        modulePhases: {...state.modulePhases, matchups: action.phase},
+      };
+    case 'set-composition-phase':
+      return {
+        ...state,
+        modulePhases: {...state.modulePhases, composition: action.phase},
+      };
     case 'request-report':
       return {...state, requestGeneration: state.requestGeneration + 1};
     case 'receive-report':
@@ -69,6 +91,21 @@ export function reduceReportSelection(state, action) {
     default:
       return state;
   }
+}
+
+
+export function archetypeModuleForPhase(report, owner, phase) {
+  const moduleId = owner === 'matchups'
+    ? `matchups_${phase}`
+    : `deck_composition_${phase}`;
+  return report.modules.find((module) => module.module_id === moduleId) || null;
+}
+
+
+export function matchupAvailabilityMessage(module) {
+  if (module.sample_size === 0) return 'No matches';
+  if (module.sample_size < 30) return `Insufficient sample (n=${module.sample_size})`;
+  return '';
 }
 
 

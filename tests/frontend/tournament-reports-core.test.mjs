@@ -2,11 +2,14 @@ import assert from 'node:assert/strict';
 import test from 'node:test';
 
 import {
+  ARCHETYPE_MODULE_IDS,
+  archetypeModuleForPhase,
   buildOverviewChartModel,
   createReportRoute,
   formatObservedWinRate,
   moduleAvailability,
   reduceReportSelection,
+  matchupAvailabilityMessage,
 } from '../../app/static/tournament-reports-core.mjs';
 
 
@@ -167,4 +170,54 @@ test('module availability never exports degraded or blocked data', () => {
 test('observed win rate formatter distinguishes missing values', () => {
   assert.equal(formatObservedWinRate(0.625), '62.5%');
   assert.equal(formatObservedWinRate(null), '—');
+});
+
+
+test('phase actions update only their owning module', () => {
+  const matchup = reduceReportSelection(FAMILY_STATE, {
+    type: 'set-matchup-phase',
+    phase: 'day2',
+  });
+  assert.equal(matchup.modulePhases.matchups, 'day2');
+  assert.equal(matchup.modulePhases.composition, 'top_cut');
+
+  const composition = reduceReportSelection(matchup, {
+    type: 'set-composition-phase',
+    phase: 'first_phase',
+  });
+  assert.equal(composition.modulePhases.matchups, 'day2');
+  assert.equal(composition.modulePhases.composition, 'first_phase');
+});
+
+
+test('archetype module contract and phase lookup use exact server module ids', () => {
+  assert.deepEqual(ARCHETYPE_MODULE_IDS, [
+    'headline_performance',
+    'phase_performance',
+    'top_finishers',
+    'matchups_overall',
+    'matchups_day2',
+    'deck_composition_first_phase',
+    'deck_composition_day2',
+    'deck_composition_top_cut',
+    'representative_lists',
+  ]);
+  const report = {
+    modules: ARCHETYPE_MODULE_IDS.map((module_id) => ({module_id})),
+  };
+  assert.equal(
+    archetypeModuleForPhase(report, 'matchups', 'day2').module_id,
+    'matchups_day2',
+  );
+  assert.equal(
+    archetypeModuleForPhase(report, 'composition', 'top_cut').module_id,
+    'deck_composition_top_cut',
+  );
+});
+
+
+test('matchup availability distinguishes zero from a sub-threshold sample', () => {
+  assert.equal(matchupAvailabilityMessage({sample_size: 0}), 'No matches');
+  assert.equal(matchupAvailabilityMessage({sample_size: 12}), 'Insufficient sample (n=12)');
+  assert.equal(matchupAvailabilityMessage({sample_size: 30}), '');
 });

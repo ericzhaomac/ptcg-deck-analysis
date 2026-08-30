@@ -1,8 +1,11 @@
 import {
+  ARCHETYPE_MODULE_IDS,
+  archetypeModuleForPhase,
   buildOverviewChartModel,
   createReportRoute,
   moduleAvailability,
   reduceReportSelection,
+  matchupAvailabilityMessage,
 } from './tournament-reports-core.mjs';
 
 
@@ -16,6 +19,7 @@ export function createTournamentReportsController({requestJson, root, navigate})
   const notification = root.querySelector('#tournament-report-notification');
   let disposed = false;
   let state = initialState(null);
+  let requestSequence = 0;
 
   async function initialize() {
     return showLocation(window.location.pathname);
@@ -27,7 +31,7 @@ export function createTournamentReportsController({requestJson, root, navigate})
     if (parts[0] !== 'tournament-reports' || parts.length === 1) return showIndex();
     if (parts.length === 2) return showOverview(parts[1]);
     if (parts[2] === 'families' || parts[2] === 'variants') {
-      return showArchetypeSkeleton(parts[1], parts[2], parts[3]);
+      return showArchetypeReport(parts[1], parts[2], parts[3]);
     }
     return showIndex();
   }
@@ -83,20 +87,241 @@ export function createTournamentReportsController({requestJson, root, navigate})
     overview.append(renderFamilyAction());
   }
 
-  async function showArchetypeSkeleton(datasetId, collection, selectionId) {
+  async function showArchetypeReport(datasetId, collection, selectionId) {
     setView(archetype);
     status.textContent = 'Loading archetype report…';
     const grain = collection === 'families' ? 'family' : 'variant';
-    state = {...initialState(datasetId), selection: {grain, selectionId}};
+    state = {
+      ...initialState(datasetId),
+      selection: {grain, selectionId},
+      requestGeneration: requestSequence,
+    };
+    state = reduceReportSelection(state, {type: 'request-report'});
+    requestSequence = state.requestGeneration;
+    const generation = state.requestGeneration;
     const report = await requestJson(
       `/api/v1/tournament-reports/${encodeURIComponent(datasetId)}/${collection}/${encodeURIComponent(selectionId)}`,
     );
-    if (disposed || state.datasetId !== datasetId) return;
-    state = {...state, report};
+    if (disposed) return;
+    state = reduceReportSelection(state, {type: 'receive-report', generation, report});
+    if (state.appliedGeneration !== generation) return;
+    renderArchetypeReport(report);
+  }
+
+  function renderArchetypeReport(report) {
     title.textContent = report.selection.selection_id;
-    status.textContent = `Snapshot ${report.snapshot_version}`;
+    status.textContent = `${report.event.date} · ${report.event.division} · Snapshot ${report.snapshot_version}`;
     renderBreadcrumbs(report);
-    archetype.replaceChildren(emptyState('Archetype modules loaded.'));
+    archetype.replaceChildren();
+    const actualIds = report.modules.map((module) => module.module_id);
+    if (actualIds.length !== ARCHETYPE_MODULE_IDS.length
+      || actualIds.some((moduleId, index) => moduleId !== ARCHETYPE_MODULE_IDS[index])) {
+      archetype.append(emptyState('This report uses an unsupported module contract.'));
+      return;
+    }
+    archetype.append(renderVariantSelector(report));
+    const modules = Object.fromEntries(report.modules.map((module) => [module.module_id, module]));
+    archetype.append(
+      renderHeadlinePerformance(modules.headline_performance, report),
+      renderPhasePerformance(modules.phase_performance, report),
+      renderTopFinishers(modules.top_finishers, report),
+      renderMatchupGroup(report),
+      renderCompositionGroup(report),
+      renderRepresentativeLists(modules.representative_lists, report),
+    );
+  }
+
+  function renderVariantSelector(report) {
+    const wrapper = document.createElement('div');
+    wrapper.className = 'card tournament-report-selector';
+    const label = textElement('label', 'Report grain');
+    label.htmlFor = 'tournament-report-variant-select';
+    const select = document.createElement('select');
+    select.id = 'tournament-report-variant-select';
+    const summary = document.createElement('option');
+    summary.value = '';
+    summary.textContent = report.selection.grain === 'family'
+      ? `Family · ${report.selection.selection_id}`
+      : 'Return to family report to view the family summary';
+    select.append(summary);
+    report.variants.filter((option) => option.eligible).forEach((option) => {
+      const node = document.createElement('option');
+      node.value = option.selection_id;
+      node.textContent = `${option.label} · ${option.first_phase_players} players`;
+      node.selected = report.selection.grain === 'variant'
+        && report.selection.selection_id === option.selection_id;
+      select.append(node);
+    });
+    select.addEventListener('change', () => {
+      if (select.value) selectVariant(select.value);
+    });
+    wrapper.append(label, select);
+    return wrapper;
+  }
+
+  async function selectVariant(variantId) {
+    state = reduceReportSelection(state, {type: 'select-variant', variantId});
+    const path = createReportRoute('variant', state.datasetId, 'variant', variantId);
+    navigate(path);
+    return showArchetypeReport(state.datasetId, 'variants', variantId);
+  }
+
+  function renderHeadlinePerformance(module, report) {
+    const section = moduleSection(module, report);
+    section.append(rowsTable([module.data], [
+      ['Players', 'players'],
+      ['Official record', (row) => formatRecord(row.record)],
+      ['Observed win rate', (row) => formatPercent(row.observed_win_rate)],
+    ]));
+    return section;
+  }
+
+  function renderPhasePerformance(module, report) {
+    const section = moduleSection(module, report);
+    const rows = [
+      {phase: 'Day 1', ...module.data.day1},
+      {phase: 'Day 2', ...module.data.day2},
+    ];
+    section.append(rowsTable(rows, [
+      ['Phase', 'phase'],
+      ['Official record', (row) => formatRecord(row.record)],
+      ['Observed win rate', (row) => formatPercent(row.observed_win_rate)],
+    ]));
+    if (module.data.conversion) {
+      section.append(textElement(
+        'p',
+        `Conversion: ${module.data.conversion.day2_players}/${module.data.conversion.first_phase_players} (${formatPercent(module.data.conversion.rate)})`,
+      ));
+    }
+    return section;
+  }
+
+  function renderTopFinishers(module, report) {
+    const section = moduleSection(module, report);
+    section.append(rowsTable(module.data.rows, [
+      ['Place', 'placement'],
+      ['Player', 'player_name'],
+      ['Points', 'points'],
+      ['Official record', (row) => formatRecord(row.record)],
+    ]));
+    return section;
+  }
+
+  function renderMatchupGroup(report) {
+    const wrapper = document.createElement('div');
+    wrapper.className = 'tournament-report-phase-group';
+    wrapper.append(phaseControls(
+      'Matchup phase',
+      [['overall', 'Overall'], ['day2', 'Day 2']],
+      state.modulePhases.matchups,
+      (phase) => {
+        state = reduceReportSelection(state, {type: 'set-matchup-phase', phase});
+        wrapper.replaceWith(renderMatchupGroup(report));
+      },
+    ));
+    const module = archetypeModuleForPhase(report, 'matchups', state.modulePhases.matchups);
+    wrapper.append(renderMatchups(module, report));
+    return wrapper;
+  }
+
+  function renderMatchups(module, report) {
+    const section = moduleSection(module, report);
+    const unavailable = matchupAvailabilityMessage(module);
+    if (unavailable) {
+      const message = textElement('p', unavailable);
+      message.className = 'tournament-report-insufficient';
+      section.append(message);
+    } else {
+      section.append(rowsTable(module.data.rows, [
+        ['Opponent', 'opponent_name'],
+        ['Matches', 'matches'],
+        ['Official record', (row) => formatRecord(row.record)],
+        ['Observed win rate', (row) => formatPercent(row.observed_win_rate)],
+      ]));
+    }
+    section.append(textElement(
+      'p',
+      `Excluded: ${module.data.unknown_count} unknown opponent · ${module.data.procedural_count} procedural result`,
+    ));
+    return section;
+  }
+
+  function renderCompositionGroup(report) {
+    const wrapper = document.createElement('div');
+    wrapper.className = 'tournament-report-phase-group';
+    wrapper.append(phaseControls(
+      'Deck-list phase',
+      [['first_phase', 'First Phase'], ['day2', 'Day 2'], ['top_cut', 'Top Cut']],
+      state.modulePhases.composition,
+      (phase) => {
+        state = reduceReportSelection(state, {type: 'set-composition-phase', phase});
+        wrapper.replaceWith(renderCompositionGroup(report));
+      },
+    ));
+    const module = archetypeModuleForPhase(report, 'composition', state.modulePhases.composition);
+    wrapper.append(renderDeckComposition(module, report));
+    return wrapper;
+  }
+
+  function renderDeckComposition(module, report) {
+    const section = moduleSection(module, report);
+    section.append(textElement(
+      'p',
+      `${module.data.valid_lists}/${module.data.eligible_players} valid lists · ${formatPercent(module.data.coverage)} coverage`,
+    ));
+    if (!module.data.eligible_for_classification) {
+      section.append(emptyState('Not enough covered deck lists to classify Core, Common, or Tech cards.'));
+      return section;
+    }
+    const labels = {core: 'Core', common: 'Common', tech: 'Tech', rare: 'Rare / Other'};
+    for (const bucket of ['core', 'common', 'tech', 'rare']) {
+      const rows = module.data.rows.filter((row) => row.bucket === bucket);
+      if (!rows.length) continue;
+      section.append(textElement('h4', labels[bucket]));
+      section.append(rowsTable(rows, [
+        ['Card', 'display_name'],
+        ['Appearance', (row) => formatPercent(row.appearance_rate)],
+        ['Average copies when present', (row) => Number(row.average_when_present).toFixed(2)],
+      ]));
+    }
+    return section;
+  }
+
+  function renderRepresentativeLists(module, report) {
+    const section = moduleSection(module, report);
+    module.data.rows.slice(0, 3).forEach((row) => {
+      const article = document.createElement('article');
+      article.className = 'tournament-report-list';
+      article.append(textElement(
+        'h4',
+        `${row.player_name} · #${row.placement ?? '—'} · ${row.points} points`,
+      ));
+      article.append(rowsTable(row.cards, [
+        ['Count', 'count'],
+        ['Card', 'display_name'],
+        ['Set', 'set_code'],
+        ['Collector no.', 'collector_number'],
+      ]));
+      section.append(article);
+    });
+    if (!module.data.rows.length) section.append(emptyState('No valid representative lists.'));
+    return section;
+  }
+
+  function phaseControls(label, options, selected, onSelect) {
+    const group = document.createElement('div');
+    group.className = 'tournament-report-phase-controls';
+    group.setAttribute('role', 'group');
+    group.setAttribute('aria-label', label);
+    options.forEach(([value, text]) => {
+      const button = textElement('button', text);
+      button.type = 'button';
+      button.className = `button small${value === selected ? ' primary' : ''}`;
+      button.setAttribute('aria-pressed', String(value === selected));
+      button.addEventListener('click', () => onSelect(value));
+      group.append(button);
+    });
+    return group;
   }
 
   function renderEventIdentity(module) {
@@ -252,7 +477,7 @@ export function createTournamentReportsController({requestJson, root, navigate})
     return table;
   }
 
-  function moduleSection(module) {
+  function moduleSection(module, report = null) {
     const section = document.createElement('section');
     const availability = moduleAvailability(module);
     section.className = 'card tournament-report-module tournament-report-state';
@@ -260,6 +485,12 @@ export function createTournamentReportsController({requestJson, root, navigate})
     section.append(textElement('h3', module.title));
     if (availability.message) section.append(textElement('p', availability.message));
     section.append(textElement('small', `n=${module.sample_size} · ${module.metric_notes.join(' ')}`));
+    if (report) {
+      section.append(textElement(
+        'small',
+        `${report.event.name} · ${report.selection.grain} ${report.selection.selection_id} · ${phaseLabel(module.phase)} · ${module.provenance.source_provider} · source updated ${formatTimestamp(module.provenance.source_updated_at)} · fetched ${formatTimestamp(module.provenance.fetched_at)}`,
+      ));
+    }
     return section;
   }
 
@@ -329,4 +560,9 @@ function formatRecord(record) {
 
 function phaseLabel(phase) {
   return String(phase).replaceAll('_', ' ').replace(/\b\w/g, (letter) => letter.toUpperCase());
+}
+
+
+function formatTimestamp(value) {
+  return value ? new Date(value).toLocaleString() : 'unknown';
 }
