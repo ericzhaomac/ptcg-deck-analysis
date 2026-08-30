@@ -20,6 +20,7 @@ from app.tournament_reports.reconciliation import (
     ReconciliationResult,
     ValidationIssue,
     module_status,
+    pairing_records_by_variant,
     reconcile_tournament,
     verify_candidate_snapshot,
 )
@@ -45,8 +46,12 @@ def test_reconciliation_happens_at_variant_grain_before_family_rollup(facts) -> 
 
     assert result.issues == ()
     assert result.phase_boundary == 1
-    assert result.variant_records["dragapult-ex"] == Record(wins=1, losses=1, ties=0)
+    assert result.variant_records["dragapult-ex"] == Record(wins=1, losses=2, ties=0)
     assert result.variant_records["dragapult-dusknoir"] == Record(wins=1, losses=1, ties=1)
+
+
+def test_procedural_losses_remain_in_official_variant_records(facts) -> None:
+    assert pairing_records_by_variant(facts)["dragapult-ex"] == Record(wins=1, losses=2, ties=0)
 
 
 def test_equal_and_opposite_variant_errors_do_not_cancel_at_family_grain(facts) -> None:
@@ -127,6 +132,49 @@ def test_matchup_reference_mismatch_is_reported_at_variant_grain(facts) -> None:
     result = reconcile_tournament(changed)
 
     assert {issue.code for issue in result.issues} >= {"matchup_reference_mismatch"}
+
+
+def test_raw_limitless_matchup_reference_reconciles_wlt_buckets(facts) -> None:
+    reference = MatchupReference(
+        variant_id="dragapult-ex",
+        payload={
+            "decks": [
+                {"id": "charizard-ex", "name": "Charizard", "wins": 0, "losses": 1, "ties": 0},
+                {"id": "dragapult-dusknoir", "name": "Dragapult Dusknoir", "wins": 1, "losses": 0, "ties": 0},
+            ],
+            "unknown": {"wins": 0, "losses": 0, "ties": 0},
+            "procedural": {"wins": 0, "losses": 1, "ties": 0},
+        },
+    )
+    changed = replace(
+        facts,
+        matchup_references=MappingProxyType({"dragapult-ex": reference}),
+    )
+
+    result = reconcile_tournament(changed)
+
+    assert "matchup_reference_mismatch" not in {issue.code for issue in result.issues}
+
+
+def test_raw_limitless_matchup_reference_mismatch_is_not_silently_skipped(facts) -> None:
+    reference = MatchupReference(
+        variant_id="dragapult-ex",
+        payload={
+            "decks": [
+                {"id": "charizard-ex", "name": "Charizard", "wins": 9, "losses": 1, "ties": 0},
+            ],
+            "unknown": {"wins": 0, "losses": 0, "ties": 0},
+            "procedural": {"wins": 0, "losses": 1, "ties": 0},
+        },
+    )
+    changed = replace(
+        facts,
+        matchup_references=MappingProxyType({"dragapult-ex": reference}),
+    )
+
+    result = reconcile_tournament(changed)
+
+    assert "matchup_reference_mismatch" in {issue.code for issue in result.issues}
 
 
 def test_unknown_and_procedural_counts_do_not_degrade_on_their_own(facts) -> None:

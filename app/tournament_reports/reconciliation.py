@@ -166,6 +166,8 @@ def pairing_records_by_player(facts: TournamentFacts) -> dict[str, Record]:
     counts = {player_id: [0, 0, 0] for player_id in facts.players}
     for pairing in facts.pairings:
         if pairing.outcome == "procedural":
+            _add_procedural_loss(counts, pairing.player1_tp_id)
+            _add_procedural_loss(counts, pairing.player2_tp_id)
             continue
         _add_side_record(counts, pairing.player1_tp_id, pairing.outcome, side=1)
         _add_side_record(counts, pairing.player2_tp_id, pairing.outcome, side=2)
@@ -179,6 +181,8 @@ def pairing_records_by_variant(facts: TournamentFacts) -> dict[str, Record]:
     counts = {variant_id: [0, 0, 0] for variant_id in facts.variants}
     for pairing in facts.pairings:
         if pairing.outcome == "procedural":
+            _add_procedural_loss(counts, pairing.player1_variant_id)
+            _add_procedural_loss(counts, pairing.player2_variant_id)
             continue
         _add_side_record(counts, pairing.player1_variant_id, pairing.outcome, side=1)
         _add_side_record(counts, pairing.player2_variant_id, pairing.outcome, side=2)
@@ -252,6 +256,26 @@ def _check_matchup_references(facts: TournamentFacts) -> list[ValidationIssue]:
     for variant_id, reference in facts.matchup_references.items():
         if not isinstance(reference.payload, Mapping):
             continue
+        if isinstance(reference.payload.get("decks"), list):
+            local_rows, local_unknown, local_procedural = _local_matchup_reference(
+                facts,
+                variant_id,
+                ReportPhase.OVERALL,
+            )
+            if (
+                _reference_rows(reference.payload.get("decks"), id_key="id") != local_rows
+                or _reference_record(reference.payload.get("unknown")) != local_unknown
+                or _reference_record(reference.payload.get("procedural")) != local_procedural
+            ):
+                issues.append(
+                    ValidationIssue(
+                        code="matchup_reference_mismatch",
+                        message=f"{variant_id}:overall: local matchups differ from source reference.",
+                        affected_modules=frozenset({"matchups_overall"}),
+                        blocks_publication=True,
+                    )
+                )
+            continue
         for source_phase, report_phase, module_id in (
             ("overall", ReportPhase.OVERALL, "matchups_overall"),
             ("day2", ReportPhase.DAY2, "matchups_day2"),
@@ -323,14 +347,14 @@ def _check_decklists(facts: TournamentFacts) -> list[ValidationIssue]:
     ]
 
 
-def _reference_rows(value: Any) -> dict[str, Record]:
+def _reference_rows(value: Any, *, id_key: str = "opponent_id") -> dict[str, Record]:
     if not isinstance(value, list):
         return {}
     rows: dict[str, Record] = {}
     for raw in value:
         if not isinstance(raw, Mapping):
             raise ValueError("matchup reference row is incompatible")
-        opponent_id = str(raw.get("opponent_id", "")).strip()
+        opponent_id = str(raw.get(id_key, "")).strip()
         if not opponent_id or opponent_id in rows:
             raise ValueError("matchup reference opponent is missing or duplicated")
         rows[opponent_id] = Record(
@@ -339,6 +363,46 @@ def _reference_rows(value: Any) -> dict[str, Record]:
             ties=int(raw.get("ties", 0)),
         )
     return rows
+
+
+def _reference_record(value: Any) -> Record:
+    if not isinstance(value, Mapping):
+        raise ValueError("matchup reference bucket is incompatible")
+    return Record(
+        wins=int(value.get("wins", 0)),
+        losses=int(value.get("losses", 0)),
+        ties=int(value.get("ties", 0)),
+    )
+
+
+def _local_matchup_reference(
+    facts: TournamentFacts,
+    variant_id: str,
+    phase: ReportPhase,
+) -> tuple[dict[str, Record], Record, Record]:
+    boundary = resolve_phase_boundary(facts) if phase is ReportPhase.DAY2 else None
+    rows: dict[str, list[int]] = {}
+    unknown = [0, 0, 0]
+    procedural = [0, 0, 0]
+    for pairing in facts.pairings:
+        if phase is ReportPhase.DAY2 and (boundary is None or pairing.round_number <= boundary):
+            continue
+        for side, selected_variant, selected_player, opponent_variant, opponent_player in (
+            (1, pairing.player1_variant_id, pairing.player1_tp_id, pairing.player2_variant_id, pairing.player2_tp_id),
+            (2, pairing.player2_variant_id, pairing.player2_tp_id, pairing.player1_variant_id, pairing.player1_tp_id),
+        ):
+            if selected_variant != variant_id:
+                continue
+            if pairing.outcome == "procedural":
+                procedural[1] += 1
+                continue
+            bucket = procedural if opponent_player is None else unknown if opponent_variant is None else rows.setdefault(opponent_variant, [0, 0, 0])
+            _add_side_record({variant_id: bucket}, variant_id, pairing.outcome, side=side)
+    return (
+        {opponent_id: Record(wins=row[0], losses=row[1], ties=row[2]) for opponent_id, row in rows.items()},
+        Record(wins=unknown[0], losses=unknown[1], ties=unknown[2]),
+        Record(wins=procedural[0], losses=procedural[1], ties=procedural[2]),
+    )
 
 
 def _optional_count(value: Any) -> int:
@@ -368,4 +432,9 @@ def _add_side_record(
     elif (outcome == "player1" and side == 1) or (outcome == "player2" and side == 2):
         counts[identity][0] += 1
     else:
+        counts[identity][1] += 1
+
+
+def _add_procedural_loss(counts: dict[str, list[int]], identity: str | None) -> None:
+    if identity is not None and identity in counts:
         counts[identity][1] += 1

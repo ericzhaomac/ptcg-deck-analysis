@@ -110,6 +110,25 @@ def test_duplicate_round_table_pairing_is_rejected(raw_snapshot, empty_overrides
         normalize_snapshot(changed, empty_overrides)
 
 
+def test_procedural_pairing_without_table_uses_stable_round_sequence(raw_snapshot, empty_overrides) -> None:
+    procedural = {
+        **raw_snapshot.pairings[1][0],
+        "table": None,
+        "player2": None,
+        "winner": -1,
+    }
+    changed = raw_snapshot.model_copy(
+        update={"pairings": {**raw_snapshot.pairings, 1: (*raw_snapshot.pairings[1], procedural)}}
+    )
+
+    facts = normalize_snapshot(changed, empty_overrides)
+
+    pairing = next(row for row in facts.pairings if row.pairing_id == "round-01-procedural-1")
+    assert pairing.pairing_id == "round-01-procedural-1"
+    assert pairing.table_number is None
+    assert pairing.outcome == "procedural"
+
+
 def test_phase_boundary_requires_one_split_matching_every_variant(raw_snapshot, empty_overrides) -> None:
     facts = normalize_snapshot(raw_snapshot, empty_overrides)
 

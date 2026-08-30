@@ -18,8 +18,9 @@ from app.tournament_reports.contracts import (
     SnapshotManifest,
     SnapshotResource,
 )
-from app.tournament_reports.facts import FamilyOverrideSet, load_family_overrides
-from app.tournament_reports.reconciliation import verify_candidate_snapshot
+from app.tournament_reports.builders import build_event_overview
+from app.tournament_reports.facts import FamilyOverrideSet, load_family_overrides, normalize_snapshot
+from app.tournament_reports.reconciliation import reconcile_tournament, verify_candidate_snapshot
 from app.tournament_reports.snapshots import SnapshotStore, SnapshotValidationError, atomic_write_json
 
 
@@ -115,18 +116,21 @@ class LimitlessSnapshotAdapter:
         try:
             tournament = self._fetch_resource(
                 staged_dir,
+                cache_dir,
                 "tournament",
                 "tournament",
                 {"id": ref.tournament_id, "division": ref.division},
             )
             decks = self._fetch_resource(
                 staged_dir,
+                cache_dir,
                 "decks",
                 "decks",
                 {"tournamentId": ref.tournament_id, "division": ref.division},
             )
             standings = self._fetch_resource(
                 staged_dir,
+                cache_dir,
                 "standings",
                 "standings",
                 {"tournamentId": ref.tournament_id, "division": ref.division},
@@ -139,6 +143,7 @@ class LimitlessSnapshotAdapter:
             for round_number in range(1, declared_rounds + 1):
                 self._fetch_resource(
                     staged_dir,
+                    cache_dir,
                     f"pairings/round-{round_number:02d}",
                     "pairings",
                     {
@@ -159,6 +164,7 @@ class LimitlessSnapshotAdapter:
             for player_id in player_ids:
                 self._fetch_resource(
                     staged_dir,
+                    cache_dir,
                     f"decklists/{player_id}",
                     "decklist",
                     {"tournamentId": ref.tournament_id, "playerId": player_id},
@@ -174,6 +180,7 @@ class LimitlessSnapshotAdapter:
             for variant_id in variant_ids:
                 self._fetch_resource(
                     staged_dir,
+                    cache_dir,
                     f"matchups/{variant_id}",
                     "matchups",
                     {
@@ -200,11 +207,16 @@ class LimitlessSnapshotAdapter:
     def _fetch_resource(
         self,
         staged_dir: Path,
+        raw_cache_dir: Path,
         key: str,
         endpoint: str,
         params: dict[str, str | int],
     ) -> dict[str, Any]:
-        payload = self.client.fetch(endpoint, params)
+        fetch_cached = getattr(self.client, "fetch_cached", None)
+        if callable(fetch_cached):
+            payload = fetch_cached(endpoint, params, raw_cache_dir / f"{key}.json")
+        else:
+            payload = self.client.fetch(endpoint, params)
         _require_successful_envelope(payload, endpoint)
         atomic_write_json(staged_dir / f"{key}.json", payload)
         return payload
@@ -248,11 +260,22 @@ def parse_args(argv: list[str] | None = None) -> argparse.Namespace:
         "--family-overrides",
         default="data/config/archetype_family_overrides.json",
     )
+    parser.add_argument(
+        "--verify-only",
+        action="store_true",
+        help="Verify the current local snapshot without making HTTP requests.",
+    )
     return parser.parse_args(argv)
 
 
 def main(argv: list[str] | None = None) -> int:
     args = parse_args(argv)
+    if args.verify_only:
+        try:
+            return verify_only(Path(args.dataset_dir), Path(args.family_overrides))
+        except SnapshotValidationError as exc:
+            print(json.dumps({"ok": False, "code": exc.code, "message": str(exc)}, sort_keys=True))
+            return 1
     refresher = VerifiedSnapshotRefresher(
         adapter=LimitlessSnapshotAdapter(client=LimitlessClient()),
         store=SnapshotStore(),
@@ -277,6 +300,43 @@ def main(argv: list[str] | None = None) -> int:
         )
     )
     return 0
+
+
+def verify_only(dataset_dir: Path, overrides_path: Path) -> int:
+    snapshot = SnapshotStore().load(dataset_dir)
+    facts = normalize_snapshot(snapshot, load_family_overrides(overrides_path))
+    result = reconcile_tournament(facts)
+    overview = build_event_overview(facts, result, dataset_dir.name)
+    eligible_family_ids = {
+        option.selection_id for option in overview.families if option.eligible
+    }
+    variant_counts: dict[str, int] = {}
+    for player in facts.players.values():
+        if player.variant_id:
+            variant_counts[player.variant_id] = variant_counts.get(player.variant_id, 0) + 1
+    eligible_variant_count = sum(
+        count >= 10
+        and facts.variants[variant_id].family_id in eligible_family_ids
+        for variant_id, count in variant_counts.items()
+    )
+    blocking_codes = list(
+        dict.fromkeys(issue.code for issue in result.issues if issue.blocks_publication)
+    )
+    print(
+        json.dumps(
+            {
+                "ok": not blocking_codes,
+                "snapshot_version": snapshot.manifest.snapshot_version,
+                "phase_boundary": result.phase_boundary,
+                "issue_codes": list(dict.fromkeys(issue.code for issue in result.issues)),
+                "blocking_issue_codes": blocking_codes,
+                "eligible_family_count": len(eligible_family_ids),
+                "eligible_variant_count": eligible_variant_count,
+            },
+            sort_keys=True,
+        )
+    )
+    return 1 if blocking_codes else 0
 
 
 def _require_successful_envelope(payload: Any, endpoint: str) -> None:

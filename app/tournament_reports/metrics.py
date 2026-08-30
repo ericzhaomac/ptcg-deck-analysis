@@ -218,8 +218,14 @@ def matchups(
             player2_selected = player2_identity is not None and player2_identity[0] == selection.selection_id
             if not player1_selected and not player2_selected:
                 continue
-            if pairing.outcome == "procedural":
-                procedural_count += 1
+            selected_sides = int(player1_selected) + int(player2_selected)
+            missing_selected_opponent = (
+                player1_selected and pairing.player2_tp_id is None
+            ) or (
+                player2_selected and pairing.player1_tp_id is None
+            )
+            if pairing.outcome == "procedural" or missing_selected_opponent:
+                procedural_count += selected_sides
                 continue
             if player1_selected and player2_selected:
                 opponent_id = selection.selection_id

@@ -1,0 +1,11 @@
+{
+  "dataset_id": "2026-new-orleans-ma",
+  "tournament_id": "0070",
+  "division": "MA",
+  "selection": {"grain": "variant", "selection_id": "dragapult-ex"},
+  "phase_boundary": 8,
+  "overall": {"wins": 3278, "losses": 2466, "ties": 1021, "win_rate": 0.5349},
+  "day1": {"wins": 2611, "losses": 1873, "ties": 849, "win_rate": 0.5427},
+  "day2": {"wins": 667, "losses": 593, "ties": 172, "win_rate": 0.5058},
+  "conversion": {"first_phase_players": 749, "day2_players": 240, "rate": 0.3204}
+}

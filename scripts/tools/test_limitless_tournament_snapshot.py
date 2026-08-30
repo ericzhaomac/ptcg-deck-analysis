@@ -12,14 +12,17 @@ from typing import Any
 import pytest
 
 from scripts.tools.limitless_tournament_snapshot import (
+    LimitlessClient,
     LimitlessSnapshotAdapter,
     StagedSnapshot,
     TournamentRef,
     VerifiedSnapshotRefresher,
+    main,
     parse_args,
 )
 from app.tournament_reports.contracts import SnapshotManifest
 from app.tournament_reports.facts import FamilyOverrideSet
+from app.tournament_reports.reconciliation import verify_candidate_snapshot
 from app.tournament_reports.snapshots import SnapshotStore, SnapshotValidationError
 
 
@@ -122,6 +125,41 @@ def test_content_version_is_deterministic_and_excludes_fetch_time(tmp_path: Path
     assert first.manifest.fetched_at != second.manifest.fetched_at
 
 
+def test_collect_reuses_valid_flat_cache_without_opening_network(tmp_path: Path) -> None:
+    dataset_dir = tmp_path / "dataset"
+    payloads = _payloads(rounds=1)
+    payloads["pairings"] = {
+        "ok": True,
+        "message": [{"table": 1, "winner": 0, "player1": {}, "player2": {}}],
+    }
+    cached = {
+        "tournament.json": payloads["tournament"],
+        "decks.json": payloads["decks"],
+        "standings.json": payloads["standings"],
+        "pairings/round-01.json": payloads["pairings"],
+        "decklists/11.json": payloads["decklist"],
+        "decklists/12.json": payloads["decklist"],
+        "matchups/dragapult-ex.json": payloads["matchups"],
+        "matchups/dragapult-dusknoir.json": payloads["matchups"],
+    }
+    for relative_path, payload in cached.items():
+        path = dataset_dir / "cache" / relative_path
+        path.parent.mkdir(parents=True, exist_ok=True)
+        path.write_text(json.dumps(payload), encoding="utf-8")
+
+    def fail_open(*args, **kwargs):
+        raise AssertionError("valid flat cache attempted a network request")
+
+    staged = LimitlessSnapshotAdapter(
+        client=LimitlessClient(opener=fail_open),
+        clock=lambda: FIXED_TIME,
+    ).collect(TournamentRef("0070"), dataset_dir)
+
+    assert staged.raw.tournament["completed"] == 1
+    assert set(staged.raw.pairings) == {1}
+    assert set(staged.raw.decklists) == {"11", "12"}
+
+
 def test_failed_collection_removes_only_candidate_and_preserves_pointer(tmp_path: Path) -> None:
     dataset_dir = tmp_path / "dataset"
     pointer = dataset_dir / "cache/verified-snapshot.json"
@@ -210,6 +248,58 @@ def test_cli_requires_explicit_dataset_directory() -> None:
         ]
     )
     assert args.dataset_dir == "data/2026/New_Orleans/MA"
+
+
+def test_verify_only_uses_the_current_snapshot_without_network(
+    tmp_path: Path,
+    monkeypatch: pytest.MonkeyPatch,
+    capsys: pytest.CaptureFixture[str],
+) -> None:
+    dataset_dir = tmp_path / "dataset"
+    candidate = dataset_dir / "cache/snapshot-candidate-fixture"
+    candidate.parent.mkdir(parents=True)
+    shutil.copytree(FIXTURE, candidate)
+    manifest = SnapshotManifest.model_validate_json((candidate / "manifest.json").read_text())
+    SnapshotStore().promote(dataset_dir, candidate, manifest, verification=verify_candidate_snapshot(
+        SnapshotStore().load_candidate(FIXTURE, manifest),
+        FamilyOverrideSet(version=1, mappings={}),
+    ))
+    overrides = tmp_path / "overrides.json"
+    overrides.write_text('{"version": 1, "mappings": {}}', encoding="utf-8")
+
+    def fail_fetch(*args, **kwargs):
+        raise AssertionError("verify-only attempted a network request")
+
+    monkeypatch.setattr("scripts.tools.limitless_tournament_snapshot.LimitlessClient.fetch", fail_fetch)
+
+    exit_code = main(
+        [
+            "--tournament-id", "0070",
+            "--division", "MA",
+            "--dataset-dir", str(dataset_dir),
+            "--family-overrides", str(overrides),
+            "--verify-only",
+        ]
+    )
+
+    payload = json.loads(capsys.readouterr().out)
+    assert exit_code == 0
+    assert payload["snapshot_version"] == "fixture-v1"
+    assert payload["phase_boundary"] == 1
+    assert payload["blocking_issue_codes"] == []
+    assert payload["eligible_family_count"] == 2
+
+
+def test_parse_args_accepts_verify_only() -> None:
+    args = parse_args(
+        [
+            "--tournament-id", "0070",
+            "--dataset-dir", "data/2026/New_Orleans/MA",
+            "--verify-only",
+        ]
+    )
+
+    assert args.verify_only is True
 
 
 def test_script_entrypoint_exposes_verified_refresh_arguments() -> None:

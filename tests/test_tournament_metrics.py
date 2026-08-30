@@ -98,7 +98,7 @@ def test_first_phase_distribution_uses_known_archetype_players(facts) -> None:
     assert family_metric.unknown_players == 1
     assert family_rows["dragapult-ex"].players == 2
     assert family_rows["dragapult-ex"].share == pytest.approx(0.5)
-    assert family_rows["dragapult-ex"].record == Record(wins=2, losses=2, ties=1)
+    assert family_rows["dragapult-ex"].record == Record(wins=2, losses=3, ties=1)
     assert _rows_by_id(variant_metric)["dragapult-dusknoir"].players == 1
 
 
@@ -143,6 +143,28 @@ def test_matchups_count_unique_pairings_and_separate_exclusions(facts) -> None:
     assert metric.rows_by_id["charizard-ex"].player_side_record == Record(wins=1, losses=1, ties=1)
     assert metric.unknown_count == 1
     assert metric.procedural_count == 1
+
+
+def test_matchups_classify_a_bye_as_procedural_not_unknown(facts) -> None:
+    bye = PairingFact(
+        pairing_id="round-02-procedural-1",
+        round_number=2,
+        table_number=None,
+        player1_tp_id="11",
+        player2_tp_id=None,
+        player1_variant_id="dragapult-dusknoir",
+        player2_variant_id=None,
+        outcome="player1",
+    )
+
+    metric = matchups(
+        replace(facts, pairings=(*facts.pairings, bye)),
+        ReportSelection(grain=ReportGrain.FAMILY, selection_id="dragapult-ex"),
+        ReportPhase.OVERALL,
+    )
+
+    assert metric.unknown_count == 0
+    assert metric.procedural_count == 2
 
 
 def test_day2_matchups_use_rounds_after_the_unique_boundary(facts) -> None:

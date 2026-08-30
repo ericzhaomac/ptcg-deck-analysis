@@ -57,7 +57,7 @@ class PlayerFact:
 class PairingFact:
     pairing_id: str
     round_number: int
-    table_number: int
+    table_number: int | None
     player1_tp_id: str | None
     player2_tp_id: str | None
     player1_variant_id: str | None
@@ -211,18 +211,24 @@ def normalize_snapshot(
     pairings: list[PairingFact] = []
     identities: set[tuple[int, int]] = set()
     for round_number, raw_pairings in sorted(snapshot.pairings.items()):
+        procedural_sequence = 0
         for raw_pairing in raw_pairings:
-            table_number = _required_int(raw_pairing.get("table"), "pairing table")
-            identity = (round_number, table_number)
-            if identity in identities:
-                raise ValueError(f"duplicate pairing: round {round_number} table {table_number}")
-            identities.add(identity)
+            table_number = _optional_int(raw_pairing.get("table"))
+            if table_number is None:
+                procedural_sequence += 1
+                pairing_id = f"round-{round_number:02d}-procedural-{procedural_sequence}"
+            else:
+                identity = (round_number, table_number)
+                if identity in identities:
+                    raise ValueError(f"duplicate pairing: round {round_number} table {table_number}")
+                identities.add(identity)
+                pairing_id = f"round-{round_number:02d}-table-{table_number}"
             player1_tp_id, player1_variant_id = _participant(raw_pairing, "player1", players)
             player2_tp_id, player2_variant_id = _participant(raw_pairing, "player2", players)
             outcome = _pairing_outcome(raw_pairing.get("winner"), player1_tp_id, player2_tp_id)
             pairings.append(
                 PairingFact(
-                    pairing_id=f"round-{round_number:02d}-table-{table_number}",
+                    pairing_id=pairing_id,
                     round_number=round_number,
                     table_number=table_number,
                     player1_tp_id=player1_tp_id,
@@ -287,12 +293,15 @@ def _phase_records_for_split(
         for variant_id in facts.variants
     }
     for pairing in facts.pairings:
-        if pairing.outcome == "procedural":
-            continue
         phase = 1 if pairing.round_number <= split else 2
         player1 = counts.get(pairing.player1_variant_id or "")
         player2 = counts.get(pairing.player2_variant_id or "")
-        if pairing.outcome == "tie":
+        if pairing.outcome == "procedural":
+            if player1 is not None:
+                player1[phase][1] += 1
+            if player2 is not None:
+                player2[phase][1] += 1
+        elif pairing.outcome == "tie":
             if player1 is not None:
                 player1[phase][2] += 1
             if player2 is not None:
