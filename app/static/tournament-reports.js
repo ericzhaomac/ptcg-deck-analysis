@@ -1,12 +1,30 @@
 import {
   ARCHETYPE_MODULE_IDS,
+  PNG_EXPORT_MODULE_IDS,
   archetypeModuleForPhase,
+  assertExportable,
   buildOverviewChartModel,
+  buildModuleSvg,
   createReportRoute,
   moduleAvailability,
   reduceReportSelection,
   matchupAvailabilityMessage,
+  exportFilename,
 } from './tournament-reports-core.mjs';
+
+
+export async function exportModulePng(moduleElement, module, context) {
+  assertExportable(module, context);
+  const svg = buildModuleSvg(module, context);
+  const image = await loadSvgImage(svg);
+  const canvas = document.createElement('canvas');
+  canvas.width = 1080;
+  canvas.height = 1350;
+  canvas.getContext('2d').drawImage(image, 0, 0, 1080, 1350);
+  const blob = await canvasBlob(canvas, 'image/png');
+  downloadBlob(blob, exportFilename(module, context));
+  moduleElement.dataset.lastExportedSnapshot = context.snapshotVersion;
+}
 
 
 export function createTournamentReportsController({requestJson, root, navigate}) {
@@ -71,6 +89,7 @@ export function createTournamentReportsController({requestJson, root, navigate})
     const report = await requestJson(`/api/v1/tournament-reports/${encodeURIComponent(datasetId)}`);
     if (disposed || state.datasetId !== datasetId) return;
     title.textContent = report.event.name;
+    state = {...state, report};
     status.textContent = `${report.event.date} · ${report.event.division} · Snapshot ${report.snapshot_version}`;
     renderBreadcrumbs(report);
     overview.replaceChildren();
@@ -491,6 +510,27 @@ export function createTournamentReportsController({requestJson, root, navigate})
         `${report.event.name} · ${report.selection.grain} ${report.selection.selection_id} · ${phaseLabel(module.phase)} · ${module.provenance.source_provider} · source updated ${formatTimestamp(module.provenance.source_updated_at)} · fetched ${formatTimestamp(module.provenance.fetched_at)}`,
       ));
     }
+    const activeReport = report || state.report;
+    if (activeReport && PNG_EXPORT_MODULE_IDS.includes(module.module_id) && availability.canExport) {
+      const actions = document.createElement('div');
+      actions.className = 'tournament-report-module-actions';
+      const button = textElement('button', 'Export PNG');
+      button.type = 'button';
+      button.className = 'button small';
+      button.addEventListener('click', async () => {
+        button.disabled = true;
+        try {
+          await exportModulePng(section, module, exportContext(activeReport, module));
+          notification.textContent = `${module.title} exported as PNG.`;
+        } catch (error) {
+          notification.textContent = `PNG export failed: ${error.message}`;
+        } finally {
+          button.disabled = false;
+        }
+      });
+      actions.append(button);
+      section.append(actions);
+    }
     return section;
   }
 
@@ -565,4 +605,60 @@ function phaseLabel(phase) {
 
 function formatTimestamp(value) {
   return value ? new Date(value).toLocaleString() : 'unknown';
+}
+
+
+function exportContext(report, module) {
+  return {
+    datasetId: report.dataset_id,
+    eventName: report.event.name,
+    eventDate: report.event.date,
+    grain: module.grain || report.selection?.grain || 'event',
+    selectionId: module.selection_id || report.selection?.selection_id || 'overview',
+    selectionLabel: report.selection?.selection_id || 'Event overview',
+    phaseLabel: phaseLabel(module.phase),
+    snapshotVersion: report.snapshot_version,
+    sourceProvider: module.provenance.source_provider,
+    sourceUpdatedAt: module.provenance.source_updated_at,
+    fetchedAt: module.provenance.fetched_at,
+    projectAttribution: 'PTCG Deck Analysis',
+  };
+}
+
+
+function loadSvgImage(svg) {
+  return new Promise((resolve, reject) => {
+    const blob = new Blob([svg], {type: 'image/svg+xml;charset=utf-8'});
+    const url = URL.createObjectURL(blob);
+    const image = new Image();
+    image.onload = () => {
+      URL.revokeObjectURL(url);
+      resolve(image);
+    };
+    image.onerror = () => {
+      URL.revokeObjectURL(url);
+      reject(new Error('Could not render the export document.'));
+    };
+    image.src = url;
+  });
+}
+
+
+function canvasBlob(canvas, type) {
+  return new Promise((resolve, reject) => {
+    canvas.toBlob((blob) => {
+      if (blob) resolve(blob);
+      else reject(new Error('Could not encode the PNG.'));
+    }, type);
+  });
+}
+
+
+function downloadBlob(blob, filename) {
+  const url = URL.createObjectURL(blob);
+  const link = document.createElement('a');
+  link.href = url;
+  link.download = filename;
+  link.click();
+  URL.revokeObjectURL(url);
 }
