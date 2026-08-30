@@ -35,10 +35,10 @@ class LimitlessTournamentAnalysisTests(unittest.TestCase):
             cache_path = Path(directory) / "tournament.json"
             with (
                 patch(
-                    "scripts.tools.limitless_tournament_analysis.urlopen",
+                    "scripts.tools.limitless_tournament_snapshot.urlopen",
                     side_effect=[URLError("temporary"), FakeResponse(payload)],
                 ) as mocked_urlopen,
-                patch("scripts.tools.limitless_tournament_analysis.time.sleep") as mocked_sleep,
+                patch("scripts.tools.limitless_tournament_snapshot.time.sleep") as mocked_sleep,
             ):
                 result = _fetch_json("tournament", {"id": "0069"}, cache_path)
 
@@ -54,7 +54,7 @@ class LimitlessTournamentAnalysisTests(unittest.TestCase):
             cache_path.write_text("incomplete", encoding="utf-8")
 
             with patch(
-                "scripts.tools.limitless_tournament_analysis.urlopen",
+                "scripts.tools.limitless_tournament_snapshot.urlopen",
                 return_value=FakeResponse(payload),
             ):
                 result = _fetch_json("standings", {"tournamentId": "0069"}, cache_path)
@@ -70,7 +70,7 @@ class LimitlessTournamentAnalysisTests(unittest.TestCase):
             cache_path.write_text(json.dumps({"ok": True, "message": {}}), encoding="utf-8")
 
             with patch(
-                "scripts.tools.limitless_tournament_analysis.urlopen",
+                "scripts.tools.limitless_tournament_snapshot.urlopen",
                 return_value=FakeResponse(payload),
             ) as mocked_urlopen:
                 result = _fetch_json("decklist", {"tournamentId": "0069", "playerId": "1"}, cache_path)
