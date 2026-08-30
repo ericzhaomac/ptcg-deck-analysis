@@ -93,6 +93,7 @@ class TournamentFacts:
     tournament: TournamentFact
     variants: Mapping[str, VariantFact]
     players: Mapping[str, PlayerFact]
+    rounds_present: frozenset[int]
     pairings: tuple[PairingFact, ...]
     decklists: Mapping[str, DecklistFact]
     matchup_references: Mapping[str, MatchupReference]
@@ -256,6 +257,7 @@ def normalize_snapshot(
         tournament=tournament,
         variants=MappingProxyType(variants),
         players=MappingProxyType(players),
+        rounds_present=frozenset(snapshot.pairings),
         pairings=tuple(pairings),
         decklists=MappingProxyType(decklists),
         matchup_references=MappingProxyType(matchup_references),

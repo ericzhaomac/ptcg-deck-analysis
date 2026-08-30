@@ -1,6 +1,10 @@
 from __future__ import annotations
 
 import re
+import json
+import shutil
+import subprocess
+import sys
 from datetime import UTC, datetime
 from pathlib import Path
 from typing import Any
@@ -9,11 +13,18 @@ import pytest
 
 from scripts.tools.limitless_tournament_snapshot import (
     LimitlessSnapshotAdapter,
+    StagedSnapshot,
     TournamentRef,
+    VerifiedSnapshotRefresher,
+    parse_args,
 )
+from app.tournament_reports.contracts import SnapshotManifest
+from app.tournament_reports.facts import FamilyOverrideSet
+from app.tournament_reports.snapshots import SnapshotStore, SnapshotValidationError
 
 
 FIXED_TIME = datetime(2026, 6, 14, 20, 0, tzinfo=UTC)
+FIXTURE = Path("tests/fixtures/tournament_reports/minimal_verified_snapshot")
 
 
 def _payloads(rounds: int = 3) -> dict[str, dict[str, Any]]:
@@ -137,3 +148,78 @@ def test_unsuccessful_source_envelope_fails_collection(tmp_path: Path) -> None:
             client=RecordingClient(payloads),
             clock=lambda: FIXED_TIME,
         ).collect(TournamentRef("0070"), tmp_path / "dataset")
+
+
+class FixtureAdapter:
+    def __init__(self, *, completed: bool = True) -> None:
+        self.completed = completed
+
+    def collect(self, ref: TournamentRef, dataset_dir: Path) -> StagedSnapshot:
+        path = dataset_dir / "cache/snapshot-candidate-fixture"
+        path.parent.mkdir(parents=True, exist_ok=True)
+        shutil.copytree(FIXTURE, path)
+        manifest = SnapshotManifest.model_validate_json((path / "manifest.json").read_text())
+        raw = SnapshotStore().load_candidate(path, manifest)
+        if not self.completed:
+            raw = raw.model_copy(update={"tournament": {**raw.tournament, "completed": 0}})
+        return StagedSnapshot(path=path, manifest=manifest, raw=raw)
+
+
+def test_verified_refresher_promotes_only_reconciled_candidate(tmp_path: Path) -> None:
+    dataset_dir = tmp_path / "dataset"
+    refresher = VerifiedSnapshotRefresher(
+        adapter=FixtureAdapter(),
+        store=SnapshotStore(),
+        family_overrides=FamilyOverrideSet(version=1, mappings={}),
+    )
+
+    manifest = refresher.refresh(TournamentRef("0070"), dataset_dir)
+
+    assert manifest.snapshot_version == "fixture-v1"
+    assert json.loads((dataset_dir / "cache/verified-snapshot.json").read_text())["snapshot_version"] == "fixture-v1"
+
+
+def test_blocked_refresh_cleans_candidate_and_preserves_last_good_pointer(tmp_path: Path) -> None:
+    dataset_dir = tmp_path / "dataset"
+    pointer = dataset_dir / "cache/verified-snapshot.json"
+    pointer.parent.mkdir(parents=True)
+    pointer.write_text('{"snapshot_version":"good"}', encoding="utf-8")
+    refresher = VerifiedSnapshotRefresher(
+        adapter=FixtureAdapter(completed=False),
+        store=SnapshotStore(),
+        family_overrides=FamilyOverrideSet(version=1, mappings={}),
+    )
+
+    with pytest.raises(SnapshotValidationError) as error:
+        refresher.refresh(TournamentRef("0070"), dataset_dir)
+
+    assert error.value.code == "verification_blocked"
+    assert pointer.read_text(encoding="utf-8") == '{"snapshot_version":"good"}'
+    assert not (dataset_dir / "cache/snapshot-candidate-fixture").exists()
+
+
+def test_cli_requires_explicit_dataset_directory() -> None:
+    args = parse_args(
+        [
+            "--tournament-id",
+            "0070",
+            "--division",
+            "MA",
+            "--dataset-dir",
+            "data/2026/New_Orleans/MA",
+        ]
+    )
+    assert args.dataset_dir == "data/2026/New_Orleans/MA"
+
+
+def test_script_entrypoint_exposes_verified_refresh_arguments() -> None:
+    result = subprocess.run(
+        [sys.executable, "scripts/tools/limitless_tournament_snapshot.py", "--help"],
+        check=False,
+        capture_output=True,
+        text=True,
+    )
+
+    assert result.returncode == 0
+    assert "--dataset-dir" in result.stdout
+    assert "--family-overrides" in result.stdout

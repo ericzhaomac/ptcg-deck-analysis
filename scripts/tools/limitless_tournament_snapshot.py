@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import argparse
 import hashlib
 import json
 import shutil
@@ -17,7 +18,9 @@ from app.tournament_reports.contracts import (
     SnapshotManifest,
     SnapshotResource,
 )
-from app.tournament_reports.snapshots import SnapshotStore, atomic_write_json
+from app.tournament_reports.facts import FamilyOverrideSet, load_family_overrides
+from app.tournament_reports.reconciliation import verify_candidate_snapshot
+from app.tournament_reports.snapshots import SnapshotStore, SnapshotValidationError, atomic_write_json
 
 
 API_ROOT = "https://mew.limitlesstcg.com/labs/data/tcg"
@@ -207,6 +210,75 @@ class LimitlessSnapshotAdapter:
         return payload
 
 
+class VerifiedSnapshotRefresher:
+    def __init__(
+        self,
+        *,
+        adapter: LimitlessSnapshotAdapter,
+        store: SnapshotStore,
+        family_overrides: FamilyOverrideSet,
+    ) -> None:
+        self.adapter = adapter
+        self.store = store
+        self.family_overrides = family_overrides
+
+    def refresh(self, ref: TournamentRef, dataset_dir: Path) -> SnapshotManifest:
+        staged = self.adapter.collect(ref, dataset_dir)
+        try:
+            verification = verify_candidate_snapshot(staged.raw, self.family_overrides)
+            self.store.promote(
+                dataset_dir,
+                staged.path,
+                staged.manifest,
+                verification,
+            )
+            return staged.manifest
+        except Exception:
+            if staged.path.exists():
+                shutil.rmtree(staged.path)
+            raise
+
+
+def parse_args(argv: list[str] | None = None) -> argparse.Namespace:
+    parser = argparse.ArgumentParser(description="Refresh a verified Limitless tournament snapshot.")
+    parser.add_argument("--tournament-id", required=True)
+    parser.add_argument("--division", default=DEFAULT_DIVISION)
+    parser.add_argument("--dataset-dir", required=True)
+    parser.add_argument(
+        "--family-overrides",
+        default="data/config/archetype_family_overrides.json",
+    )
+    return parser.parse_args(argv)
+
+
+def main(argv: list[str] | None = None) -> int:
+    args = parse_args(argv)
+    refresher = VerifiedSnapshotRefresher(
+        adapter=LimitlessSnapshotAdapter(client=LimitlessClient()),
+        store=SnapshotStore(),
+        family_overrides=load_family_overrides(Path(args.family_overrides)),
+    )
+    try:
+        manifest = refresher.refresh(
+            TournamentRef(str(args.tournament_id), str(args.division)),
+            Path(args.dataset_dir),
+        )
+    except SnapshotValidationError as exc:
+        print(json.dumps({"ok": False, "code": exc.code, "message": str(exc)}, sort_keys=True))
+        return 1
+    print(
+        json.dumps(
+            {
+                "ok": True,
+                "snapshot_version": manifest.snapshot_version,
+                "dataset_dir": str(Path(args.dataset_dir)),
+            },
+            sort_keys=True,
+        )
+    )
+    return 0
+
+
 def _require_successful_envelope(payload: Any, endpoint: str) -> None:
     if not isinstance(payload, dict) or payload.get("ok") is not True or "message" not in payload:
         raise ValueError(f"Limitless returned an unsuccessful payload for {endpoint}")
@@ -278,3 +350,7 @@ def _build_manifest(
         declared_rounds=declared_rounds,
         resources=resources,
     )
+
+
+if __name__ == "__main__":
+    raise SystemExit(main())
