@@ -294,8 +294,18 @@ def _phase_records_for_split(
     }
     for pairing in facts.pairings:
         phase = 1 if pairing.round_number <= split else 2
-        player1 = counts.get(pairing.player1_variant_id or "")
-        player2 = counts.get(pairing.player2_variant_id or "")
+        player1_variant = (
+            facts.players[pairing.player1_tp_id].variant_id
+            if pairing.player1_tp_id in facts.players
+            else pairing.player1_variant_id
+        )
+        player2_variant = (
+            facts.players[pairing.player2_tp_id].variant_id
+            if pairing.player2_tp_id in facts.players
+            else pairing.player2_variant_id
+        )
+        player1 = counts.get(player1_variant or "")
+        player2 = counts.get(player2_variant or "")
         if pairing.outcome == "procedural":
             if player1 is not None:
                 player1[phase][1] += 1
@@ -351,15 +361,21 @@ def _participant(
     side: Literal["player1", "player2"],
     players: Mapping[str, PlayerFact],
 ) -> tuple[str | None, str | None]:
+    prefix = "p1" if side == "player1" else "p2"
+    pairing_variant_id = _optional_text(
+        raw_pairing.get(f"{prefix}_deck", raw_pairing.get(f"{side}_deck"))
+    )
     raw = raw_pairing.get(side)
     if raw is None:
         tp_id = _optional_text(raw_pairing.get(f"{side}_tp_id"))
-        return tp_id, players.get(tp_id).variant_id if tp_id in players else None
+        fallback = players.get(tp_id).variant_id if tp_id in players else None
+        return tp_id, pairing_variant_id or fallback
     if not isinstance(raw, dict):
         tp_id = _optional_text(raw)
-        return tp_id, players.get(tp_id).variant_id if tp_id in players else None
+        fallback = players.get(tp_id).variant_id if tp_id in players else None
+        return tp_id, pairing_variant_id or fallback
     tp_id = _optional_text(raw.get("tp_id", raw.get("player_id", raw.get("id"))))
-    variant_id = _optional_text(raw.get("deck_id"))
+    variant_id = _optional_text(raw.get("deck_id")) or pairing_variant_id
     if variant_id is None and tp_id in players:
         variant_id = players[tp_id].variant_id
     return tp_id, variant_id

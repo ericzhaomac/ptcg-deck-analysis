@@ -54,6 +54,16 @@ def test_procedural_losses_remain_in_official_variant_records(facts) -> None:
     assert pairing_records_by_variant(facts)["dragapult-ex"] == Record(wins=1, losses=2, ties=0)
 
 
+def test_official_variant_records_follow_standings_identity_not_pairing_taxonomy(facts) -> None:
+    reclassified = replace(facts.pairings[0], player1_variant_id="dragapult-ex")
+    changed = replace(facts, pairings=(reclassified, *facts.pairings[1:]))
+
+    records = pairing_records_by_variant(changed)
+
+    assert records["dragapult-dusknoir"] == Record(wins=1, losses=1, ties=1)
+    assert records["dragapult-ex"] == Record(wins=1, losses=2, ties=0)
+
+
 def test_equal_and_opposite_variant_errors_do_not_cancel_at_family_grain(facts) -> None:
     source_records = {variant_id: dict(records) for variant_id, records in facts.source_phase_records.items()}
     source_records["dragapult-ex"] = {

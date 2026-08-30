@@ -54,6 +54,15 @@ DATA_ROOT/
           standings.json
           decklists/
             <tp_id>.json
+          pairings/
+            round-<nn>.json
+          matchups/
+            <variant_id>.json
+          snapshots/
+            <tournament_id>-<division>-<content_hash>/
+              manifest.json
+              ...verified source resources...
+          verified-snapshot.json
 ```
 
 Example:
@@ -78,6 +87,23 @@ PYTHONPATH=. python3 scripts/tools/limitless_tournament_analysis.py \
 ```
 
 Successful responses are cached individually and written atomically. Re-running the same command reuses valid cache files and retries only missing, invalid, or unsuccessful responses. Keep each tournament in its own cache directory, verify its `analysis.json`, and then add its dataset id to `data/config/dataset_state.json` without changing a valid existing `current_dataset_id`.
+
+Tournament Reports use a separate immutable snapshot promotion step. Refresh a completed event through the adapter, then verify the promoted snapshot entirely offline:
+
+```bash
+PYTHONPATH=. python3 scripts/tools/limitless_tournament_snapshot.py \
+  --tournament-id 0070 \
+  --division MA \
+  --dataset-dir data/2026/New_Orleans/MA
+
+PYTHONPATH=. python3 scripts/tools/limitless_tournament_snapshot.py \
+  --tournament-id 0070 \
+  --division MA \
+  --dataset-dir data/2026/New_Orleans/MA \
+  --verify-only
+```
+
+The refresh promotes `cache/verified-snapshot.json` only after schema validation and exact local/source reconciliation pass. `--verify-only` performs no HTTP requests and reports the snapshot version, phase boundary, issue codes, and eligible family/variant counts.
 
 ### Season Update Convention
 
@@ -141,7 +167,9 @@ docker run --rm -p 8010:8010 \
   ptcg-deck-analysis
 ```
 
-The application at `http://localhost:8010/` has three top tabs: Analysis, Deck Library, and AI Backend. The legacy provider config page remains available at `http://localhost:8010/api/v1/provider/config`.
+The application at `http://localhost:8010/` has four top tabs: Analysis, Deck Library, Tournament Reports, and AI Backend. Tournament Reports provides an event overview, synchronized family highlighting, explicit family/variant drill-down, per-module phase controls, and portrait PNG export. The legacy provider config page remains available at `http://localhost:8010/api/v1/provider/config`.
+
+Tournament matchup bars require at least 30 observed matches. Deck-composition categories require at least 10 valid lists and 60% list coverage. Win rate uses `(wins + ties / 3) / (wins + losses + ties)`. Every exported module is a fixed 1080×1350 PNG and is blocked unless the exact module state and snapshot version are ready.
 
 ## Development Worktrees and UI Review
 
@@ -182,6 +210,10 @@ node --test tests/frontend/*.test.mjs
 - `POST /api/v1/provider/models`
 - `GET /api/v1/provider/config`
 - `POST /api/v1/provider/config`
+- `GET /api/v1/tournament-reports`
+- `GET /api/v1/tournament-reports/{dataset_id}`
+- `GET /api/v1/tournament-reports/{dataset_id}/families/{family_id}`
+- `GET /api/v1/tournament-reports/{dataset_id}/variants/{variant_id}`
 
 ## Provider Config Safety
 

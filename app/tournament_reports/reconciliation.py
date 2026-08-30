@@ -180,12 +180,14 @@ def pairing_records_by_player(facts: TournamentFacts) -> dict[str, Record]:
 def pairing_records_by_variant(facts: TournamentFacts) -> dict[str, Record]:
     counts = {variant_id: [0, 0, 0] for variant_id in facts.variants}
     for pairing in facts.pairings:
+        player1_variant = _standing_variant(facts, pairing.player1_tp_id, pairing.player1_variant_id)
+        player2_variant = _standing_variant(facts, pairing.player2_tp_id, pairing.player2_variant_id)
         if pairing.outcome == "procedural":
-            _add_procedural_loss(counts, pairing.player1_variant_id)
-            _add_procedural_loss(counts, pairing.player2_variant_id)
+            _add_procedural_loss(counts, player1_variant)
+            _add_procedural_loss(counts, player2_variant)
             continue
-        _add_side_record(counts, pairing.player1_variant_id, pairing.outcome, side=1)
-        _add_side_record(counts, pairing.player2_variant_id, pairing.outcome, side=2)
+        _add_side_record(counts, player1_variant, pairing.outcome, side=1)
+        _add_side_record(counts, player2_variant, pairing.outcome, side=2)
     return {
         variant_id: Record(wins=row[0], losses=row[1], ties=row[2])
         for variant_id, row in counts.items()
@@ -438,3 +440,13 @@ def _add_side_record(
 def _add_procedural_loss(counts: dict[str, list[int]], identity: str | None) -> None:
     if identity is not None and identity in counts:
         counts[identity][1] += 1
+
+
+def _standing_variant(
+    facts: TournamentFacts,
+    player_id: str | None,
+    pairing_variant_id: str | None,
+) -> str | None:
+    if player_id is not None and player_id in facts.players:
+        return facts.players[player_id].variant_id
+    return pairing_variant_id
