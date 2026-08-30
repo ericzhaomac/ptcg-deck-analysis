@@ -1,4 +1,5 @@
 import {DECK_SECTIONS, comparisonCategories, deckTotal, nextTabIndex, parseDeckEditorDraft, parseDeckText, planDatasetMountRequests, prepareDeckEditorDraft, serializeDeck} from './core.mjs';
+import {createTournamentReportsController} from './tournament-reports.js';
 
 const state = {
   datasets: [], mountedDatasetIds: [], currentDatasetId: null, currentDatasetDisplayName: null,
@@ -32,6 +33,13 @@ async function requestJson(url, options = {}) {
   return response.status === 204 ? null : response.json();
 }
 
+const tournamentReports = createTournamentReportsController({
+  requestJson,
+  root: element('tournament-reports-panel'),
+  navigate: (path) => history.pushState({path}, '', path),
+});
+let tournamentReportsInitialized = false;
+
 function switchTab(tabName) {
   document.querySelectorAll('[role="tab"]').forEach((tab) => {
     const selected = tab.dataset.tab === tabName;
@@ -40,6 +48,10 @@ function switchTab(tabName) {
     tab.tabIndex = selected ? 0 : -1;
   });
   document.querySelectorAll('[role="tabpanel"]').forEach((panel) => { panel.hidden = panel.id !== `${tabName}-panel`; });
+  if (tabName === 'tournament-reports' && !tournamentReportsInitialized) {
+    tournamentReportsInitialized = true;
+    tournamentReports.initialize().catch((error) => console.error(error));
+  }
 }
 
 function handleTabKeydown(event) {
@@ -518,10 +530,17 @@ function bindEvents() {
   element('provider-form').addEventListener('submit', saveProvider);
   element('fetch-models-btn').addEventListener('click', fetchModels);
   element('discovered-models').addEventListener('change', (event) => { if (event.target.value) element('provider-model').value = event.target.value; });
+  window.addEventListener('popstate', () => {
+    if (window.location.pathname.startsWith('/tournament-reports')) {
+      switchTab('tournament-reports');
+      tournamentReports.showLocation(window.location.pathname);
+    }
+  });
 }
 
 async function initialize() {
   bindEvents();
+  if (window.location.pathname.startsWith('/tournament-reports')) switchTab('tournament-reports');
   const results = await Promise.allSettled([loadDatasets(), loadSavedDecks(), loadProviderSettings()]);
   results.forEach((result) => { if (result.status === 'rejected') console.error(result.reason); });
 }

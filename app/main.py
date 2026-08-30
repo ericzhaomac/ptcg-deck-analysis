@@ -3,7 +3,7 @@ from __future__ import annotations
 from pathlib import Path
 
 from fastapi import FastAPI
-from fastapi.responses import RedirectResponse
+from fastapi.responses import FileResponse, RedirectResponse
 from fastapi.staticfiles import StaticFiles
 
 from .api.routes import build_router
@@ -64,9 +64,13 @@ def create_app(
     def root():
         index_path = static_dir / "index.html"
         if index_path.exists():
-            from fastapi.responses import FileResponse
             return FileResponse(str(index_path))
         return RedirectResponse(url="/api/v1/provider/config")
+
+    @app.get("/tournament-reports", include_in_schema=False)
+    @app.get("/tournament-reports/{report_path:path}", include_in_schema=False)
+    def tournament_report_shell(report_path: str = ""):
+        return FileResponse(str(static_dir / "index.html"))
 
     app.include_router(
         build_router(

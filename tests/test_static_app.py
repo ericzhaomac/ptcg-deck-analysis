@@ -75,8 +75,13 @@ def test_root_serves_approved_companion_top_tab_shell(tmp_path):
 
     assert response.status_code == 200
     assert " ".join(parser.header_text) == "PTCG Deck Analysis"
-    assert parser.tab_text == ["Analysis", "Deck Library", "AI Backend"]
-    assert parser.tab_panels == ["analysis-panel", "deck-library-panel", "ai-backend-panel"]
+    assert parser.tab_text == ["Analysis", "Deck Library", "AI Backend", "Tournament Reports"]
+    assert parser.tab_panels == [
+        "analysis-panel",
+        "deck-library-panel",
+        "ai-backend-panel",
+        "tournament-reports-panel",
+    ]
     assert parser.stylesheets == ["/static/styles.css"]
     assert parser.module_scripts == ["/static/app.js"]
 
@@ -87,6 +92,8 @@ def test_split_frontend_assets_are_served(tmp_path):
     stylesheet = client.get("/static/styles.css")
     application = client.get("/static/app.js")
     core = client.get("/static/core.mjs")
+    reports = client.get("/static/tournament-reports.js")
+    report_core = client.get("/static/tournament-reports-core.mjs")
 
     assert stylesheet.status_code == 200
     assert stylesheet.headers["content-type"].startswith("text/css")
@@ -94,6 +101,25 @@ def test_split_frontend_assets_are_served(tmp_path):
     assert "javascript" in application.headers["content-type"]
     assert core.status_code == 200
     assert "javascript" in core.headers["content-type"]
+    assert reports.status_code == 200
+    assert "javascript" in reports.headers["content-type"]
+    assert report_core.status_code == 200
+    assert "javascript" in report_core.headers["content-type"]
+    assert "./tournament-reports.js" in application.text
+
+
+def test_tournament_report_routes_serve_the_application_shell(tmp_path):
+    client = make_client(tmp_path)
+
+    index = client.get("/tournament-reports")
+    deep_link = client.get(
+        "/tournament-reports/2026-new-orleans-ma/families/dragapult-ex"
+    )
+
+    assert index.status_code == 200
+    assert deep_link.status_code == 200
+    assert "tournament-reports-panel" in index.text
+    assert deep_link.text == index.text
 
 
 def test_deck_library_uses_one_full_list_textarea_instead_of_per_card_controls(tmp_path):
