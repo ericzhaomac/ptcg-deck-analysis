@@ -1,8 +1,10 @@
 import {
   ARCHETYPE_MODULE_IDS,
+  COMPOSITION_TABS,
   PNG_EXPORT_MODULE_IDS,
   archetypeModuleForPhase,
   assertExportable,
+  buildCompositionProgressionModel,
   buildExpandableFamilyModel,
   buildModuleSvg,
   createReportRoute,
@@ -10,7 +12,9 @@ import {
   reduceReportSelection,
   matchupAvailabilityMessage,
   nextTableSort,
+  replaceSortedView,
   sortMatchupRows,
+  tableHeaderPresentation,
   toggleExpandedFamily,
   exportFilename,
 } from './tournament-reports-core.mjs';
@@ -248,7 +252,7 @@ export function createTournamentReportsController({requestJson, root, navigate})
     const sort = tableSorts.get(module.module_id) || {key: 'matches', direction: 'desc'};
     wrapper.append(renderMatchups(module, report, sort, (key) => {
       tableSorts.set(module.module_id, nextTableSort(sort, key, 'matches'));
-      wrapper.replaceWith(renderMatchupGroup(report));
+      replaceSortedView(wrapper, renderMatchupGroup(report), key);
     }));
     return wrapper;
   }
@@ -280,15 +284,129 @@ export function createTournamentReportsController({requestJson, root, navigate})
     wrapper.className = 'tournament-report-phase-group';
     wrapper.append(phaseControls(
       'Deck-list phase',
-      [['phase1', 'Phase 1'], ['phase2', 'Phase 2'], ['top_cut', 'Top Cut']],
+      COMPOSITION_TABS,
       state.modulePhases.composition,
       (phase) => {
         state = reduceReportSelection(state, {type: 'set-composition-phase', phase});
         wrapper.replaceWith(renderCompositionGroup(report));
       },
     ));
+    if (state.modulePhases.composition === 'progression') {
+      wrapper.append(renderCompositionProgression(report));
+      return wrapper;
+    }
     const module = archetypeModuleForPhase(report, 'composition', state.modulePhases.composition);
     wrapper.append(renderDeckComposition(module, report));
+    return wrapper;
+  }
+
+  function renderCompositionProgression(report) {
+    const model = buildCompositionProgressionModel(report);
+    const section = document.createElement('section');
+    section.className = 'card tournament-report-module tournament-report-progression';
+    section.append(
+      textElement('h3', 'Deck Composition Progression: Phase 1 → Phase 2 → Top Cut'),
+      textElement(
+        'p',
+        'This view follows card representation within the selected archetype across all three competition stages, highlighting where the list pool broadens, concentrates, or changes direction.',
+      ),
+    );
+    if (model.smallSampleDescriptive) {
+      const warning = textElement(
+        'p',
+        'Top Cut is a small sample — deviations are descriptive signals, not statistical-significance claims.',
+      );
+      warning.className = 'tournament-report-descriptive';
+      section.append(warning);
+    }
+    if (!model.available) {
+      section.append(emptyState(model.reason));
+      return section;
+    }
+
+    const stageSummary = document.createElement('div');
+    stageSummary.className = 'tournament-report-progression-stages';
+    model.stages.forEach((stage) => {
+      const card = document.createElement('article');
+      card.className = 'tournament-report-progression-stage';
+      card.append(
+        textElement('h4', stage.label),
+        textElement('strong', `${stage.validLists}/${stage.eligiblePlayers} valid lists`),
+        textElement('span', `${formatPercent(stage.coverage)} coverage`),
+        textElement('span', `${stage.representedCards} represented cards · ${stage.coreCards} core`),
+        textElement('span', `${formatPercent(stage.coreSlotConcentration)} core-slot concentration`),
+      );
+      stageSummary.append(card);
+    });
+    section.append(
+      textElement('h4', 'Diversity and concentration shift'),
+      textElement(
+        'p',
+        'Represented cards measure composition breadth. Core-slot concentration estimates the share of expected deck slots supplied by cards appearing in at least 80% of valid lists.',
+      ),
+      stageSummary,
+    );
+
+    const callouts = document.createElement('div');
+    callouts.className = 'tournament-report-progression-callouts';
+    callouts.append(
+      progressionCallout('Rising representation', model.risers, (row) => `${row.displayName} (+${formatCompactNumber(row.positiveMovement)} pp)`),
+      progressionCallout('Falling representation', model.fallers, (row) => `${row.displayName} (−${formatCompactNumber(row.negativeMovement)} pp)`),
+      progressionCallout('Disappeared by Top Cut', model.disappeared, (row) => row.displayName),
+      progressionCallout('Noteworthy Top Cut deviations', model.topCutDeviations, (row) => `${row.displayName} (${formatPercentagePointDelta(row.phase2ToTopCutDeltaPp)})`),
+    );
+    section.append(textElement('h4', 'Material movement'), callouts);
+
+    const flow = document.createElement('div');
+    flow.className = 'tournament-report-progression-flow';
+    flow.setAttribute('role', 'list');
+    model.rows.slice(0, 12).forEach((row) => {
+      const item = document.createElement('article');
+      item.className = 'tournament-report-progression-row';
+      item.setAttribute('role', 'listitem');
+      item.setAttribute(
+        'aria-label',
+        `${row.displayName}: Phase 1 ${formatPercent(row.phase1Rate)}, Phase 2 ${formatPercent(row.phase2Rate)}, Top Cut ${formatPercent(row.topCutRate)}; ${progressionTrendLabel(row.trend)}`,
+      );
+      item.append(textElement('strong', row.displayName));
+      [
+        ['Phase 1', row.phase1Rate],
+        ['Phase 2', row.phase2Rate],
+        ['Top Cut', row.topCutRate],
+      ].forEach(([label, rate]) => item.append(progressionRate(label, rate)));
+      const trend = textElement('span', progressionTrendLabel(row.trend));
+      trend.className = `tournament-report-progression-trend ${row.trend}`;
+      item.append(trend);
+      flow.append(item);
+    });
+    section.append(textElement('h4', 'Largest stage-to-stage shifts'), flow);
+    return section;
+  }
+
+  function progressionCallout(titleText, rows, describe) {
+    const article = document.createElement('article');
+    article.append(textElement('h5', titleText));
+    if (!rows.length) {
+      article.append(textElement('p', 'No material 15-point shift.'));
+      return article;
+    }
+    const list = document.createElement('ul');
+    rows.slice(0, 4).forEach((row) => list.append(textElement('li', describe(row))));
+    article.append(list);
+    return article;
+  }
+
+  function progressionRate(label, rate) {
+    const wrapper = document.createElement('span');
+    wrapper.className = 'tournament-report-progression-rate';
+    const heading = textElement('small', label);
+    const meter = document.createElement('span');
+    meter.className = 'tournament-report-progression-meter';
+    meter.setAttribute('aria-hidden', 'true');
+    const fill = document.createElement('span');
+    fill.style.width = `${Math.max(0, Math.min(100, rate * 100))}%`;
+    meter.append(fill);
+    wrapper.append(heading, meter, textElement('b', formatPercent(rate)));
     return wrapper;
   }
 
@@ -388,14 +506,14 @@ export function createTournamentReportsController({requestJson, root, navigate})
     ['', 'Archetype', 'Players'].forEach((label) => headRow.append(textElement('th', label)));
     headRow.append(sortableHeader('Share', 'share', sort, (key) => {
       tableSorts.set(module.module_id, nextTableSort(sort, key, 'share'));
-      section.replaceWith(renderExpandableFamilyModule(module));
+      replaceSortedView(section, renderExpandableFamilyModule(module), key);
     }));
     if (includePerformance) {
       headRow.append(textElement('th', 'Official record'));
     }
     headRow.append(sortableHeader('Observed win rate', 'observed_win_rate', sort, (key) => {
       tableSorts.set(module.module_id, nextTableSort(sort, key, 'share'));
-      section.replaceWith(renderExpandableFamilyModule(module));
+      replaceSortedView(section, renderExpandableFamilyModule(module), key);
     }));
     head.append(headRow);
     const body = document.createElement('tbody');
@@ -534,12 +652,21 @@ export function createTournamentReportsController({requestJson, root, navigate})
   }
 
   function sortableHeader(label, key, sort, onSort) {
+    const presentation = tableHeaderPresentation(label, key, sort);
     const header = document.createElement('th');
-    const active = sort.key === key;
-    header.setAttribute('aria-sort', active ? (sort.direction === 'desc' ? 'descending' : 'ascending') : 'none');
-    const button = textElement('button', `${label}${active ? (sort.direction === 'desc' ? ' ↓' : ' ↑') : ''}`);
+    header.className = 'tournament-report-sortable-header';
+    header.dataset.sortActive = String(presentation.active);
+    if (presentation.ariaSort) header.setAttribute('aria-sort', presentation.ariaSort);
+    const button = document.createElement('button');
     button.type = 'button';
     button.className = 'tournament-report-sort';
+    button.dataset.sortKey = key;
+    button.setAttribute('aria-label', presentation.ariaLabel);
+    button.append(textElement('span', presentation.label));
+    const indicator = textElement('span', presentation.indicator);
+    indicator.className = 'tournament-report-sort-indicator';
+    indicator.setAttribute('aria-hidden', 'true');
+    button.append(indicator);
     button.addEventListener('click', () => onSort(key));
     header.append(button);
     return header;
@@ -657,6 +784,22 @@ function formatPercentagePointDelta(value) {
   if (value === null || value === undefined) return '—';
   const number = Number(value);
   return `${number > 0 ? '+' : ''}${number.toFixed(1)} pp`;
+}
+
+
+function formatCompactNumber(value) {
+  return Number(value).toFixed(1).replace(/\.0$/, '');
+}
+
+
+function progressionTrendLabel(trend) {
+  return {
+    rising: 'Rising',
+    falling: 'Falling',
+    volatile: 'Rose, then reversed',
+    disappeared: 'Absent from Top Cut',
+    stable: 'Broadly stable',
+  }[trend] || 'Broadly stable';
 }
 
 

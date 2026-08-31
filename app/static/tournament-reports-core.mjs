@@ -40,6 +40,13 @@ export const PNG_EXPORT_MODULE_IDS = Object.freeze([
   'representative_lists',
 ]);
 
+export const COMPOSITION_TABS = Object.freeze([
+  Object.freeze(['phase1', 'Phase 1']),
+  Object.freeze(['phase2', 'Phase 2']),
+  Object.freeze(['top_cut', 'Top Cut']),
+  Object.freeze(['progression', 'Composition Progression']),
+]);
+
 /**
  * @typedef {{type: string, familyId?: string, variantId?: string, generation?: number, report?: Object}} ReportUiAction
  */
@@ -135,6 +142,144 @@ export function nextTableSort(current, key, defaultKey) {
   if (!current) return {key: defaultKey, direction: 'desc'};
   if (current.key !== key) return {key, direction: 'desc'};
   return {key, direction: current.direction === 'desc' ? 'asc' : 'desc'};
+}
+
+
+export function tableHeaderPresentation(label, sortKey, sort) {
+  if (!sortKey) return {sortable: false, label};
+  const active = sort?.key === sortKey;
+  const direction = active ? sort.direction : null;
+  return {
+    sortable: true,
+    label,
+    indicator: active ? (direction === 'desc' ? '↓' : '↑') : '↕',
+    active,
+    ariaSort: active ? (direction === 'desc' ? 'descending' : 'ascending') : null,
+    ariaLabel: `Sort ${label} ${active && direction === 'desc' ? 'ascending' : 'descending'}`,
+  };
+}
+
+
+export function replaceSortedView(current, replacement, sortKey) {
+  current.replaceWith(replacement);
+  replacement.querySelector(`[data-sort-key="${sortKey}"]`)?.focus();
+}
+
+
+export function buildCompositionProgressionModel(report) {
+  const definitions = [
+    ['phase1', 'Phase 1'],
+    ['phase2', 'Phase 2'],
+    ['top_cut', 'Top Cut'],
+  ];
+  const modules = definitions.map(([key]) => archetypeModuleForPhase(report, 'composition', key));
+  const stages = modules.map((module, index) => compositionStageSummary(
+    definitions[index][0], definitions[index][1], module,
+  ));
+  const available = modules.every((module) => module?.data?.eligible_for_classification === true);
+  if (!available) {
+    return {
+      available: false,
+      reason: 'All three stages need classified deck lists before progression can be compared.',
+      smallSampleDescriptive: modules.some((module) => module?.data?.small_sample_descriptive === true),
+      stages,
+      rows: [],
+      risers: [],
+      fallers: [],
+      disappeared: [],
+      topCutDeviations: [],
+    };
+  }
+
+  const rowsByStage = modules.map((module) => new Map(
+    (module.data.rows || []).map((row) => [row.card_name, row]),
+  ));
+  const cardNames = new Set(rowsByStage.flatMap((rows) => [...rows.keys()]));
+  const rows = [...cardNames].map((cardName) => {
+    const stageRows = rowsByStage.map((stage) => stage.get(cardName));
+    const rates = stageRows.map((row) => row?.appearance_rate ?? 0);
+    const phase1ToPhase2DeltaPp = percentagePointDelta(rates[1], rates[0]);
+    const phase2ToTopCutDeltaPp = percentagePointDelta(rates[2], rates[1]);
+    const positiveMovement = Math.max(phase1ToPhase2DeltaPp, phase2ToTopCutDeltaPp, 0);
+    const negativeMovement = Math.max(-phase1ToPhase2DeltaPp, -phase2ToTopCutDeltaPp, 0);
+    const disappeared = rates[2] === 0 && (rates[0] > 0 || rates[1] > 0);
+    const materialRise = positiveMovement >= 15;
+    const materialFall = negativeMovement >= 15;
+    return {
+      cardName,
+      displayName: stageRows.find((row) => row)?.display_name || cardName,
+      phase1Rate: rates[0],
+      phase2Rate: rates[1],
+      topCutRate: rates[2],
+      phase1ToPhase2DeltaPp,
+      phase2ToTopCutDeltaPp,
+      overallDeltaPp: percentagePointDelta(rates[2], rates[0]),
+      positiveMovement,
+      negativeMovement,
+      impactPp: Math.max(positiveMovement, negativeMovement),
+      trend: disappeared
+        ? 'disappeared'
+        : materialRise && materialFall
+          ? 'volatile'
+          : materialRise
+            ? 'rising'
+            : materialFall
+              ? 'falling'
+              : 'stable',
+    };
+  }).sort(compareProgressionImpact);
+
+  return {
+    available: true,
+    reason: '',
+    smallSampleDescriptive: modules.some((module) => module.data.small_sample_descriptive === true),
+    stages,
+    rows,
+    risers: rows.filter((row) => row.positiveMovement >= 15)
+      .sort((left, right) => right.positiveMovement - left.positiveMovement || compareProgressionImpact(left, right)),
+    fallers: rows.filter((row) => row.negativeMovement >= 15)
+      .sort((left, right) => right.negativeMovement - left.negativeMovement || compareProgressionImpact(left, right)),
+    disappeared: rows.filter((row) => row.trend === 'disappeared'),
+    topCutDeviations: rows.filter((row) => Math.abs(row.phase2ToTopCutDeltaPp) >= 15)
+      .sort((left, right) => Math.abs(right.phase2ToTopCutDeltaPp) - Math.abs(left.phase2ToTopCutDeltaPp)
+        || compareProgressionImpact(left, right)),
+  };
+}
+
+
+function compositionStageSummary(key, label, module) {
+  const data = module?.data || {};
+  const representedRows = (data.rows || []).filter((row) => (row.appearance_rate ?? 0) > 0);
+  const totalExpectedSlots = representedRows.reduce(
+    (total, row) => total + row.appearance_rate * row.average_when_present,
+    0,
+  );
+  const coreExpectedSlots = representedRows
+    .filter((row) => row.appearance_rate >= 0.8)
+    .reduce((total, row) => total + row.appearance_rate * row.average_when_present, 0);
+  return {
+    key,
+    label,
+    validLists: data.valid_lists ?? 0,
+    eligiblePlayers: data.eligible_players ?? 0,
+    coverage: data.coverage ?? 0,
+    representedCards: representedRows.length,
+    coreCards: representedRows.filter((row) => row.appearance_rate >= 0.8).length,
+    coreSlotConcentration: totalExpectedSlots ? coreExpectedSlots / totalExpectedSlots : 0,
+    classified: data.eligible_for_classification === true,
+  };
+}
+
+
+function percentagePointDelta(current, previous) {
+  return Math.round((current - previous) * 100000000) / 1000000;
+}
+
+
+function compareProgressionImpact(left, right) {
+  return right.impactPp - left.impactPp
+    || compareText(left.displayName, right.displayName)
+    || compareText(left.cardName, right.cardName);
 }
 
 
