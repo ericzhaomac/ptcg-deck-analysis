@@ -3,16 +3,20 @@ import test from 'node:test';
 
 import {
   ARCHETYPE_MODULE_IDS,
+  COMPOSITION_TABS,
   archetypeModuleForPhase,
+  buildCompositionProgressionModel,
   buildExpandableFamilyModel,
   createReportRoute,
   formatObservedWinRate,
   moduleAvailability,
   reduceReportSelection,
+  replaceSortedView,
   matchupAvailabilityMessage,
   nextTableSort,
   sortMatchupRows,
   sortOverviewRows,
+  tableHeaderPresentation,
   toggleExpandedFamily,
 } from '../../app/static/tournament-reports-core.mjs';
 
@@ -63,6 +67,62 @@ const DISTRIBUTION_MODULE = {
       },
     ],
   },
+};
+
+const COMPOSITION_REPORT = {
+  modules: [
+    {
+      module_id: 'deck_composition_phase1',
+      phase: 'phase1',
+      data: {
+        eligible_players: 12,
+        valid_lists: 10,
+        coverage: 10 / 12,
+        eligible_for_classification: true,
+        small_sample_descriptive: false,
+        rows: [
+          {card_name: 'a', display_name: 'Anchor', appearance_rate: 1, average_when_present: 4, bucket: 'core'},
+          {card_name: 'b', display_name: 'Bridge', appearance_rate: 0.6, average_when_present: 2, bucket: 'common'},
+          {card_name: 'c', display_name: 'Counter', appearance_rate: 0.4, average_when_present: 1, bucket: 'common'},
+          {card_name: 'd', display_name: 'Day One Tech', appearance_rate: 0.2, average_when_present: 1, bucket: 'tech'},
+        ],
+      },
+    },
+    {
+      module_id: 'deck_composition_phase2',
+      phase: 'phase2',
+      data: {
+        eligible_players: 10,
+        valid_lists: 10,
+        coverage: 1,
+        eligible_for_classification: true,
+        small_sample_descriptive: false,
+        rows: [
+          {card_name: 'a', display_name: 'Anchor', appearance_rate: 0.9, average_when_present: 4, bucket: 'core'},
+          {card_name: 'b', display_name: 'Bridge', appearance_rate: 0.8, average_when_present: 2, bucket: 'core'},
+          {card_name: 'c', display_name: 'Counter', appearance_rate: 0.1, average_when_present: 1, bucket: 'tech'},
+          {card_name: 'e', display_name: 'Endgame Tool', appearance_rate: 0.3, average_when_present: 1, bucket: 'common'},
+        ],
+      },
+    },
+    {
+      module_id: 'deck_composition_top_cut',
+      phase: 'top_cut',
+      data: {
+        eligible_players: 6,
+        valid_lists: 6,
+        coverage: 1,
+        eligible_for_classification: true,
+        small_sample_descriptive: true,
+        rows: [
+          {card_name: 'a', display_name: 'Anchor', appearance_rate: 1, average_when_present: 4, bucket: 'core'},
+          {card_name: 'b', display_name: 'Bridge', appearance_rate: 0.4, average_when_present: 2, bucket: 'common'},
+          {card_name: 'e', display_name: 'Endgame Tool', appearance_rate: 0.8, average_when_present: 1, bucket: 'core'},
+          {card_name: 'f', display_name: 'Finals Answer', appearance_rate: 0.5, average_when_present: 1, bucket: 'common'},
+        ],
+      },
+    },
+  ],
 };
 
 
@@ -277,6 +337,103 @@ test('sortable headers default descending and then toggle direction', () => {
   assert.deepEqual(nextTableSort(share, 'observed_win_rate', 'share'), {
     key: 'observed_win_rate', direction: 'desc',
   });
+});
+
+
+test('composition progression tab follows the three stage tabs exactly', () => {
+  assert.deepEqual(COMPOSITION_TABS, [
+    ['phase1', 'Phase 1'],
+    ['phase2', 'Phase 2'],
+    ['top_cut', 'Top Cut'],
+    ['progression', 'Composition Progression'],
+  ]);
+});
+
+
+test('composition progression derives material movement and stage concentration immutably', () => {
+  const source = structuredClone(COMPOSITION_REPORT);
+  const model = buildCompositionProgressionModel(COMPOSITION_REPORT);
+
+  assert.equal(model.available, true);
+  assert.equal(model.smallSampleDescriptive, true);
+  assert.deepEqual(
+    model.stages.map((stage) => [stage.label, stage.validLists, stage.eligiblePlayers, stage.representedCards, stage.coreCards]),
+    [
+      ['Phase 1', 10, 12, 4, 1],
+      ['Phase 2', 10, 10, 4, 2],
+      ['Top Cut', 6, 6, 4, 2],
+    ],
+  );
+  assert.ok(Math.abs(model.stages[0].coreSlotConcentration - (4 / 5.8)) < 1e-12);
+  assert.ok(Math.abs(model.stages[1].coreSlotConcentration - (5.2 / 5.6)) < 1e-12);
+  assert.ok(Math.abs(model.stages[2].coreSlotConcentration - (4.8 / 6.1)) < 1e-12);
+  assert.deepEqual(model.rows.map((row) => row.cardName), ['e', 'f', 'b', 'c', 'd', 'a']);
+  assert.deepEqual(model.risers.map((row) => row.cardName), ['e', 'f', 'b']);
+  assert.deepEqual(model.fallers.map((row) => row.cardName), ['b', 'c', 'd']);
+  assert.deepEqual(model.disappeared.map((row) => row.cardName), ['c', 'd']);
+  assert.deepEqual(model.topCutDeviations.map((row) => row.cardName), ['e', 'f', 'b']);
+  assert.equal(model.rows.find((row) => row.cardName === 'b').trend, 'volatile');
+  assert.equal(model.rows.find((row) => row.cardName === 'c').trend, 'disappeared');
+  assert.deepEqual(COMPOSITION_REPORT, source);
+});
+
+
+test('table header presentation distinguishes inactive active and ordinary headers', () => {
+  assert.deepEqual(
+    tableHeaderPresentation('Share', 'share', {key: 'observed_win_rate', direction: 'desc'}),
+    {
+      sortable: true,
+      label: 'Share',
+      indicator: '↕',
+      active: false,
+      ariaSort: null,
+      ariaLabel: 'Sort Share descending',
+    },
+  );
+  assert.deepEqual(
+    tableHeaderPresentation('Share', 'share', {key: 'share', direction: 'desc'}),
+    {
+      sortable: true,
+      label: 'Share',
+      indicator: '↓',
+      active: true,
+      ariaSort: 'descending',
+      ariaLabel: 'Sort Share ascending',
+    },
+  );
+  assert.deepEqual(
+    tableHeaderPresentation('Share', 'share', {key: 'share', direction: 'asc'}),
+    {
+      sortable: true,
+      label: 'Share',
+      indicator: '↑',
+      active: true,
+      ariaSort: 'ascending',
+      ariaLabel: 'Sort Share descending',
+    },
+  );
+  assert.deepEqual(
+    tableHeaderPresentation('Official record', null, {key: 'share', direction: 'desc'}),
+    {sortable: false, label: 'Official record'},
+  );
+});
+
+
+test('replacing a sorted view restores focus to the activated header', () => {
+  let replacement;
+  let focused = false;
+  const current = {replaceWith(next) { replacement = next; }};
+  const next = {
+    querySelector(selector) {
+      assert.equal(selector, '[data-sort-key="matches"]');
+      return {focus() { focused = true; }};
+    },
+  };
+
+  replaceSortedView(current, next, 'matches');
+
+  assert.equal(replacement, next);
+  assert.equal(focused, true);
 });
 
 
