@@ -42,7 +42,7 @@ The Limitless Labs adapter collects and caches the following JSON resources for 
 
 - tournament metadata;
 - aggregate decks data, including players, `day2s`, total W/L/T, and the source's phase records;
-- final standings, including placement, archetype, Day 2, Top Cut, drop, and disqualification fields;
+- final standings, including placement, archetype, the source's Phase 2 qualifier flag (raw field `day2`), Top Cut, drop, and disqualification fields;
 - every declared pairing round;
 - player decklists;
 - per-variant matchup aggregates used only as a reconciliation reference.
@@ -55,20 +55,20 @@ Limitless currently exposes machine-readable JSON through its SvelteKit pages an
 
 ### Populations and phases
 
-- **First Phase population:** players with a known archetype in the tournament deck aggregate. Players without a deck classification are excluded from archetype share denominators and disclosed separately. Late players with a known archetype remain included, matching the Limitless decks view.
-- **Day 2 population:** players marked `day2` by the source. Day 2 share uses all Day 2 players with a known archetype as its denominator.
-- **Top Cut population:** players marked `topcut` by the source. It is never inferred from a hard-coded Top 8 or placement threshold because cut size varies by event.
+- **Phase 1 population:** players with a known archetype in the tournament deck aggregate. Players without a deck classification are excluded from archetype share denominators and disclosed separately. Late players with a known archetype remain included, matching the Limitless decks view.
+- **Phase 2 population:** players marked by the source's raw `day2` qualifier field. Phase 2 share uses all Phase 2 players with a known archetype as its denominator.
+- **Top Cut population:** players marked `topcut=1` by the source. This source field may include tied-for-eighth play-in entrants, not only the final Top 8, and is never replaced with a placement threshold.
 - **Overall record:** the source-consistent official W/L/T record across the completed event, including unknown and procedural results.
-- **Day 1 and Day 2 records:** the source's phase records. A pairing-round split is accepted only when one unique boundary reproduces those records across the event. If it cannot be resolved uniquely, phase-dependent local matchup calculations are blocked rather than guessed.
+- **Phase 1 and Phase 2 records:** the source's phase records. A pairing-round split is accepted only when one unique boundary reproduces those records across the event. Phase 1 pairings are rounds at or below the boundary; Phase 2 pairings are rounds above it. A Phase 2 round remains Phase 2 even if played on calendar Day 1. If the boundary cannot be resolved uniquely, phase-dependent local matchup calculations are blocked rather than guessed.
 
-For New Orleans 0070, rounds 1–8 reproduce Day 1 and rounds 9–18 reproduce Day 2, including the elimination rounds. That observation is a golden example, not a universal hard-coded boundary.
+For New Orleans 0070, rounds 1–8 reproduce Phase 1 and rounds 9–18 reproduce Phase 2 source records. The pairing payload does not identify elimination rounds, so Top Cut cannot be separated from post-boundary matchups for this snapshot; the report discloses that limitation and does not invent a second boundary. When explicit pairing-stage metadata exists, identified Top Cut pairings are excluded from Phase 2 matchups.
 
 ### Shares, performance, and conversion
 
 - Archetype share is `archetype players / known-archetype players` at the current family/variant grain and phase.
 - Win rate is `(wins + ties / 3) / (wins + losses + ties)`. A tie is not half a win.
-- Archetype conversion is `Day 2 players / First Phase players`.
-- Field baseline conversion is `all known-archetype Day 2 players / all known-archetype First Phase players`.
+- Archetype conversion is `Phase 2 players / Phase 1 players`.
+- Field baseline conversion is `all known-archetype Phase 2 players / all known-archetype Phase 1 players`.
 - The product does not label the field baseline as Limitless' “Expected Conversion Rate”; no authoritative definition for that phrase was confirmed.
 
 ### Matchups
@@ -83,18 +83,20 @@ The main matchup chart includes only rows with at least 30 unique matches. Rows 
 
 The default grain is archetype family; users may drill down to qualifying variants. Source `sup_identifier`/`sup_name` fields seed family membership. Corrections use a versioned, explicit mapping keyed by tournament and variant ID; names are not heuristically merged. All modules follow the selected grain, preventing family populations from being paired with variant performance.
 
-A variant qualifies for a full report shell when it has at least 10 First Phase players, matching the existing dataset qualification floor. Individual modules may still be degraded by their own sample or coverage gates.
+A variant qualifies for a full report shell when it has at least 10 Phase 1 players, matching the existing dataset qualification floor. Individual modules may still be degraded by their own sample or coverage gates.
 
 ### Deck composition
 
-Deck composition groups equivalent printings by canonical card name while representative lists preserve set and collector number. For the selected event, grain, and phase:
+Deck composition groups equivalent printings by canonical card name while representative lists preserve set and collector number. For the selected event, grain, and competition stage:
 
 - appearance rate ≥80%: Core;
 - appearance rate ≥30% and <80%: Common;
 - appearance rate ≥5% and <30%: Tech;
 - appearance rate <5%: Rare/Other.
 
-Each row shows appearance rate and average copies when present. Classification requires at least 10 valid decklists and at least 60% decklist coverage, where coverage is `valid decklists / eligible players` for the selected event, grain, and phase. Below either threshold, the module shows coverage but does not assign Core/Common/Tech labels.
+Each row shows appearance rate and average copies when present. Phase 1 and Phase 2 classification requires at least 10 valid decklists and at least 60% decklist coverage, where coverage is `valid decklists / eligible players`. Top Cut has no count or coverage threshold: any non-zero valid-list sample is classified and rendered. Top Cut samples with fewer than 10 valid lists are visibly labeled `Small sample — descriptive only`; zero valid lists remains unavailable. Every stage always shows eligible players, valid lists, and coverage.
+
+Phase 2 rows compare with Phase 1, and Top Cut rows compare with Phase 2. Each card exposes its appearance-rate change in percentage points and its average-copies-when-present change when both stages contain the card. Cards whose absolute appearance-rate change is at least 15 percentage points receive `More common` or `Less common`. Top Cut change tags are explicitly descriptive and never imply statistical significance.
 
 Representative lists are up to three valid lists with the best final placements in the current selection, ordered deterministically by placement, points, then player ID.
 
@@ -145,13 +147,13 @@ Breadcrumbs preserve event and selection context and always provide a return to 
 The overview presents modules in this order:
 
 1. event identity, completion/update status, player counts, and data scope;
-2. the primary First Phase versus Top Cut archetype distribution;
-3. the separate First Phase → Day 2 Conversion module;
-4. an archetype ranking summary.
+2. the Phase 1 Meta Share Top 10;
+3. the Phase 2 Meta Share Top 10;
+4. an expandable archetype family ranking.
 
-The primary comparison and Conversion are intentionally separate: Top Cut answers who reached the final cut, while Day 2 answers qualification efficiency.
+Phase 1 and Phase 2 distributions use their own known-archetype denominators. Source-driven Top Cut membership remains available in composition and is never inferred from placement.
 
-Hovering an archetype shows players, share, and official record. Clicking a family synchronously highlights it in First Phase, Top Cut, and Conversion and reveals an explicit `View family report` action. Clicking does not arbitrarily filter unrelated page content.
+Expanded family rows reveal variants in place. Phase 1 Meta Share Top 10, Phase 2 Meta Share Top 10, and Archetype Family Ranking sort by accessible Share and Win Rate headers, defaulting to Share descending. Top 10 membership is fixed before display sorting; expanded variants follow the active sort with deterministic tie breakers, and expansion is preserved by family ID.
 
 ### Family and variant reports
 
@@ -165,7 +167,7 @@ Modules appear in this order:
 4. deck composition;
 5. representative top-finishing decklists.
 
-Deck composition defaults to First Phase and may switch to Day 2 or Top Cut. Matchup supports Overall and Day 2 only. Every module visibly states current event, family/variant grain, and phase.
+Deck composition defaults to Phase 1 and may switch to Phase 2 or Top Cut. Observed Matchups supports Overall, Phase 1, and Phase 2. Matchup tables sort by accessible Opponent, Matches, and Observed Win Rate headers, defaulting to Matches descending. Sorting is immutable and deterministic. Every module visibly states current event, family/variant grain, and stage.
 
 ## PNG Output
 
@@ -204,9 +206,9 @@ New Orleans 0070 is the canonical reconciliation fixture. Required Dragapult val
 | --- | ---: |
 | Overall record | 3278–2466–1021 |
 | Overall win rate | 53.49% |
-| Day 1 record / win rate | 2611–1873–849 / 54.27% |
-| Day 2 record / win rate | 667–593–172 / 50.58% |
-| First Phase → Day 2 | 749 → 240 |
+| Phase 1 record / win rate | 2611–1873–849 / 54.27% |
+| Phase 2 record / win rate | 667–593–172 / 50.58% |
+| Phase 1 → Phase 2 | 749 → 240 |
 | Conversion | 32.04% |
 
 ## Module States and Publication Protection
@@ -224,8 +226,8 @@ Every module has one of three states:
 The MVP is accepted at the following breadth:
 
 - every mounted, completed tournament generates a tournament overview;
-- each event's Top 10 families by First Phase player count generates a family report;
-- variants within those families with at least 10 First Phase players generate a report shell;
+- each event's Top 10 families by Phase 1 player count generates a family report;
+- variants within those families with at least 10 Phase 1 players generate a report shell;
 - all report shells include the agreed module sequence, with module-specific ready/degraded/blocked states;
 - every ready visualization module can export a compliant 4:5 PNG;
 - long-tail families and non-qualifying variants show an explicit insufficient-sample status rather than disappearing or presenting unstable conclusions.
@@ -242,7 +244,7 @@ Unit-level fixtures cover:
 
 - one-third tie weighting and zero-match behavior;
 - known-archetype share denominators and missing classifications;
-- Day 2 conversion and field baseline;
+- Phase 2 conversion and field baseline;
 - source-driven Top Cut membership;
 - family/variant aggregation without double counting;
 - self-match unique-pairing counts;
@@ -262,7 +264,7 @@ Every mounted, completed event must render an overview without live upstream acc
 ### Interaction acceptance
 
 - Hover details show the correct players, share, and record.
-- Selecting a family synchronizes highlights across First Phase, Top Cut, and Conversion.
+- Sorting overview tables preserves fixed membership and family expansion state.
 - Drill-down uses an explicit action and preserves event context.
 - Family/variant switching refreshes all modules to one grain.
 - Deck composition and matchup phase controls update only their defined module state and never reuse stale values.

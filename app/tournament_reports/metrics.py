@@ -42,16 +42,16 @@ class DistributionMetric:
 class ConversionRow:
     selection_id: str
     label: str
-    first_phase_players: int
-    day2_players: int
+    phase1_players: int
+    phase2_players: int
     rate: float | None
 
 
 @dataclass(frozen=True)
 class ConversionMetric:
     grain: ReportGrain
-    first_phase_known_players: int
-    day2_known_players: int
+    phase1_known_players: int
+    phase2_known_players: int
     field_rate: float | None
     rows: tuple[ConversionRow, ...]
 
@@ -72,6 +72,7 @@ class MatchupMetric:
     phase: ReportPhase
     phase_available: bool
     phase_boundary: int | None
+    top_cut_exclusion: Literal["explicit", "not_available", "not_applicable"]
     rows: tuple[MatchupRow, ...]
     rows_by_id: Mapping[str, MatchupRow]
     unknown_count: int
@@ -85,6 +86,9 @@ class DeckCompositionRow:
     appearance_rate: float
     average_when_present: float
     bucket: Literal["core", "common", "tech", "rare"]
+    appearance_rate_delta_pp: float | None = None
+    average_when_present_delta: float | None = None
+    commonality_tag: Literal["more_common", "less_common"] | None = None
 
 
 @dataclass(frozen=True)
@@ -96,6 +100,69 @@ class DeckCompositionMetric:
     coverage: float
     eligible_for_classification: bool
     rows: tuple[DeckCompositionRow, ...]
+    small_sample_descriptive: bool
+    comparison_phase: ReportPhase | None = None
+    comparison_available: bool = False
+
+    def compared_to(self, previous: "DeckCompositionMetric") -> "DeckCompositionMetric":
+        if not self.eligible_for_classification or not previous.eligible_for_classification:
+            return DeckCompositionMetric(
+                **{
+                    **self.__dict__,
+                    "comparison_phase": previous.phase,
+                    "comparison_available": False,
+                }
+            )
+        current_by_name = {row.card_name: row for row in self.rows}
+        previous_by_name = {row.card_name: row for row in previous.rows}
+        compared_rows: list[DeckCompositionRow] = []
+        for card_name in current_by_name.keys() | previous_by_name.keys():
+            current = current_by_name.get(card_name)
+            prior = previous_by_name.get(card_name)
+            appearance_rate = current.appearance_rate if current else 0.0
+            previous_rate = prior.appearance_rate if prior else 0.0
+            delta_pp = (appearance_rate - previous_rate) * 100
+            copies_delta = (
+                current.average_when_present - prior.average_when_present
+                if current is not None and prior is not None
+                else None
+            )
+            commonality_tag = (
+                "more_common" if delta_pp >= 15
+                else "less_common" if delta_pp <= -15
+                else None
+            )
+            source = current or prior
+            assert source is not None
+            compared_rows.append(
+                DeckCompositionRow(
+                    card_name=card_name,
+                    display_name=source.display_name,
+                    appearance_rate=appearance_rate,
+                    average_when_present=current.average_when_present if current else 0.0,
+                    bucket=current.bucket if current else "rare",
+                    appearance_rate_delta_pp=delta_pp,
+                    average_when_present_delta=copies_delta,
+                    commonality_tag=commonality_tag,
+                )
+            )
+        bucket_order = {"core": 0, "common": 1, "tech": 2, "rare": 3}
+        compared_rows.sort(
+            key=lambda row: (
+                bucket_order[row.bucket],
+                -row.appearance_rate,
+                -row.average_when_present,
+                row.card_name,
+            )
+        )
+        return DeckCompositionMetric(
+            **{
+                **self.__dict__,
+                "rows": tuple(compared_rows),
+                "comparison_phase": previous.phase,
+                "comparison_available": True,
+            }
+        )
 
 
 @dataclass(frozen=True)
@@ -150,27 +217,27 @@ def distribution(
 
 
 def conversion(facts: TournamentFacts, grain: ReportGrain) -> ConversionMetric:
-    first_phase = distribution(facts, grain, ReportPhase.FIRST_PHASE)
-    day2 = distribution(facts, grain, ReportPhase.DAY2)
-    first_rows = {row.selection_id: row for row in first_phase.rows}
-    day2_rows = {row.selection_id: row for row in day2.rows}
+    phase1 = distribution(facts, grain, ReportPhase.PHASE1)
+    phase2 = distribution(facts, grain, ReportPhase.PHASE2)
+    phase1_rows = {row.selection_id: row for row in phase1.rows}
+    phase2_rows = {row.selection_id: row for row in phase2.rows}
     rows = tuple(
         ConversionRow(
             selection_id=selection_id,
             label=row.label,
-            first_phase_players=row.players,
-            day2_players=day2_rows.get(selection_id).players if selection_id in day2_rows else 0,
-            rate=(day2_rows.get(selection_id).players if selection_id in day2_rows else 0) / row.players
+            phase1_players=row.players,
+            phase2_players=phase2_rows.get(selection_id).players if selection_id in phase2_rows else 0,
+            rate=(phase2_rows.get(selection_id).players if selection_id in phase2_rows else 0) / row.players
             if row.players
             else None,
         )
-        for selection_id, row in first_rows.items()
+        for selection_id, row in phase1_rows.items()
     )
     return ConversionMetric(
         grain=grain,
-        first_phase_known_players=first_phase.known_players,
-        day2_known_players=day2.known_players,
-        field_rate=(day2.known_players / first_phase.known_players) if first_phase.known_players else None,
+        phase1_known_players=phase1.known_players,
+        phase2_known_players=phase2.known_players,
+        field_rate=(phase2.known_players / phase1.known_players) if phase1.known_players else None,
         rows=rows,
     )
 
@@ -190,8 +257,12 @@ def pairing_in_phase(
 ) -> bool:
     if phase is ReportPhase.OVERALL:
         return True
-    if phase is ReportPhase.DAY2 and boundary is not None:
-        return pairing.round_number > boundary
+    if boundary is None:
+        return False
+    if phase is ReportPhase.PHASE1:
+        return pairing.round_number <= boundary
+    if phase is ReportPhase.PHASE2:
+        return pairing.round_number > boundary and pairing.competition_stage != "top_cut"
     return False
 
 
@@ -200,10 +271,15 @@ def matchups(
     selection: ReportSelection,
     phase: ReportPhase,
 ) -> MatchupMetric:
-    if phase not in {ReportPhase.OVERALL, ReportPhase.DAY2}:
-        raise ValueError("matchups support only overall and day2 phases")
-    boundary = resolve_phase_boundary(facts) if phase is ReportPhase.DAY2 else None
+    if phase not in {ReportPhase.OVERALL, ReportPhase.PHASE1, ReportPhase.PHASE2}:
+        raise ValueError("matchups support only overall, phase1, and phase2")
+    boundary = resolve_phase_boundary(facts) if phase is not ReportPhase.OVERALL else None
     phase_available = phase is ReportPhase.OVERALL or boundary is not None
+    top_cut_exclusion = (
+        "not_applicable" if phase is not ReportPhase.PHASE2
+        else "explicit" if any(pairing.competition_stage == "top_cut" for pairing in facts.pairings)
+        else "not_available"
+    )
     accumulators: dict[str, list[int]] = {}
     labels: dict[str, str] = {}
     unknown_count = 0
@@ -261,6 +337,7 @@ def matchups(
         phase=phase,
         phase_available=phase_available,
         phase_boundary=boundary,
+        top_cut_exclusion=top_cut_exclusion,
         rows=rows,
         rows_by_id=MappingProxyType({row.selection_id: row for row in rows}),
         unknown_count=unknown_count,
@@ -287,8 +364,8 @@ def deck_composition(
     selection: ReportSelection,
     phase: ReportPhase,
 ) -> DeckCompositionMetric:
-    if phase not in {ReportPhase.FIRST_PHASE, ReportPhase.DAY2, ReportPhase.TOP_CUT}:
-        raise ValueError("deck composition supports first_phase, day2, and top_cut")
+    if phase not in {ReportPhase.PHASE1, ReportPhase.PHASE2, ReportPhase.TOP_CUT}:
+        raise ValueError("deck composition supports phase1, phase2, and top_cut")
     eligible_players = [
         player
         for player in facts.players.values()
@@ -302,7 +379,12 @@ def deck_composition(
     eligible_player_count = len(eligible_players)
     valid_list_count = len(valid_lists)
     coverage = valid_list_count / eligible_player_count if eligible_player_count else 0.0
-    eligible_for_classification = valid_list_count >= 10 and coverage >= 0.60
+    eligible_for_classification = (
+        valid_list_count > 0
+        if phase is ReportPhase.TOP_CUT
+        else valid_list_count >= 10 and coverage >= 0.60
+    )
+    small_sample_descriptive = phase is ReportPhase.TOP_CUT and 0 < valid_list_count < 10
     rows: tuple[DeckCompositionRow, ...] = ()
     if eligible_for_classification:
         appearances: dict[str, int] = {}
@@ -346,6 +428,7 @@ def deck_composition(
         coverage=coverage,
         eligible_for_classification=eligible_for_classification,
         rows=rows,
+        small_sample_descriptive=small_sample_descriptive,
     )
 
 
@@ -404,7 +487,7 @@ def _record_for_group(
             for player in facts.players.values()
             if player.top_cut and _player_identity_id(facts, player, grain) == selection_id
         )
-    phase_numbers = (1,) if phase is ReportPhase.DAY1 else (2,) if phase is ReportPhase.DAY2 else (1, 2)
+    phase_numbers = (1,) if phase is ReportPhase.PHASE1 else (2,) if phase is ReportPhase.PHASE2 else (1, 2)
     records = []
     for variant_id, phase_records in facts.source_phase_records.items():
         identity = _variant_identity(facts, variant_id, grain)
@@ -423,8 +506,8 @@ def _sum_records(records) -> Record:
 
 
 def _player_in_phase(player: PlayerFact, phase: ReportPhase) -> bool:
-    if phase is ReportPhase.DAY2:
-        return player.day2
+    if phase is ReportPhase.PHASE2:
+        return player.phase2
     if phase is ReportPhase.TOP_CUT:
         return player.top_cut
     return True

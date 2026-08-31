@@ -41,8 +41,8 @@ class ReconciliationResult:
 PHASE_MODULES = frozenset(
     {
         "phase_performance",
-        "matchups_day2",
-        "deck_composition_day2",
+        "matchups_phase1",
+        "matchups_phase2",
     }
 )
 PERFORMANCE_MODULES = frozenset(
@@ -133,6 +133,14 @@ def module_status(
                 f"Observed matchup sample is below 30 (n={sample_size}).",
             )
     if module_id.startswith("deck_composition"):
+        if module_id == "deck_composition_top_cut":
+            if valid_lists is None or valid_lists == 0:
+                return status_for(
+                    ReportState.DEGRADED,
+                    "no_valid_decklists",
+                    "No valid Top Cut decklists are available.",
+                )
+            return status_for(ReportState.READY)
         if valid_lists is None or valid_lists < 10:
             return status_for(
                 ReportState.DEGRADED,
@@ -279,7 +287,8 @@ def _check_matchup_references(facts: TournamentFacts) -> list[ValidationIssue]:
             continue
         for source_phase, report_phase, module_id in (
             ("overall", ReportPhase.OVERALL, "matchups_overall"),
-            ("day2", ReportPhase.DAY2, "matchups_day2"),
+            ("day1", ReportPhase.PHASE1, "matchups_phase1"),
+            ("day2", ReportPhase.PHASE2, "matchups_phase2"),
         ):
             expected = reference.payload.get(source_phase)
             if not isinstance(expected, Mapping):
@@ -337,8 +346,8 @@ def _check_decklists(facts: TournamentFacts) -> list[ValidationIssue]:
             message="One or more fetched decklists are structurally invalid.",
             affected_modules=frozenset(
                 {
-                    "deck_composition_first_phase",
-                    "deck_composition_day2",
+                    "deck_composition_phase1",
+                    "deck_composition_phase2",
                     "deck_composition_top_cut",
                     "representative_lists",
                 }
@@ -381,12 +390,18 @@ def _local_matchup_reference(
     variant_id: str,
     phase: ReportPhase,
 ) -> tuple[dict[str, Record], Record, Record]:
-    boundary = resolve_phase_boundary(facts) if phase is ReportPhase.DAY2 else None
+    boundary = resolve_phase_boundary(facts) if phase in {ReportPhase.PHASE1, ReportPhase.PHASE2} else None
     rows: dict[str, list[int]] = {}
     unknown = [0, 0, 0]
     procedural = [0, 0, 0]
     for pairing in facts.pairings:
-        if phase is ReportPhase.DAY2 and (boundary is None or pairing.round_number <= boundary):
+        if phase is ReportPhase.PHASE1 and (boundary is None or pairing.round_number > boundary):
+            continue
+        if phase is ReportPhase.PHASE2 and (
+            boundary is None
+            or pairing.round_number <= boundary
+            or pairing.competition_stage == "top_cut"
+        ):
             continue
         for side, selected_variant, selected_player, opponent_variant, opponent_player in (
             (1, pairing.player1_variant_id, pairing.player1_tp_id, pairing.player2_variant_id, pairing.player2_tp_id),

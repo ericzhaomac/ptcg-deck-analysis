@@ -98,7 +98,7 @@ def _eleven_family_facts(facts):
             tp_id=player_id,
             variant_id=selection_id,
             family_id=selection_id,
-            day2=True,
+            phase2=True,
             source_record=Record(wins=0, losses=0, ties=0),
         )
         source_records[selection_id] = {
@@ -154,6 +154,8 @@ def test_overview_has_independent_phase_meta_share_then_family_ranking(facts, re
         "dragapult-dusknoir",
     }
     assert all("report_eligible" in row for row in phase1_dragapult["variants"])
+    assert all("observed_win_rate" in row for row in phase1_dragapult["variants"])
+    assert all("observed_win_rate" in row for row in phase1.data["rows"])
 
     ranking_dragapult = next(
         row for row in ranking.data["rows"] if row["family_id"] == "dragapult-ex"
@@ -199,14 +201,52 @@ def test_archetype_report_keeps_one_grain_across_every_module(facts, reconciliat
         "phase_performance",
         "top_finishers",
         "matchups_overall",
-        "matchups_day2",
-        "deck_composition_first_phase",
-        "deck_composition_day2",
+        "matchups_phase1",
+        "matchups_phase2",
+        "deck_composition_phase1",
+        "deck_composition_phase2",
         "deck_composition_top_cut",
         "representative_lists",
     ]
     assert {module.grain for module in report.modules} == {ReportGrain.VARIANT}
     assert {module.selection_id for module in report.modules} == {"dragapult-dusknoir"}
+
+    phase_performance = report.modules[1]
+    assert set(phase_performance.data) == {"phase1", "phase2", "conversion"}
+    phase1_matchups, phase2_matchups = report.modules[4:6]
+    assert phase1_matchups.title == "Observed matchups — Phase 1"
+    assert phase2_matchups.title == "Observed matchups — Phase 2"
+    assert "Top Cut pairings" in phase2_matchups.metric_notes[-1]
+
+
+def test_composition_modules_compare_adjacent_stages_and_label_small_top_cut(
+    facts,
+    reconciliation,
+) -> None:
+    eligible = _eligible_dragapult_facts(facts)
+    top_cut_ids = set(tuple(eligible.players)[:2])
+    small_top_cut = replace(
+        eligible,
+        players=MappingProxyType({
+            player_id: replace(player, top_cut=player_id in top_cut_ids)
+            for player_id, player in eligible.players.items()
+        }),
+    )
+    report = build_archetype_report(
+        small_top_cut,
+        reconciliation,
+        "2026-new-orleans-ma",
+        ReportSelection(grain=ReportGrain.FAMILY, selection_id="dragapult-ex"),
+    )
+    modules = {module.module_id: module for module in report.modules}
+
+    assert modules["deck_composition_phase1"].data["comparison_phase"] is None
+    assert modules["deck_composition_phase2"].data["comparison_phase"] == "phase1"
+    assert modules["deck_composition_top_cut"].data["comparison_phase"] == "phase2"
+    assert modules["deck_composition_top_cut"].data["small_sample_descriptive"] is True
+    assert modules["deck_composition_top_cut"].status.state is ReportState.READY
+    assert modules["deck_composition_top_cut"].status.exportable is True
+    assert "Small sample — descriptive only" in modules["deck_composition_top_cut"].metric_notes
 
 
 def test_family_report_lists_all_variants_with_ten_player_gate(facts, reconciliation) -> None:
@@ -219,7 +259,7 @@ def test_family_report_lists_all_variants_with_ten_player_gate(facts, reconcilia
     variants = {option.selection_id: option for option in report.variants}
 
     assert variants["dragapult-dusknoir"].eligible is True
-    assert variants["dragapult-dusknoir"].first_phase_players == 10
+    assert variants["dragapult-dusknoir"].phase1_players == 10
     assert variants["dragapult-ex"].eligible is False
     assert variants["dragapult-ex"].reason_code == "variant_players_below_10"
 

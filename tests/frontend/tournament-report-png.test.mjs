@@ -117,3 +117,12 @@ test('export filename is deterministic and ASCII safe', () => {
     '2026-new-orleans-ma-matchups-overall-family-pult-dusk-overall.png',
   );
 });
+
+
+test('PNG export keeps canonical payload ordering after display sorting', () => {
+  const transient = READY_MATCHUP_MODULE.data.rows.toReversed();
+  const svg = buildModuleSvg(READY_MATCHUP_MODULE, EXPORT_CONTEXT);
+
+  assert.notDeepEqual(transient, READY_MATCHUP_MODULE.data.rows);
+  assert.ok(svg.indexOf('Charizard &amp; Pidgeot') < svg.indexOf('Gardevoir'));
+});

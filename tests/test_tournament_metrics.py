@@ -81,7 +81,7 @@ def test_win_rate_weights_ties_as_one_third() -> None:
     assert win_rate(Record(wins=0, losses=0, ties=0)) is None
 
 
-def test_first_phase_distribution_uses_known_archetype_players(facts) -> None:
+def test_phase1_distribution_uses_known_archetype_players(facts) -> None:
     unknown = replace(
         facts.players["21"],
         tp_id="99",
@@ -90,29 +90,29 @@ def test_first_phase_distribution_uses_known_archetype_players(facts) -> None:
     )
     changed = replace(facts, players=MappingProxyType({**facts.players, "99": unknown}))
 
-    family_metric = distribution(changed, ReportGrain.FAMILY, ReportPhase.FIRST_PHASE)
-    variant_metric = distribution(changed, ReportGrain.VARIANT, ReportPhase.FIRST_PHASE)
+    family_metric = distribution(changed, ReportGrain.FAMILY, ReportPhase.PHASE1)
+    variant_metric = distribution(changed, ReportGrain.VARIANT, ReportPhase.PHASE1)
 
     family_rows = _rows_by_id(family_metric)
     assert family_metric.known_players == 4
     assert family_metric.unknown_players == 1
     assert family_rows["dragapult-ex"].players == 2
     assert family_rows["dragapult-ex"].share == pytest.approx(0.5)
-    assert family_rows["dragapult-ex"].record == Record(wins=2, losses=3, ties=1)
+    assert family_rows["dragapult-ex"].record == Record(wins=1, losses=1, ties=0)
     assert _rows_by_id(variant_metric)["dragapult-dusknoir"].players == 1
 
 
-def test_day2_top_cut_and_conversion_use_source_player_flags(facts) -> None:
-    day2 = distribution(facts, ReportGrain.FAMILY, ReportPhase.DAY2)
+def test_phase2_top_cut_and_conversion_use_source_player_flags(facts) -> None:
+    phase2 = distribution(facts, ReportGrain.FAMILY, ReportPhase.PHASE2)
     top_cut = distribution(facts, ReportGrain.FAMILY, ReportPhase.TOP_CUT)
     metric = conversion(facts, ReportGrain.FAMILY)
 
-    assert day2.known_players == 3
+    assert phase2.known_players == 3
     assert _rows_by_id(top_cut)["dragapult-ex"].players == 2
     assert top_cut.known_players == 2
     conversion_rows = {row.selection_id: row for row in metric.rows}
-    assert metric.first_phase_known_players == 4
-    assert metric.day2_known_players == 3
+    assert metric.phase1_known_players == 4
+    assert metric.phase2_known_players == 3
     assert metric.field_rate == pytest.approx(0.75)
     assert conversion_rows["dragapult-ex"].rate == 1.0
     assert conversion_rows["charizard-ex"].rate == 0.5
@@ -167,17 +167,53 @@ def test_matchups_classify_a_bye_as_procedural_not_unknown(facts) -> None:
     assert metric.procedural_count == 2
 
 
-def test_day2_matchups_use_rounds_after_the_unique_boundary(facts) -> None:
-    metric = matchups(
+def test_phase_matchups_use_the_reconciled_boundary(facts) -> None:
+    phase1 = matchups(
         facts,
         ReportSelection(grain=ReportGrain.FAMILY, selection_id="dragapult-ex"),
-        ReportPhase.DAY2,
+        ReportPhase.PHASE1,
+    )
+    phase2 = matchups(
+        facts,
+        ReportSelection(grain=ReportGrain.FAMILY, selection_id="dragapult-ex"),
+        ReportPhase.PHASE2,
     )
 
-    assert metric.phase_available is True
-    assert metric.phase_boundary == 1
-    assert metric.rows_by_id["charizard-ex"].matches == 2
-    assert metric.rows_by_id["dragapult-ex"].matches == 1
+    assert phase1.phase_available is True
+    assert phase1.phase_boundary == 1
+    assert phase1.rows_by_id["charizard-ex"].matches == 1
+    assert phase2.phase_available is True
+    assert phase2.phase_boundary == 1
+    assert phase2.rows_by_id["charizard-ex"].matches == 2
+    assert phase2.rows_by_id["dragapult-ex"].matches == 1
+
+
+def test_phase2_matchups_exclude_only_explicit_top_cut_pairings(facts) -> None:
+    target = next(
+        pairing
+        for pairing in facts.pairings
+        if pairing.round_number > 1 and "dragapult-ex" in {
+            facts.variants.get(pairing.player1_variant_id or "").family_id
+            if pairing.player1_variant_id in facts.variants else None,
+            facts.variants.get(pairing.player2_variant_id or "").family_id
+            if pairing.player2_variant_id in facts.variants else None,
+        }
+        and "charizard-ex" in {pairing.player1_variant_id, pairing.player2_variant_id}
+    )
+    explicit_top_cut = replace(target, competition_stage="top_cut")
+    changed = replace(
+        facts,
+        pairings=tuple(explicit_top_cut if pairing is target else pairing for pairing in facts.pairings),
+    )
+
+    metric = matchups(
+        changed,
+        ReportSelection(grain=ReportGrain.FAMILY, selection_id="dragapult-ex"),
+        ReportPhase.PHASE2,
+    )
+
+    assert metric.top_cut_exclusion == "explicit"
+    assert metric.rows_by_id["charizard-ex"].matches == 1
 
 
 @pytest.mark.parametrize(
@@ -201,12 +237,12 @@ def test_composition_requires_ten_valid_lists_and_sixty_percent_coverage(facts) 
     too_few = deck_composition(
         _expanded_dragapult_facts(facts, players=10, valid_lists=6),
         selection,
-        ReportPhase.FIRST_PHASE,
+        ReportPhase.PHASE1,
     )
     ready = deck_composition(
         _expanded_dragapult_facts(facts, players=10, valid_lists=10),
         selection,
-        ReportPhase.FIRST_PHASE,
+        ReportPhase.PHASE1,
     )
 
     assert too_few.valid_list_count == 6
@@ -220,12 +256,83 @@ def test_composition_requires_ten_valid_lists_and_sixty_percent_coverage(facts) 
     assert dreepy.bucket == "core"
 
 
+def test_top_cut_composition_classifies_small_available_sample(facts) -> None:
+    selection = ReportSelection(grain=ReportGrain.FAMILY, selection_id="dragapult-ex")
+
+    metric = deck_composition(facts, selection, ReportPhase.TOP_CUT)
+
+    assert metric.eligible_player_count == 2
+    assert metric.valid_list_count == 1
+    assert metric.coverage == pytest.approx(0.5)
+    assert metric.eligible_for_classification is True
+    assert metric.small_sample_descriptive is True
+    assert metric.rows
+
+
+@pytest.mark.parametrize(
+    ("valid_lists", "small_sample"),
+    [(1, True), (9, True), (10, False)],
+)
+def test_top_cut_small_sample_rule_is_fewer_than_ten_valid_lists(
+    facts,
+    valid_lists: int,
+    small_sample: bool,
+) -> None:
+    metric = deck_composition(
+        _expanded_dragapult_facts(facts, players=10, valid_lists=valid_lists),
+        ReportSelection(grain=ReportGrain.FAMILY, selection_id="dragapult-ex"),
+        ReportPhase.TOP_CUT,
+    )
+
+    assert metric.eligible_for_classification is True
+    assert metric.small_sample_descriptive is small_sample
+
+
+def test_top_cut_population_uses_source_flag_not_final_top_eight_placement(facts) -> None:
+    play_in = replace(facts.players["21"], placement=9, top_cut=True)
+    excluded_finalist = replace(facts.players["11"], placement=1, top_cut=False)
+    changed = replace(
+        facts,
+        players=MappingProxyType({
+            **facts.players,
+            "21": play_in,
+            "11": excluded_finalist,
+        }),
+    )
+
+    metric = distribution(changed, ReportGrain.FAMILY, ReportPhase.TOP_CUT)
+
+    assert _rows_by_id(metric)["charizard-ex"].players == 1
+    assert _rows_by_id(metric)["dragapult-ex"].players == 1
+
+
+def test_composition_comparison_exposes_union_deltas_and_fifteen_point_tags(facts) -> None:
+    selection = ReportSelection(grain=ReportGrain.FAMILY, selection_id="dragapult-ex")
+    current = deck_composition(facts, selection, ReportPhase.TOP_CUT)
+    previous = replace(
+        current,
+        phase=ReportPhase.PHASE2,
+        rows=tuple(
+            replace(row, appearance_rate=0.70, average_when_present=3.0)
+            for row in current.rows
+        ),
+    )
+
+    compared = current.compared_to(previous)
+
+    dreepy = next(row for row in compared.rows if row.card_name == "dreepy")
+    assert dreepy.appearance_rate_delta_pp == pytest.approx(30.0)
+    assert dreepy.average_when_present_delta == pytest.approx(1.0)
+    assert dreepy.commonality_tag == "more_common"
+    assert compared.comparison_phase is ReportPhase.PHASE2
+
+
 def test_representative_lists_are_deterministic(facts) -> None:
     expanded = _expanded_dragapult_facts(facts, players=5, valid_lists=5)
     rows = representative_lists(
         expanded,
         ReportSelection(grain=ReportGrain.FAMILY, selection_id="dragapult-ex"),
-        ReportPhase.FIRST_PHASE,
+        ReportPhase.PHASE1,
     )
 
     assert [row.player_tp_id for row in rows] == ["11", "15", "14"]

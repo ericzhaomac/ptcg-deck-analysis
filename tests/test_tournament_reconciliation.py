@@ -117,7 +117,8 @@ def test_unresolved_phase_blocks_only_phase_dependent_modules(facts) -> None:
     result = reconcile_tournament(ambiguous)
 
     phase_issue = next(issue for issue in result.issues if issue.code == "phase_boundary_unresolved")
-    assert "matchups_day2" in phase_issue.affected_modules
+    assert "matchups_phase1" in phase_issue.affected_modules
+    assert "matchups_phase2" in phase_issue.affected_modules
     assert "matchups_overall" not in phase_issue.affected_modules
 
 
@@ -197,9 +198,9 @@ def test_unknown_and_procedural_counts_do_not_degrade_on_their_own(facts) -> Non
 @pytest.mark.parametrize(
     ("issue_code", "module_id", "blocks_publication", "expected_state"),
     [
-        ("phase_boundary_unresolved", "matchups_day2", False, ReportState.BLOCKED),
+        ("phase_boundary_unresolved", "matchups_phase2", False, ReportState.BLOCKED),
         ("matchup_sample_below_30", "matchups_overall", False, ReportState.DEGRADED),
-        ("decklist_coverage_below_60", "deck_composition_first_phase", False, ReportState.DEGRADED),
+        ("decklist_coverage_below_60", "deck_composition_phase1", False, ReportState.DEGRADED),
         ("variant_record_mismatch", "headline_performance", True, ReportState.BLOCKED),
     ],
 )
@@ -241,8 +242,8 @@ def test_module_state_policy(
     [
         ("matchups_overall", 0, None, None, "no_matches"),
         ("matchups_overall", 29, None, None, "matchup_sample_below_30"),
-        ("deck_composition_first_phase", 12, 9, 0.75, "decklist_count_below_10"),
-        ("deck_composition_first_phase", 12, 10, 0.59, "decklist_coverage_below_60"),
+        ("deck_composition_phase1", 12, 9, 0.75, "decklist_count_below_10"),
+        ("deck_composition_phase1", 12, 10, 0.59, "decklist_coverage_below_60"),
     ],
 )
 def test_module_state_applies_sample_and_coverage_thresholds(

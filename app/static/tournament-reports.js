@@ -9,6 +9,8 @@ import {
   moduleAvailability,
   reduceReportSelection,
   matchupAvailabilityMessage,
+  nextTableSort,
+  sortMatchupRows,
   toggleExpandedFamily,
   exportFilename,
 } from './tournament-reports-core.mjs';
@@ -40,6 +42,7 @@ export function createTournamentReportsController({requestJson, root, navigate})
   let state = initialState(null);
   let requestSequence = 0;
   const expandedFamilies = new Map();
+  const tableSorts = new Map();
 
   async function initialize() {
     return showLocation(window.location.pathname);
@@ -89,6 +92,7 @@ export function createTournamentReportsController({requestJson, root, navigate})
     status.textContent = 'Loading verified report…';
     state = initialState(datasetId);
     expandedFamilies.clear();
+    tableSorts.clear();
     const report = await requestJson(`/api/v1/tournament-reports/${encodeURIComponent(datasetId)}`);
     if (disposed || state.datasetId !== datasetId) return;
     title.textContent = report.event.name;
@@ -168,7 +172,7 @@ export function createTournamentReportsController({requestJson, root, navigate})
     report.variants.filter((option) => option.eligible).forEach((option) => {
       const node = document.createElement('option');
       node.value = option.selection_id;
-      node.textContent = `${option.label} · ${option.first_phase_players} players`;
+      node.textContent = `${option.label} · ${option.phase1_players} players`;
       node.selected = report.selection.grain === 'variant'
         && report.selection.selection_id === option.selection_id;
       select.append(node);
@@ -200,8 +204,8 @@ export function createTournamentReportsController({requestJson, root, navigate})
   function renderPhasePerformance(module, report) {
     const section = moduleSection(module, report);
     const rows = [
-      {phase: 'Day 1', ...module.data.day1},
-      {phase: 'Day 2', ...module.data.day2},
+      {phase: 'Phase 1', ...module.data.phase1},
+      {phase: 'Phase 2', ...module.data.phase2},
     ];
     section.append(rowsTable(rows, [
       ['Phase', 'phase'],
@@ -211,7 +215,7 @@ export function createTournamentReportsController({requestJson, root, navigate})
     if (module.data.conversion) {
       section.append(textElement(
         'p',
-        `Conversion: ${module.data.conversion.day2_players}/${module.data.conversion.first_phase_players} (${formatPercent(module.data.conversion.rate)})`,
+        `Conversion: ${module.data.conversion.phase2_players}/${module.data.conversion.phase1_players} (${formatPercent(module.data.conversion.rate)})`,
       ));
     }
     return section;
@@ -233,7 +237,7 @@ export function createTournamentReportsController({requestJson, root, navigate})
     wrapper.className = 'tournament-report-phase-group';
     wrapper.append(phaseControls(
       'Matchup phase',
-      [['overall', 'Overall'], ['day2', 'Day 2']],
+      [['overall', 'Overall'], ['phase1', 'Phase 1'], ['phase2', 'Phase 2']],
       state.modulePhases.matchups,
       (phase) => {
         state = reduceReportSelection(state, {type: 'set-matchup-phase', phase});
@@ -241,11 +245,15 @@ export function createTournamentReportsController({requestJson, root, navigate})
       },
     ));
     const module = archetypeModuleForPhase(report, 'matchups', state.modulePhases.matchups);
-    wrapper.append(renderMatchups(module, report));
+    const sort = tableSorts.get(module.module_id) || {key: 'matches', direction: 'desc'};
+    wrapper.append(renderMatchups(module, report, sort, (key) => {
+      tableSorts.set(module.module_id, nextTableSort(sort, key, 'matches'));
+      wrapper.replaceWith(renderMatchupGroup(report));
+    }));
     return wrapper;
   }
 
-  function renderMatchups(module, report) {
+  function renderMatchups(module, report, sort, onSort) {
     const section = moduleSection(module, report);
     const unavailable = matchupAvailabilityMessage(module);
     if (unavailable) {
@@ -253,12 +261,12 @@ export function createTournamentReportsController({requestJson, root, navigate})
       message.className = 'tournament-report-insufficient';
       section.append(message);
     } else {
-      section.append(rowsTable(module.data.rows, [
-        ['Opponent', 'opponent_name'],
-        ['Matches', 'matches'],
-        ['Official record', (row) => formatRecord(row.record)],
-        ['Observed win rate', (row) => formatPercent(row.observed_win_rate)],
-      ]));
+      section.append(sortableRowsTable(sortMatchupRows(module.data.rows, sort), [
+        ['Opponent', 'opponent_name', 'opponent_name'],
+        ['Matches', 'matches', 'matches'],
+        ['Official record', (row) => formatRecord(row.record), null],
+        ['Observed win rate', (row) => formatPercent(row.observed_win_rate), 'observed_win_rate'],
+      ], sort, onSort));
     }
     section.append(textElement(
       'p',
@@ -272,7 +280,7 @@ export function createTournamentReportsController({requestJson, root, navigate})
     wrapper.className = 'tournament-report-phase-group';
     wrapper.append(phaseControls(
       'Deck-list phase',
-      [['first_phase', 'First Phase'], ['day2', 'Day 2'], ['top_cut', 'Top Cut']],
+      [['phase1', 'Phase 1'], ['phase2', 'Phase 2'], ['top_cut', 'Top Cut']],
       state.modulePhases.composition,
       (phase) => {
         state = reduceReportSelection(state, {type: 'set-composition-phase', phase});
@@ -290,6 +298,11 @@ export function createTournamentReportsController({requestJson, root, navigate})
       'p',
       `${module.data.valid_lists}/${module.data.eligible_players} valid lists · ${formatPercent(module.data.coverage)} coverage`,
     ));
+    if (module.data.small_sample_descriptive) {
+      const warning = textElement('p', 'Small sample — descriptive only');
+      warning.className = 'tournament-report-descriptive';
+      section.append(warning);
+    }
     if (!module.data.eligible_for_classification) {
       section.append(emptyState('Not enough covered deck lists to classify Core, Common, or Tech cards.'));
       return section;
@@ -299,11 +312,19 @@ export function createTournamentReportsController({requestJson, root, navigate})
       const rows = module.data.rows.filter((row) => row.bucket === bucket);
       if (!rows.length) continue;
       section.append(textElement('h4', labels[bucket]));
-      section.append(rowsTable(rows, [
+      const columns = [
         ['Card', 'display_name'],
         ['Appearance', (row) => formatPercent(row.appearance_rate)],
         ['Average copies when present', (row) => Number(row.average_when_present).toFixed(2)],
-      ]));
+      ];
+      if (module.data.comparison_available) {
+        columns.push(
+          ['Appearance Δ', (row) => formatPercentagePointDelta(row.appearance_rate_delta_pp)],
+          ['Copies Δ', (row) => formatNumberDelta(row.average_when_present_delta)],
+          ['Change', (row) => commonalityLabel(row.commonality_tag, module.phase)],
+        );
+      }
+      section.append(rowsTable(rows, columns));
     }
     return section;
   }
@@ -353,19 +374,29 @@ export function createTournamentReportsController({requestJson, root, navigate})
 
   function renderExpandableFamilyModule(module) {
     const section = moduleSection(module);
+    const sort = tableSorts.get(module.module_id) || {key: 'share', direction: 'desc'};
     const model = buildExpandableFamilyModel(
       module,
       expandedFamilies.get(module.module_id) || null,
+      sort,
     );
     const includePerformance = module.module_id === 'family_ranking';
     const table = document.createElement('table');
     table.className = 'tournament-report-table tournament-report-family-table';
     const head = document.createElement('thead');
     const headRow = document.createElement('tr');
-    ['', 'Archetype', 'Players', 'Share'].forEach((label) => headRow.append(textElement('th', label)));
+    ['', 'Archetype', 'Players'].forEach((label) => headRow.append(textElement('th', label)));
+    headRow.append(sortableHeader('Share', 'share', sort, (key) => {
+      tableSorts.set(module.module_id, nextTableSort(sort, key, 'share'));
+      section.replaceWith(renderExpandableFamilyModule(module));
+    }));
     if (includePerformance) {
-      headRow.append(textElement('th', 'Official record'), textElement('th', 'Observed win rate'));
+      headRow.append(textElement('th', 'Official record'));
     }
+    headRow.append(sortableHeader('Observed win rate', 'observed_win_rate', sort, (key) => {
+      tableSorts.set(module.module_id, nextTableSort(sort, key, 'share'));
+      section.replaceWith(renderExpandableFamilyModule(module));
+    }));
     head.append(headRow);
     const body = document.createElement('tbody');
     model.rows.forEach((row) => {
@@ -401,11 +432,9 @@ export function createTournamentReportsController({requestJson, root, navigate})
         textElement('td', formatPercent(row.share)),
       );
       if (includePerformance) {
-        familyRow.append(
-          textElement('td', formatRecord(row.record)),
-          textElement('td', formatPercent(row.observedWinRate)),
-        );
+        familyRow.append(textElement('td', formatRecord(row.record)));
       }
+      familyRow.append(textElement('td', formatPercent(row.observedWinRate)));
       const toggle = () => {
         expandedFamilies.set(
           module.module_id,
@@ -442,7 +471,8 @@ export function createTournamentReportsController({requestJson, root, navigate})
           textElement('td', variant.players),
           textElement('td', formatPercent(variant.share)),
         );
-        if (includePerformance) variantRow.append(textElement('td', '—'), textElement('td', '—'));
+        if (includePerformance) variantRow.append(textElement('td', formatRecord(variant.record)));
+        variantRow.append(textElement('td', formatPercent(variant.observedWinRate)));
         body.append(variantRow);
       });
     });
@@ -479,6 +509,40 @@ export function createTournamentReportsController({requestJson, root, navigate})
     });
     table.append(head, body);
     return table;
+  }
+
+  function sortableRowsTable(rows, columns, sort, onSort) {
+    const table = document.createElement('table');
+    table.className = 'tournament-report-table';
+    const head = document.createElement('thead');
+    const headRow = document.createElement('tr');
+    columns.forEach(([label, , sortKey]) => {
+      headRow.append(sortKey ? sortableHeader(label, sortKey, sort, onSort) : textElement('th', label));
+    });
+    head.append(headRow);
+    const body = document.createElement('tbody');
+    rows.forEach((row) => {
+      const tr = document.createElement('tr');
+      columns.forEach(([, accessor]) => {
+        const value = typeof accessor === 'function' ? accessor(row) : row[accessor];
+        tr.append(textElement('td', value ?? '—'));
+      });
+      body.append(tr);
+    });
+    table.append(head, body);
+    return table;
+  }
+
+  function sortableHeader(label, key, sort, onSort) {
+    const header = document.createElement('th');
+    const active = sort.key === key;
+    header.setAttribute('aria-sort', active ? (sort.direction === 'desc' ? 'descending' : 'ascending') : 'none');
+    const button = textElement('button', `${label}${active ? (sort.direction === 'desc' ? ' ↓' : ' ↑') : ''}`);
+    button.type = 'button';
+    button.className = 'tournament-report-sort';
+    button.addEventListener('click', () => onSort(key));
+    header.append(button);
+    return header;
   }
 
   function moduleSection(module, report = null) {
@@ -551,7 +615,7 @@ function initialState(datasetId) {
     visibleFamilyIds: [],
     familyReportAction: null,
     selection: null,
-    modulePhases: {matchups: 'overall', composition: 'first_phase'},
+    modulePhases: {matchups: 'overall', composition: 'phase1'},
     requestGeneration: 0,
     appliedGeneration: 0,
     report: null,
@@ -584,7 +648,29 @@ function formatRecord(record) {
 
 
 function phaseLabel(phase) {
-  return String(phase).replaceAll('_', ' ').replace(/\b\w/g, (letter) => letter.toUpperCase());
+  return {overall: 'Overall', phase1: 'Phase 1', phase2: 'Phase 2', top_cut: 'Top Cut'}[phase]
+    || String(phase);
+}
+
+
+function formatPercentagePointDelta(value) {
+  if (value === null || value === undefined) return '—';
+  const number = Number(value);
+  return `${number > 0 ? '+' : ''}${number.toFixed(1)} pp`;
+}
+
+
+function formatNumberDelta(value) {
+  if (value === null || value === undefined) return '—';
+  const number = Number(value);
+  return `${number > 0 ? '+' : ''}${number.toFixed(2)}`;
+}
+
+
+function commonalityLabel(tag, phase) {
+  if (!tag) return '—';
+  const label = tag === 'more_common' ? 'More common' : 'Less common';
+  return phase === 'top_cut' ? `Descriptive: ${label}` : label;
 }
 
 

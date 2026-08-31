@@ -16,9 +16,10 @@ export const ARCHETYPE_MODULE_IDS = Object.freeze([
   'phase_performance',
   'top_finishers',
   'matchups_overall',
-  'matchups_day2',
-  'deck_composition_first_phase',
-  'deck_composition_day2',
+  'matchups_phase1',
+  'matchups_phase2',
+  'deck_composition_phase1',
+  'deck_composition_phase2',
   'deck_composition_top_cut',
   'representative_lists',
 ]);
@@ -31,9 +32,10 @@ export const PNG_EXPORT_MODULE_IDS = Object.freeze([
   'phase_performance',
   'top_finishers',
   'matchups_overall',
-  'matchups_day2',
-  'deck_composition_first_phase',
-  'deck_composition_day2',
+  'matchups_phase1',
+  'matchups_phase2',
+  'deck_composition_phase1',
+  'deck_composition_phase2',
   'deck_composition_top_cut',
   'representative_lists',
 ]);
@@ -81,7 +83,7 @@ export function reduceReportSelection(state, action) {
       return {
         ...state,
         selection: {grain: 'variant', selectionId: action.variantId},
-        modulePhases: {matchups: 'overall', composition: 'first_phase'},
+        modulePhases: {matchups: 'overall', composition: 'phase1'},
       };
     case 'set-matchup-phase':
       return {
@@ -129,9 +131,46 @@ export function toggleExpandedFamily(expandedFamilyId, familyId) {
 }
 
 
-export function buildExpandableFamilyModel(module, expandedFamilyId) {
+export function nextTableSort(current, key, defaultKey) {
+  if (!current) return {key: defaultKey, direction: 'desc'};
+  if (current.key !== key) return {key, direction: 'desc'};
+  return {key, direction: current.direction === 'desc' ? 'asc' : 'desc'};
+}
+
+
+export function sortMatchupRows(rows, sort = {key: 'matches', direction: 'desc'}) {
+  return [...(rows || [])].sort((left, right) => {
+    const primary = sort.key === 'opponent_name'
+      ? compareText(left.opponent_name, right.opponent_name) * (sort.direction === 'desc' ? -1 : 1)
+      : compareNullableNumberDirected(left[sort.key], right[sort.key], sort.direction);
+    if (primary) return primary;
+    return compareNullableNumberDirected(left.matches, right.matches, 'desc')
+      || compareNullableNumberDirected(left.observed_win_rate, right.observed_win_rate, 'desc')
+      || compareText(left.opponent_name, right.opponent_name)
+      || compareText(left.opponent_id, right.opponent_id);
+  });
+}
+
+
+export function sortOverviewRows(rows, sort = {key: 'share', direction: 'desc'}) {
+  return [...(rows || [])].sort((left, right) => {
+    const primary = compareNullableNumberDirected(left[sort.key], right[sort.key], sort.direction);
+    if (primary) return primary;
+    return compareNullableNumberDirected(left.share, right.share, 'desc')
+      || compareNullableNumberDirected(left.observed_win_rate, right.observed_win_rate, 'desc')
+      || compareText(left.family_name || left.variant_name, right.family_name || right.variant_name)
+      || compareText(left.family_id || left.variant_id, right.family_id || right.variant_id);
+  });
+}
+
+
+export function buildExpandableFamilyModel(
+  module,
+  expandedFamilyId,
+  sort = {key: 'share', direction: 'desc'},
+) {
   return {
-    rows: (module.data.rows || []).map((row) => {
+    rows: sortOverviewRows(module.data.rows || [], sort).map((row) => {
       const expanded = row.family_id === expandedFamilyId;
       return {
         familyId: row.family_id,
@@ -143,12 +182,14 @@ export function buildExpandableFamilyModel(module, expandedFamilyId) {
         observedWinRate: row.observed_win_rate ?? null,
         expanded,
         variants: expanded
-          ? (row.variants || []).map((variant) => ({
+          ? sortOverviewRows(row.variants || [], sort).map((variant) => ({
               variantId: variant.variant_id,
               variantName: variant.variant_name,
               players: variant.players,
               share: variant.share,
+              observedWinRate: variant.observed_win_rate ?? null,
               reportEligible: variant.report_eligible === true,
+              record: variant.record || null,
             }))
           : [],
       };
@@ -235,7 +276,7 @@ function renderExportBody(module) {
     return renderRows((module.data.rows || []).slice(0, 12), (row) => row.family_name, (row) => `${row.players} players · ${formatPercent(row.share)} · Observed win rate ${formatObservedWinRate(row.observed_win_rate)}`);
   }
   if (module.module_id.startsWith('deck_composition_')) {
-    return renderRows((module.data.rows || []).slice(0, 13), (row) => row.display_name, (row) => `${bucketLabel(row.bucket)} · ${formatPercent(row.appearance_rate)} appearance · ${Number(row.average_when_present).toFixed(2)} copies`);
+    return renderRows((module.data.rows || []).slice(0, 13), (row) => row.display_name, (row) => `${bucketLabel(row.bucket)} · ${formatPercent(row.appearance_rate)} appearance · ${Number(row.average_when_present).toFixed(2)} copies${row.appearance_rate_delta_pp === null || row.appearance_rate_delta_pp === undefined ? '' : ` · ${formatSigned(row.appearance_rate_delta_pp)} pp`}`);
   }
   if (module.module_id === 'top_finishers') {
     return renderRows(module.data.rows || [], (row) => `#${row.placement ?? '—'} ${row.player_name}`, (row) => `${row.points} points · ${recordText(row.record)}`);
@@ -245,8 +286,8 @@ function renderExportBody(module) {
   }
   if (module.module_id === 'phase_performance') {
     return renderRows([
-      {label: 'Day 1', ...module.data.day1},
-      {label: 'Day 2', ...module.data.day2},
+      {label: 'Phase 1', ...module.data.phase1},
+      {label: 'Phase 2', ...module.data.phase2},
     ], (row) => row.label, (row) => `${recordText(row.record)} · Observed win rate ${formatObservedWinRate(row.observed_win_rate)}`);
   }
   if (module.module_id === 'headline_performance') {
@@ -320,4 +361,27 @@ function bucketLabel(bucket) {
 
 function formatPercent(value) {
   return `${(value * 100).toFixed(1)}%`;
+}
+
+
+function formatSigned(value) {
+  const number = Number(value);
+  return `${number > 0 ? '+' : ''}${number.toFixed(1)}`;
+}
+
+
+function compareNullableNumberDirected(left, right, direction) {
+  const leftMissing = left === null || left === undefined || Number.isNaN(Number(left));
+  const rightMissing = right === null || right === undefined || Number.isNaN(Number(right));
+  if (leftMissing || rightMissing) {
+    if (leftMissing && rightMissing) return 0;
+    return leftMissing ? 1 : -1;
+  }
+  const compared = Number(left) - Number(right);
+  return direction === 'desc' ? -compared : compared;
+}
+
+
+function compareText(left, right) {
+  return String(left ?? '').localeCompare(String(right ?? ''), 'en', {sensitivity: 'base'});
 }

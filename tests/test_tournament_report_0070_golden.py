@@ -8,7 +8,7 @@ from app.services.dataset_state_store import DatasetStateStore
 from app.services.tournament_report_service import TournamentReportService
 from app.tournament_reports.contracts import ReportGrain, ReportPhase, ReportSelection
 from app.tournament_reports.facts import load_family_overrides, normalize_snapshot
-from app.tournament_reports.metrics import conversion, selection_record, win_rate
+from app.tournament_reports.metrics import conversion, matchups, selection_record, win_rate
 from app.tournament_reports.reconciliation import _local_matchup_reference, reconcile_tournament
 from app.tournament_reports.snapshots import SnapshotStore
 
@@ -50,8 +50,8 @@ def test_0070_dragapult_golden_metrics_and_family_sum() -> None:
     assert reconciliation.phase_boundary == EXPECTED["phase_boundary"]
     for phase_name, phase in (
         ("overall", ReportPhase.OVERALL),
-        ("day1", ReportPhase.DAY1),
-        ("day2", ReportPhase.DAY2),
+        ("phase1", ReportPhase.PHASE1),
+        ("phase2", ReportPhase.PHASE2),
     ):
         record = selection_record(facts, selection, phase)
         assert _record_dict(record) == {
@@ -64,9 +64,13 @@ def test_0070_dragapult_golden_metrics_and_family_sum() -> None:
         for row in conversion(facts, ReportGrain.VARIANT).rows
         if row.selection_id == selection.selection_id
     )
-    assert selected_conversion.first_phase_players == EXPECTED["conversion"]["first_phase_players"]
-    assert selected_conversion.day2_players == EXPECTED["conversion"]["day2_players"]
+    assert selected_conversion.phase1_players == EXPECTED["conversion"]["phase1_players"]
+    assert selected_conversion.phase2_players == EXPECTED["conversion"]["phase2_players"]
     assert round(selected_conversion.rate, 4) == EXPECTED["conversion"]["rate"]
+
+    phase2_matchups = matchups(facts, selection, ReportPhase.PHASE2)
+    assert phase2_matchups.phase_boundary == 8
+    assert phase2_matchups.top_cut_exclusion == "not_available"
 
     family_variants = [
         variant.variant_id

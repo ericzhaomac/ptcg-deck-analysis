@@ -17,9 +17,10 @@ MODULE_IDS = [
     "phase_performance",
     "top_finishers",
     "matchups_overall",
-    "matchups_day2",
-    "deck_composition_first_phase",
-    "deck_composition_day2",
+    "matchups_phase1",
+    "matchups_phase2",
+    "deck_composition_phase1",
+    "deck_composition_phase2",
     "deck_composition_top_cut",
     "representative_lists",
 ]
@@ -72,7 +73,7 @@ def test_family_and_variant_payloads_match_the_ui_module_contract() -> None:
     assert [module.module_id for module in family.modules] == MODULE_IDS
     assert [module.module_id for module in variant.modules] == MODULE_IDS
     assert all(
-        option.first_phase_players >= 10
+        option.phase1_players >= 10
         for option in family.variants
         if option.eligible
     )

@@ -19,9 +19,8 @@ class ReportGrain(str, Enum):
 
 
 class ReportPhase(str, Enum):
-    FIRST_PHASE = "first_phase"
-    DAY1 = "day1"
-    DAY2 = "day2"
+    PHASE1 = "phase1"
+    PHASE2 = "phase2"
     TOP_CUT = "top_cut"
     OVERALL = "overall"
 
@@ -84,7 +83,7 @@ class EventIdentity(BaseModel):
 class ReportSelectionOption(BaseModel):
     selection_id: str
     label: str
-    first_phase_players: int = Field(ge=0)
+    phase1_players: int = Field(ge=0)
     eligible: bool
     reason_code: str | None = None
 
@@ -162,4 +161,3 @@ class RawTournamentSnapshot(BaseModel):
     pairings: dict[int, tuple[dict[str, Any], ...]]
     decklists: dict[str, dict[str, Any]]
     matchup_references: dict[str, dict[str, Any] | list[Any]]
-

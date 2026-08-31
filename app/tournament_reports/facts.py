@@ -47,7 +47,7 @@ class PlayerFact:
     family_id: str | None
     placement: int | None
     points: int
-    day2: bool
+    phase2: bool
     top_cut: bool
     decklist_available: bool
     source_record: Record
@@ -63,6 +63,7 @@ class PairingFact:
     player1_variant_id: str | None
     player2_variant_id: str | None
     outcome: Literal["player1", "player2", "tie", "procedural"]
+    competition_stage: Literal["phase1", "phase2", "top_cut"] | None = None
 
 
 @dataclass(frozen=True)
@@ -198,7 +199,7 @@ def normalize_snapshot(
             family_id=variant.family_id if variant else None,
             placement=_optional_int(raw_player.get("placement")),
             points=_int_or_zero(raw_player.get("points")),
-            day2=_as_bool(raw_player.get("day2", False)),
+            phase2=_as_bool(raw_player.get("day2", False)),
             top_cut=_as_bool(raw_player.get("topcut", False)),
             decklist_available=_as_bool(raw_player.get("decklist", False)),
             source_record=Record(
@@ -236,6 +237,7 @@ def normalize_snapshot(
                     player1_variant_id=player1_variant_id,
                     player2_variant_id=player2_variant_id,
                     outcome=outcome,
+                    competition_stage=_competition_stage(raw_pairing.get("stage")),
                 )
             )
 
@@ -279,6 +281,18 @@ def resolve_phase_boundary(facts: TournamentFacts) -> int | None:
         if _phase_records_for_split(facts, split) == facts.source_phase_records
     ]
     return matches[0] if len(matches) == 1 else None
+
+
+def _competition_stage(value: Any) -> Literal["phase1", "phase2", "top_cut"] | None:
+    normalized = str(value or "").strip().casefold().replace("_", " ").replace("-", " ")
+    return {
+        "phase 1": "phase1",
+        "phase1": "phase1",
+        "phase 2": "phase2",
+        "phase2": "phase2",
+        "top cut": "top_cut",
+        "topcut": "top_cut",
+    }.get(normalized)
 
 
 def _phase_records_for_split(

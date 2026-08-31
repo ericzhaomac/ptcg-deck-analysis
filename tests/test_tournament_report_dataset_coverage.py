@@ -51,5 +51,5 @@ def test_every_mounted_completed_event_has_mvp_report_coverage(monkeypatch) -> N
                     event.dataset_id,
                     ReportSelection(grain=ReportGrain.VARIANT, selection_id=variant.selection_id),
                 )
-                assert variant.first_phase_players >= 10
+                assert variant.phase1_players >= 10
                 assert all(module.status.state in set(ReportState) for module in variant_report.modules)
