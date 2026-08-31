@@ -5,11 +5,10 @@ import json
 import time
 from collections import defaultdict
 from concurrent.futures import ThreadPoolExecutor, as_completed
-from dataclasses import dataclass
 from pathlib import Path
 from typing import Any
-from urllib.parse import urlencode
-from urllib.request import Request, urlopen
+
+from scripts.tools.limitless_tournament_snapshot import LimitlessClient, TournamentRef
 
 
 API_ROOT = "https://mew.limitlesstcg.com/labs/data/tcg"
@@ -20,12 +19,6 @@ DEFAULT_DIVISION = "MA"
 DEFAULT_MIN_ARCHETYPE_PLAYERS = 10
 DEFAULT_FETCH_ATTEMPTS = 3
 DEFAULT_RETRY_DELAY_SECONDS = 1.0
-
-
-@dataclass(frozen=True)
-class TournamentRef:
-    tournament_id: str
-    division: str = DEFAULT_DIVISION
 
 
 def parse_args(argv: list[str] | None = None) -> argparse.Namespace:
@@ -295,35 +288,10 @@ def _fetch_player_decklist(
 
 
 def _fetch_json(endpoint: str, params: dict[str, Any], cache_path: Path) -> dict[str, Any]:
-    if cache_path.exists():
-        try:
-            cached_payload = json.loads(cache_path.read_text(encoding="utf-8"))
-            if _is_successful_payload(cached_payload):
-                return cached_payload
-        except (OSError, json.JSONDecodeError):
-            pass
-
-    cache_path.parent.mkdir(parents=True, exist_ok=True)
-    query = urlencode(params)
-    url = f"{API_ROOT}/{endpoint}?{query}"
-    request = Request(url, headers={"User-Agent": USER_AGENT})
-    for attempt in range(DEFAULT_FETCH_ATTEMPTS):
-        try:
-            with urlopen(request, timeout=30) as response:
-                payload = json.loads(response.read().decode("utf-8"))
-            if not _is_successful_payload(payload):
-                raise ValueError(f"Limitless returned an unsuccessful payload for {endpoint}")
-
-            temporary_path = cache_path.with_suffix(f"{cache_path.suffix}.tmp")
-            temporary_path.write_text(json.dumps(payload, ensure_ascii=False, indent=2), encoding="utf-8")
-            temporary_path.replace(cache_path)
-            return payload
-        except (OSError, UnicodeDecodeError, json.JSONDecodeError, ValueError):
-            if attempt + 1 == DEFAULT_FETCH_ATTEMPTS:
-                raise
-            time.sleep(DEFAULT_RETRY_DELAY_SECONDS * (2**attempt))
-
-    raise RuntimeError("unreachable")
+    return LimitlessClient(
+        attempts=DEFAULT_FETCH_ATTEMPTS,
+        retry_delay_seconds=DEFAULT_RETRY_DELAY_SECONDS,
+    ).fetch_cached(endpoint=endpoint, params=params, cache_path=cache_path)
 
 
 def _is_successful_payload(payload: Any) -> bool:

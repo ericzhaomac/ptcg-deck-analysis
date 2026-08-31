@@ -3,16 +3,19 @@ from __future__ import annotations
 from pathlib import Path
 
 from fastapi import FastAPI
-from fastapi.responses import RedirectResponse
+from fastapi.responses import FileResponse, RedirectResponse
 from fastapi.staticfiles import StaticFiles
 
 from .api.routes import build_router
+from .api.tournament_reports import build_tournament_report_router
 from .config import Settings
 from .deck_store import DeckStore
 from .provider_config import ProviderConfig, ProviderConfigStore
 from .services.dataset_analysis_service import DatasetAnalysisService
 from .services.dataset_registry_service import DatasetRegistryService
 from .services.dataset_state_store import DatasetStateStore
+from .services.tournament_report_service import TournamentReportService
+from .tournament_reports.snapshots import SnapshotStore
 
 
 def create_app(
@@ -32,6 +35,12 @@ def create_app(
     dataset_state_store = DatasetStateStore(settings.dataset_state_path)
     provider_config_store = ProviderConfigStore(config_path=settings.provider_config_path)
     deck_store = DeckStore(path=settings.user_decks_path)
+    tournament_report_service = TournamentReportService(
+        dataset_registry=dataset_registry,
+        dataset_state_store=dataset_state_store,
+        snapshot_store=SnapshotStore(),
+        family_overrides_path=settings.data_root / "config" / "archetype_family_overrides.json",
+    )
     env_provider_config = None
     if settings.openai_base_url and settings.openai_api_key:
         env_provider_config = ProviderConfig(
@@ -55,9 +64,13 @@ def create_app(
     def root():
         index_path = static_dir / "index.html"
         if index_path.exists():
-            from fastapi.responses import FileResponse
             return FileResponse(str(index_path))
         return RedirectResponse(url="/api/v1/provider/config")
+
+    @app.get("/tournament-reports", include_in_schema=False)
+    @app.get("/tournament-reports/{report_path:path}", include_in_schema=False)
+    def tournament_report_shell(report_path: str = ""):
+        return FileResponse(str(static_dir / "index.html"))
 
     app.include_router(
         build_router(
@@ -69,6 +82,7 @@ def create_app(
             deck_store=deck_store,
         )
     )
+    app.include_router(build_tournament_report_router(tournament_report_service))
     return app
 
 

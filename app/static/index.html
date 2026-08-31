@@ -13,6 +13,7 @@
       <button class="tab-button active" id="analysis-tab" role="tab" aria-selected="true" aria-controls="analysis-panel" tabindex="0" data-tab="analysis">Analysis</button>
       <button class="tab-button" id="deck-library-tab" role="tab" aria-selected="false" aria-controls="deck-library-panel" tabindex="-1" data-tab="deck-library">Deck Library</button>
       <button class="tab-button" id="ai-backend-tab" role="tab" aria-selected="false" aria-controls="ai-backend-panel" tabindex="-1" data-tab="ai-backend">AI Backend</button>
+      <button class="tab-button" id="tournament-reports-tab" role="tab" aria-selected="false" aria-controls="tournament-reports-panel" tabindex="-1" data-tab="tournament-reports">Tournament Reports</button>
     </nav>
 
     <main>
@@ -126,6 +127,17 @@
             <p class="helper">A blank API-key field keeps the previously saved key only while the Base URL is unchanged. Masked keys are never loaded into the input.</p>
           </aside>
         </div>
+      </section>
+
+      <section class="tab-panel tournament-report-shell" id="tournament-reports-panel" role="tabpanel" aria-labelledby="tournament-reports-tab" hidden>
+        <nav id="tournament-report-breadcrumbs" class="tournament-report-breadcrumbs" aria-label="Tournament report breadcrumbs"></nav>
+        <div class="page-heading tournament-report-heading">
+          <div><p class="eyebrow">Completed events</p><h2 id="tournament-report-title">Tournament Reports</h2><p id="tournament-report-status">Explore verified tournament snapshots.</p></div>
+        </div>
+        <div id="tournament-report-index"></div>
+        <div id="tournament-report-overview" hidden></div>
+        <div id="tournament-report-archetype" hidden></div>
+        <div id="tournament-report-notification" class="sr-only" aria-live="polite"></div>
       </section>
     </main>
   </div>
