@@ -167,7 +167,7 @@ docker run --rm -p 8010:8010 \
   ptcg-deck-analysis
 ```
 
-The application at `http://localhost:8010/` has four top tabs: Analysis, Deck Library, Tournament Reports, and AI Backend. Tournament Reports provides an event overview, synchronized family highlighting, explicit family/variant drill-down, per-module phase controls, and portrait PNG export. The legacy provider config page remains available at `http://localhost:8010/api/v1/provider/config`.
+The application at `http://localhost:8010/` has four top tabs: Analysis, Deck Library, Tournament Reports, and AI Backend. Tournament Reports provides independent Phase 1 and Phase 2 family Top 10 meta-share modules, an expandable family ranking, inline family-to-variant drill-down, per-module phase controls, and portrait PNG export. The legacy provider config page remains available at `http://localhost:8010/api/v1/provider/config`.
 
 Tournament matchup bars require at least 30 observed matches. Deck-composition categories require at least 10 valid lists and 60% list coverage. Win rate uses `(wins + ties / 3) / (wins + losses + ties)`. Every exported module is a fixed 1080×1350 PNG and is blocked unless the exact module state and snapshot version are ready.
 

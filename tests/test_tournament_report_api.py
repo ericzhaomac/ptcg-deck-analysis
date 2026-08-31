@@ -58,8 +58,8 @@ def test_index_overview_and_family_routes_expose_report_contract(tmp_path: Path)
     assert overview.status_code == 200
     assert [module["module_id"] for module in overview.json()["modules"]] == [
         "event_identity",
-        "phase_topcut_distribution",
-        "day2_conversion",
+        "phase1_meta_share",
+        "phase2_meta_share",
         "family_ranking",
     ]
     assert family.status_code == 200

@@ -4,12 +4,13 @@ import test from 'node:test';
 import {
   ARCHETYPE_MODULE_IDS,
   archetypeModuleForPhase,
-  buildOverviewChartModel,
+  buildExpandableFamilyModel,
   createReportRoute,
   formatObservedWinRate,
   moduleAvailability,
   reduceReportSelection,
   matchupAvailabilityMessage,
+  toggleExpandedFamily,
 } from '../../app/static/tournament-reports-core.mjs';
 
 
@@ -33,35 +34,29 @@ const FAMILY_STATE = {
 };
 
 const DISTRIBUTION_MODULE = {
-  module_id: 'phase_topcut_distribution',
+  module_id: 'phase1_meta_share',
+  phase: 'first_phase',
   status: {state: 'ready', exportable: true, message: null},
   data: {
-    first_phase: [
+    rows: [
       {
         family_id: 'dragapult-ex',
         family_name: 'Dragapult',
         players: 20,
         share: 0.5,
-        record: {wins: 30, losses: 10, ties: 2},
-        observed_win_rate: 0.73,
+        report_eligible: true,
+        variants: [
+          {variant_id: 'dragapult-ex', variant_name: 'Dragapult', players: 12, share: 0.3, report_eligible: true},
+          {variant_id: 'dragapult-dusknoir', variant_name: 'Dragapult Dusknoir', players: 8, share: 0.2, report_eligible: false},
+        ],
       },
       {
         family_id: 'charizard-ex',
         family_name: 'Charizard',
         players: 10,
         share: 0.25,
-        record: {wins: 10, losses: 10, ties: 0},
-        observed_win_rate: 0.5,
-      },
-    ],
-    top_cut: [
-      {
-        family_id: 'dragapult-ex',
-        family_name: 'Dragapult',
-        players: 4,
-        share: 0.5,
-        record: {wins: 8, losses: 2, ties: 0},
-        observed_win_rate: 0.8,
+        report_eligible: false,
+        variants: [],
       },
     ],
   },
@@ -140,17 +135,33 @@ test('stale report responses cannot replace the latest generation', () => {
 });
 
 
-test('overview chart model preserves rows and synchronizes selected marks', () => {
-  const model = buildOverviewChartModel(DISTRIBUTION_MODULE, 'dragapult-ex');
+test('expandable family model reveals variants in place without changing family ranking', () => {
+  const collapsed = buildExpandableFamilyModel(DISTRIBUTION_MODULE, null);
+  const expanded = buildExpandableFamilyModel(DISTRIBUTION_MODULE, 'dragapult-ex');
 
-  assert.deepEqual(model.series.map((series) => series.phase), ['first_phase', 'top_cut']);
-  assert.equal(model.series[0].marks.length, 2);
-  assert.equal(model.series[0].marks[0].selected, true);
-  assert.equal(model.series[1].marks[0].selected, true);
-  assert.match(model.series[0].marks[0].tooltip, /20 players/);
-  assert.match(model.series[0].marks[0].tooltip, /50\.0%/);
-  assert.match(model.series[0].marks[0].tooltip, /30-10-2/);
-  assert.equal(model.series[0].marks[0].share, 0.5);
+  assert.equal(collapsed.rows.length, 2);
+  assert.deepEqual(collapsed.rows.map((row) => row.familyId), ['dragapult-ex', 'charizard-ex']);
+  assert.deepEqual(collapsed.rows.flatMap((row) => row.variants), []);
+  assert.equal(expanded.rows.length, 2);
+  assert.equal(expanded.rows[0].expanded, true);
+  assert.equal(expanded.rows[0].reportEligible, true);
+  assert.equal(expanded.rows[1].reportEligible, false);
+  assert.deepEqual(
+    expanded.rows[0].variants.map((row) => row.variantId),
+    ['dragapult-ex', 'dragapult-dusknoir'],
+  );
+  assert.equal(
+    expanded.rows[0].variants.reduce((total, row) => total + row.share, 0),
+    expanded.rows[0].share,
+  );
+});
+
+
+test('family expansion toggles closed when the same row is clicked twice', () => {
+  const expanded = toggleExpandedFamily(null, 'dragapult-ex');
+  assert.equal(expanded, 'dragapult-ex');
+  assert.equal(toggleExpandedFamily(expanded, 'dragapult-ex'), null);
+  assert.equal(toggleExpandedFamily(expanded, 'charizard-ex'), 'charizard-ex');
 });
 
 

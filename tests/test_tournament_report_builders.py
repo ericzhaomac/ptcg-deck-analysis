@@ -98,6 +98,7 @@ def _eleven_family_facts(facts):
             tp_id=player_id,
             variant_id=selection_id,
             family_id=selection_id,
+            day2=True,
             source_record=Record(wins=0, losses=0, ties=0),
         )
         source_records[selection_id] = {
@@ -115,23 +116,49 @@ def _eleven_family_facts(facts):
     )
 
 
-def test_overview_has_layered_distribution_then_conversion_then_ranking(facts, reconciliation) -> None:
+def test_overview_has_independent_phase_meta_share_then_family_ranking(facts, reconciliation) -> None:
     report = build_event_overview(facts, reconciliation, "2026-new-orleans-ma")
 
     assert [module.module_id for module in report.modules] == [
         "event_identity",
-        "phase_topcut_distribution",
-        "day2_conversion",
+        "phase1_meta_share",
+        "phase2_meta_share",
         "family_ranking",
     ]
-    comparison = report.modules[1].data
-    assert {row["family_id"] for row in comparison["first_phase"]} == {
+    phase1, phase2, ranking = report.modules[1:]
+    assert phase1.title == "Phase 1 Meta Share Top 10"
+    assert phase2.title == "Phase 2 Meta Share Top 10"
+    assert phase1.data["known_players"] == 4
+    assert phase2.data["known_players"] == 3
+    assert [row["family_id"] for row in phase1.data["rows"]] == [
+        "charizard-ex",
+        "dragapult-ex",
+    ]
+    assert [row["family_id"] for row in phase2.data["rows"]] == [
         "dragapult-ex",
         "charizard-ex",
+    ]
+
+    phase1_dragapult = next(
+        row for row in phase1.data["rows"] if row["family_id"] == "dragapult-ex"
+    )
+    phase2_dragapult = next(
+        row for row in phase2.data["rows"] if row["family_id"] == "dragapult-ex"
+    )
+    assert sum(row["players"] for row in phase1_dragapult["variants"]) == phase1_dragapult["players"]
+    assert sum(row["share"] for row in phase1_dragapult["variants"]) == phase1_dragapult["share"]
+    assert sum(row["players"] for row in phase2_dragapult["variants"]) == phase2_dragapult["players"]
+    assert sum(row["share"] for row in phase2_dragapult["variants"]) == phase2_dragapult["share"]
+    assert {row["variant_id"] for row in phase1_dragapult["variants"]} == {
+        "dragapult-ex",
+        "dragapult-dusknoir",
     }
-    assert comparison["top_cut"][0]["family_id"] == "dragapult-ex"
-    assert report.modules[2].data["first_phase_players"] == 4
-    assert report.modules[2].data["day2_players"] == 3
+    assert all("report_eligible" in row for row in phase1_dragapult["variants"])
+
+    ranking_dragapult = next(
+        row for row in ranking.data["rows"] if row["family_id"] == "dragapult-ex"
+    )
+    assert ranking_dragapult["variants"] == phase1_dragapult["variants"]
     assert all(option.eligible for option in report.families)
 
 
@@ -146,6 +173,11 @@ def test_overview_retains_long_tail_but_only_top_ten_are_report_eligible(facts) 
     assert len(report.families) == 11
     assert sum(option.eligible for option in report.families) == 10
     assert report.families[-1].reason_code == "outside_top_10_families"
+    assert len(report.modules[1].data["rows"]) == 10
+    assert len(report.modules[2].data["rows"]) == 10
+    assert len(report.modules[3].data["rows"]) == 11
+    assert all(row["report_eligible"] for row in report.modules[1].data["rows"])
+    assert report.modules[3].data["rows"][-1]["report_eligible"] is False
 
 
 def test_archetype_report_keeps_one_grain_across_every_module(facts, reconciliation) -> None:

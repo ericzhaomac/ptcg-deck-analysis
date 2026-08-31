@@ -16,7 +16,6 @@ from app.tournament_reports.contracts import (
 )
 from app.tournament_reports.facts import PlayerFact, TournamentFacts
 from app.tournament_reports.metrics import (
-    ConversionMetric,
     DeckCompositionMetric,
     DistributionMetric,
     MatchupMetric,
@@ -48,12 +47,23 @@ def build_event_overview(
     dataset_id: str,
 ) -> EventOverviewResponse:
     first_phase = distribution(facts, ReportGrain.FAMILY, ReportPhase.FIRST_PHASE)
-    top_cut = distribution(facts, ReportGrain.FAMILY, ReportPhase.TOP_CUT)
-    day2 = conversion(facts, ReportGrain.FAMILY)
+    second_phase = distribution(facts, ReportGrain.FAMILY, ReportPhase.DAY2)
     modules = [
         _event_identity_module(facts, reconciliation),
-        _distribution_comparison_module(facts, reconciliation, first_phase, top_cut),
-        _conversion_module(facts, reconciliation, day2),
+        _meta_share_module(
+            facts,
+            reconciliation,
+            first_phase,
+            module_id="phase1_meta_share",
+            title="Phase 1 Meta Share Top 10",
+        ),
+        _meta_share_module(
+            facts,
+            reconciliation,
+            second_phase,
+            module_id="phase2_meta_share",
+            title="Phase 2 Meta Share Top 10",
+        ),
         _family_ranking_module(facts, reconciliation, first_phase),
     ]
     return EventOverviewResponse(
@@ -125,71 +135,34 @@ def _event_identity_module(
     )
 
 
-def _distribution_comparison_module(
+def _meta_share_module(
     facts: TournamentFacts,
     reconciliation: ReconciliationResult,
-    first_phase: DistributionMetric,
-    top_cut: DistributionMetric,
+    metric: DistributionMetric,
+    *,
+    module_id: str,
+    title: str,
 ) -> ReportModule:
     return ReportModule(
-        module_id="phase_topcut_distribution",
-        title="First Phase vs Top Cut",
+        module_id=module_id,
+        title=title,
         status=module_status(
-            "phase_topcut_distribution",
+            module_id,
             reconciliation,
-            sample_size=first_phase.known_players,
+            sample_size=metric.known_players,
         ),
         grain=ReportGrain.FAMILY,
-        phase=ReportPhase.FIRST_PHASE,
-        sample_size=first_phase.known_players,
+        phase=metric.phase,
+        sample_size=metric.known_players,
         metric_notes=[
-            "Shares use players with a known archetype as the denominator.",
-            "Top Cut membership uses the source topcut flag.",
+            "Families are ranked independently for this phase before the Top 10 is selected.",
+            "Family and variant shares use all players with a known archetype in this phase as the denominator.",
         ],
         provenance=facts.provenance,
         data={
-            "first_phase": _distribution_rows(first_phase, "family_id"),
-            "top_cut": _distribution_rows(top_cut, "family_id"),
-            "first_phase_known_players": first_phase.known_players,
-            "first_phase_unknown_players": first_phase.unknown_players,
-            "top_cut_known_players": top_cut.known_players,
-            "top_cut_unknown_players": top_cut.unknown_players,
-        },
-    )
-
-
-def _conversion_module(
-    facts: TournamentFacts,
-    reconciliation: ReconciliationResult,
-    metric: ConversionMetric,
-) -> ReportModule:
-    return ReportModule(
-        module_id="day2_conversion",
-        title="First Phase to Day 2 conversion",
-        status=module_status(
-            "day2_conversion",
-            reconciliation,
-            sample_size=metric.first_phase_known_players,
-        ),
-        grain=ReportGrain.FAMILY,
-        phase=ReportPhase.DAY2,
-        sample_size=metric.first_phase_known_players,
-        metric_notes=["Conversion is known Day 2 players divided by known First Phase players."],
-        provenance=facts.provenance,
-        data={
-            "first_phase_players": metric.first_phase_known_players,
-            "day2_players": metric.day2_known_players,
-            "field_rate": metric.field_rate,
-            "rows": [
-                {
-                    "family_id": row.selection_id,
-                    "family_name": row.label,
-                    "first_phase_players": row.first_phase_players,
-                    "day2_players": row.day2_players,
-                    "rate": row.rate,
-                }
-                for row in metric.rows
-            ],
+            "rows": _family_distribution_rows(facts, metric, limit=10),
+            "known_players": metric.known_players,
+            "unknown_players": metric.unknown_players,
         },
     )
 
@@ -212,8 +185,56 @@ def _family_ranking_module(
         sample_size=metric.known_players,
         metric_notes=["Observed win rate weights each tie as one-third of a win."],
         provenance=facts.provenance,
-        data={"rows": _distribution_rows(metric, "family_id")},
+        data={"rows": _family_distribution_rows(facts, metric, include_performance=True)},
     )
+
+
+def _family_distribution_rows(
+    facts: TournamentFacts,
+    metric: DistributionMetric,
+    *,
+    limit: int | None = None,
+    include_performance: bool = False,
+) -> list[dict]:
+    variant_metric = distribution(facts, ReportGrain.VARIANT, metric.phase)
+    first_phase_variants = distribution(facts, ReportGrain.VARIANT, ReportPhase.FIRST_PHASE)
+    first_phase_families = distribution(facts, ReportGrain.FAMILY, ReportPhase.FIRST_PHASE)
+    first_phase_counts = {row.selection_id: row.players for row in first_phase_variants.rows}
+    eligible_family_ids = {row.selection_id for row in first_phase_families.rows[:10]}
+    variants_by_family: dict[str, list[dict]] = {}
+    for row in variant_metric.rows:
+        variant = facts.variants[row.selection_id]
+        variants_by_family.setdefault(variant.family_id, []).append(
+            {
+                "variant_id": row.selection_id,
+                "variant_name": row.label,
+                "players": row.players,
+                "share": row.share,
+                "report_eligible": first_phase_counts.get(row.selection_id, 0) >= 10,
+            }
+        )
+
+    rows = []
+    selected_rows = metric.rows if limit is None else metric.rows[:limit]
+    for row in selected_rows:
+        variants = variants_by_family.get(row.selection_id, [])
+        family_row = {
+            "family_id": row.selection_id,
+            "family_name": row.label,
+            "players": sum(variant["players"] for variant in variants),
+            "share": sum(variant["share"] for variant in variants),
+            "report_eligible": row.selection_id in eligible_family_ids,
+            "variants": variants,
+        }
+        if include_performance:
+            family_row.update(
+                {
+                    "record": _record_data(row.record),
+                    "observed_win_rate": row.observed_win_rate,
+                }
+            )
+        rows.append(family_row)
+    return rows
 
 
 def _family_options(metric: DistributionMetric, *, limit: int) -> list[ReportSelectionOption]:

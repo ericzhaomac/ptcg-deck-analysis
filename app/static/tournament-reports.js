@@ -3,12 +3,13 @@ import {
   PNG_EXPORT_MODULE_IDS,
   archetypeModuleForPhase,
   assertExportable,
-  buildOverviewChartModel,
+  buildExpandableFamilyModel,
   buildModuleSvg,
   createReportRoute,
   moduleAvailability,
   reduceReportSelection,
   matchupAvailabilityMessage,
+  toggleExpandedFamily,
   exportFilename,
 } from './tournament-reports-core.mjs';
 
@@ -38,6 +39,7 @@ export function createTournamentReportsController({requestJson, root, navigate})
   let disposed = false;
   let state = initialState(null);
   let requestSequence = 0;
+  const expandedFamilies = new Map();
 
   async function initialize() {
     return showLocation(window.location.pathname);
@@ -86,6 +88,7 @@ export function createTournamentReportsController({requestJson, root, navigate})
     title.textContent = 'Tournament overview';
     status.textContent = 'Loading verified report…';
     state = initialState(datasetId);
+    expandedFamilies.clear();
     const report = await requestJson(`/api/v1/tournament-reports/${encodeURIComponent(datasetId)}`);
     if (disposed || state.datasetId !== datasetId) return;
     title.textContent = report.event.name;
@@ -95,15 +98,14 @@ export function createTournamentReportsController({requestJson, root, navigate})
     overview.replaceChildren();
     const renderers = {
       event_identity: renderEventIdentity,
-      phase_topcut_distribution: renderDistributionComparison,
-      day2_conversion: renderConversion,
-      family_ranking: renderFamilyRanking,
+      phase1_meta_share: renderExpandableFamilyModule,
+      phase2_meta_share: renderExpandableFamilyModule,
+      family_ranking: renderExpandableFamilyModule,
     };
     for (const module of report.modules) {
       const renderer = renderers[module.module_id];
       if (renderer) overview.append(renderer(module));
     }
-    overview.append(renderFamilyAction());
   }
 
   async function showArchetypeReport(datasetId, collection, selectionId) {
@@ -349,121 +351,104 @@ export function createTournamentReportsController({requestJson, root, navigate})
     return section;
   }
 
-  function renderDistributionComparison(module) {
+  function renderExpandableFamilyModule(module) {
     const section = moduleSection(module);
-    const model = buildOverviewChartModel(module, state.selectedFamilyId);
-    const comparison = document.createElement('div');
-    comparison.className = 'tournament-report-comparison';
-    model.series.forEach((series) => comparison.append(chartPanel(series, selectOverviewFamily)));
-    section.append(comparison, distributionTable(module));
-    return section;
-  }
-
-  function renderConversion(module) {
-    const section = moduleSection(module);
-    const model = buildOverviewChartModel(module, state.selectedFamilyId);
-    section.append(chartPanel(model.series[0], selectOverviewFamily));
-    section.append(rowsTable(module.data.rows, [
-      ['Archetype', 'family_name'],
-      ['First Phase', 'first_phase_players'],
-      ['Day 2', 'day2_players'],
-      ['Conversion', (row) => formatPercent(row.rate)],
-    ]));
-    return section;
-  }
-
-  function renderFamilyRanking(module) {
-    const section = moduleSection(module);
-    section.append(rowsTable(module.data.rows, [
-      ['Archetype', 'family_name'],
-      ['Players', 'players'],
-      ['Share', (row) => formatPercent(row.share)],
-      ['Official record', (row) => formatRecord(row.record)],
-      ['Observed win rate', (row) => formatPercent(row.observed_win_rate)],
-    ], selectOverviewFamily));
-    return section;
-  }
-
-  function selectOverviewFamily(familyId) {
-    state = reduceReportSelection(state, {type: 'select-family', familyId});
-    root.querySelectorAll('[data-family-id]').forEach((node) => {
-      const selected = node.dataset.familyId === familyId;
-      node.classList.toggle('selected', selected);
-      node.setAttribute('aria-pressed', String(selected));
-    });
-    const oldAction = root.querySelector('#tournament-report-family-action');
-    if (oldAction) oldAction.replaceWith(renderFamilyAction());
-    notification.textContent = `${familyId} selected across overview modules.`;
-  }
-
-  function renderFamilyAction() {
-    const wrapper = document.createElement('div');
-    wrapper.id = 'tournament-report-family-action';
-    wrapper.className = 'tournament-report-action';
-    if (!state.familyReportAction) {
-      wrapper.append(textElement('p', 'Select an archetype to open its full report.'));
-      return wrapper;
+    const model = buildExpandableFamilyModel(
+      module,
+      expandedFamilies.get(module.module_id) || null,
+    );
+    const includePerformance = module.module_id === 'family_ranking';
+    const table = document.createElement('table');
+    table.className = 'tournament-report-table tournament-report-family-table';
+    const head = document.createElement('thead');
+    const headRow = document.createElement('tr');
+    ['', 'Archetype', 'Players', 'Share'].forEach((label) => headRow.append(textElement('th', label)));
+    if (includePerformance) {
+      headRow.append(textElement('th', 'Official record'), textElement('th', 'Observed win rate'));
     }
-    const button = textElement('button', 'View family report');
-    button.type = 'button';
-    button.className = 'button primary';
-    button.addEventListener('click', () => go(state.familyReportAction));
-    wrapper.append(button);
-    return wrapper;
-  }
-
-  function chartPanel(series, onSelect) {
-    const panel = document.createElement('div');
-    panel.className = 'tournament-report-chart';
-    panel.append(textElement('h4', phaseLabel(series.phase)));
-    const svg = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
-    svg.setAttribute('viewBox', `0 0 100 ${Math.max(40, series.marks.length * 36)}`);
-    svg.setAttribute('role', 'img');
-    svg.setAttribute('aria-label', `${phaseLabel(series.phase)} archetype distribution`);
-    series.marks.forEach((mark) => {
-      const group = document.createElementNS(svg.namespaceURI, 'g');
-      group.dataset.familyId = mark.familyId;
-      group.classList.add('tournament-report-mark');
-      if (mark.selected) group.classList.add('selected');
-      group.setAttribute('role', 'button');
-      group.setAttribute('tabindex', '0');
-      group.setAttribute('aria-label', mark.tooltip);
-      group.setAttribute('aria-pressed', String(mark.selected));
-      const rect = document.createElementNS(svg.namespaceURI, 'rect');
-      rect.setAttribute('x', '0');
-      rect.setAttribute('y', String(mark.y + 4));
-      rect.setAttribute('width', String(Math.max(1, mark.width)));
-      rect.setAttribute('height', '22');
-      const label = document.createElementNS(svg.namespaceURI, 'text');
-      label.setAttribute('x', '2');
-      label.setAttribute('y', String(mark.y + 19));
-      label.textContent = `${mark.label} ${mark.share === null ? '' : formatPercent(mark.share)}`;
-      group.append(rect, label);
-      group.addEventListener('click', () => onSelect(mark.familyId));
-      group.addEventListener('keydown', (event) => {
-        if (event.key === 'Enter' || event.key === ' ') {
-          event.preventDefault();
-          onSelect(mark.familyId);
-        }
+    head.append(headRow);
+    const body = document.createElement('tbody');
+    model.rows.forEach((row) => {
+      const familyRow = document.createElement('tr');
+      familyRow.className = `tournament-report-family-row${row.expanded ? ' expanded' : ''}`;
+      familyRow.dataset.familyId = row.familyId;
+      const arrow = textElement('button', row.expanded ? '▾' : '▸');
+      arrow.type = 'button';
+      arrow.className = 'tournament-report-disclosure';
+      arrow.setAttribute('aria-expanded', String(row.expanded));
+      arrow.setAttribute('aria-label', `${row.expanded ? 'Collapse' : 'Expand'} ${row.familyName} variants`);
+      const arrowCell = document.createElement('td');
+      arrowCell.append(arrow);
+      const nameCell = document.createElement('td');
+      if (row.reportEligible) {
+        const familyLink = textElement('button', row.familyName);
+        familyLink.type = 'button';
+        familyLink.className = 'tournament-report-inline-link';
+        familyLink.addEventListener('click', (event) => {
+          event.stopPropagation();
+          go(createReportRoute('family', state.datasetId, 'family', row.familyId));
+        });
+        nameCell.append(familyLink);
+      } else {
+        const label = textElement('span', row.familyName);
+        label.title = 'Family report is limited to the Phase 1 Top 10.';
+        nameCell.append(label);
+      }
+      familyRow.append(
+        arrowCell,
+        nameCell,
+        textElement('td', row.players),
+        textElement('td', formatPercent(row.share)),
+      );
+      if (includePerformance) {
+        familyRow.append(
+          textElement('td', formatRecord(row.record)),
+          textElement('td', formatPercent(row.observedWinRate)),
+        );
+      }
+      const toggle = () => {
+        expandedFamilies.set(
+          module.module_id,
+          toggleExpandedFamily(expandedFamilies.get(module.module_id) || null, row.familyId),
+        );
+        section.replaceWith(renderExpandableFamilyModule(module));
+      };
+      familyRow.addEventListener('click', toggle);
+      arrow.addEventListener('click', (event) => {
+        event.stopPropagation();
+        toggle();
       });
-      svg.append(group);
+      body.append(familyRow);
+      row.variants.forEach((variant) => {
+        const variantRow = document.createElement('tr');
+        variantRow.className = 'tournament-report-variant-row';
+        variantRow.append(document.createElement('td'));
+        const variantName = document.createElement('td');
+        if (variant.reportEligible) {
+          const variantLink = textElement('button', variant.variantName);
+          variantLink.type = 'button';
+          variantLink.className = 'tournament-report-inline-link';
+          variantLink.addEventListener('click', () => go(createReportRoute(
+            'variant', state.datasetId, 'variant', variant.variantId,
+          )));
+          variantName.append(variantLink);
+        } else {
+          const label = textElement('span', variant.variantName);
+          label.title = 'Variant report requires at least 10 Phase 1 players.';
+          variantName.append(label);
+        }
+        variantRow.append(
+          variantName,
+          textElement('td', variant.players),
+          textElement('td', formatPercent(variant.share)),
+        );
+        if (includePerformance) variantRow.append(textElement('td', '—'), textElement('td', '—'));
+        body.append(variantRow);
+      });
     });
-    panel.append(svg);
-    return panel;
-  }
-
-  function distributionTable(module) {
-    const rows = [];
-    for (const [phase, values] of [['First Phase', module.data.first_phase], ['Top Cut', module.data.top_cut]]) {
-      values.forEach((row) => rows.push({...row, phase}));
-    }
-    return rowsTable(rows, [
-      ['Phase', 'phase'],
-      ['Archetype', 'family_name'],
-      ['Players', 'players'],
-      ['Share', (row) => formatPercent(row.share)],
-      ['Official record', (row) => formatRecord(row.record)],
-    ], selectOverviewFamily);
+    table.append(head, body);
+    section.append(table);
+    return section;
   }
 
   function rowsTable(rows, columns, onSelect = null) {

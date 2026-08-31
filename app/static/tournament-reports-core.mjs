@@ -24,8 +24,8 @@ export const ARCHETYPE_MODULE_IDS = Object.freeze([
 ]);
 
 export const PNG_EXPORT_MODULE_IDS = Object.freeze([
-  'phase_topcut_distribution',
-  'day2_conversion',
+  'phase1_meta_share',
+  'phase2_meta_share',
   'family_ranking',
   'headline_performance',
   'phase_performance',
@@ -124,48 +124,35 @@ export function matchupAvailabilityMessage(module) {
 }
 
 
-export function buildOverviewChartModel(module, selectedFamilyId) {
-  const groups = module.module_id === 'phase_topcut_distribution'
-    ? [
-        ['first_phase', module.data.first_phase || []],
-        ['top_cut', module.data.top_cut || []],
-      ]
-    : [[module.phase || 'overall', module.data.rows || []]];
-  return {
-    series: groups.map(([phase, rows]) => ({
-      phase,
-      marks: rows.map((row, index) => overviewMark(row, index, selectedFamilyId)),
-    })),
-  };
+export function toggleExpandedFamily(expandedFamilyId, familyId) {
+  return expandedFamilyId === familyId ? null : familyId;
 }
 
 
-function overviewMark(row, index, selectedFamilyId) {
-  const familyId = row.family_id;
-  const record = row.record || {wins: 0, losses: 0, ties: 0};
-  const share = row.share ?? row.rate ?? null;
-  const label = row.family_name || row.label || familyId;
-  const players = row.players ?? row.first_phase_players ?? 0;
-  const tooltipParts = [
-    label,
-    `${players} players`,
-    share === null ? null : formatPercent(share),
-    row.record ? `${record.wins}-${record.losses}-${record.ties}` : null,
-    row.observed_win_rate === null || row.observed_win_rate === undefined
-      ? null
-      : `${formatObservedWinRate(row.observed_win_rate)} observed win rate`,
-  ].filter(Boolean);
+export function buildExpandableFamilyModel(module, expandedFamilyId) {
   return {
-    familyId,
-    label,
-    players,
-    share,
-    x: 0,
-    y: index * 36,
-    width: share === null ? 0 : share * 100,
-    colorIndex: index,
-    selected: familyId === selectedFamilyId,
-    tooltip: tooltipParts.join(' · '),
+    rows: (module.data.rows || []).map((row) => {
+      const expanded = row.family_id === expandedFamilyId;
+      return {
+        familyId: row.family_id,
+        familyName: row.family_name,
+        players: row.players,
+        share: row.share,
+        reportEligible: row.report_eligible === true,
+        record: row.record || null,
+        observedWinRate: row.observed_win_rate ?? null,
+        expanded,
+        variants: expanded
+          ? (row.variants || []).map((variant) => ({
+              variantId: variant.variant_id,
+              variantName: variant.variant_name,
+              players: variant.players,
+              share: variant.share,
+              reportEligible: variant.report_eligible === true,
+            }))
+          : [],
+      };
+    }),
   };
 }
 
@@ -241,15 +228,8 @@ function renderExportBody(module) {
       (row) => `n=${row.matches} · ${recordText(row.record)} · Observed win rate ${formatObservedWinRate(row.observed_win_rate)}`,
     );
   }
-  if (module.module_id === 'phase_topcut_distribution') {
-    const rows = [
-      ...(module.data.first_phase || []).slice(0, 7).map((row) => ({...row, label: `First Phase · ${row.family_name}`})),
-      ...(module.data.top_cut || []).slice(0, 7).map((row) => ({...row, label: `Top Cut · ${row.family_name}`})),
-    ];
-    return renderRows(rows, (row) => row.label, (row) => `${row.players} players · ${formatPercent(row.share)} · ${recordText(row.record)}`);
-  }
-  if (module.module_id === 'day2_conversion') {
-    return renderRows((module.data.rows || []).slice(0, 12), (row) => row.family_name, (row) => `${row.first_phase_players} → ${row.day2_players} · ${formatPercent(row.rate)}`);
+  if (module.module_id === 'phase1_meta_share' || module.module_id === 'phase2_meta_share') {
+    return renderRows((module.data.rows || []).slice(0, 10), (row) => row.family_name, (row) => `${row.players} players · ${formatPercent(row.share)}`);
   }
   if (module.module_id === 'family_ranking') {
     return renderRows((module.data.rows || []).slice(0, 12), (row) => row.family_name, (row) => `${row.players} players · ${formatPercent(row.share)} · Observed win rate ${formatObservedWinRate(row.observed_win_rate)}`);

@@ -40,7 +40,6 @@ class ReconciliationResult:
 
 PHASE_MODULES = frozenset(
     {
-        "day2_conversion",
         "phase_performance",
         "matchups_day2",
         "deck_composition_day2",
